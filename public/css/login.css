@@ -1,0 +1,107 @@
+
+
+
+.invalid-feedback {
+    position: absolute;
+    bottom: -20px; /* Lo posiciona debajo sin afectar el tamaño del input */
+    left: 10px;
+    font-size: 14px;
+    color: red;
+}
+
+
+.container {
+    width: 100vw;  /* Ancho total de la ventana */
+    height: 100vh; /* Alto total de la ventana */
+    background-color: #F7DE0C;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Instrument Sans', sans-serif;
+    background-image:
+        url('/images/image2.png'),  /* Engranaje inferior izquierdo */
+        url('/images/image3.png');  /* Engranaje superior derecho */
+    background-size: 550px 320px, 550px 320px;
+    background-position: bottom left, top right;
+    background-repeat: no-repeat;
+
+}
+
+input::placeholder{
+    font-weight: bold;
+    color: gray;
+    font-size: 15px;
+}
+#username{
+    font-weight: bold;
+}
+
+#forms{
+    margin-top:50px
+}
+#text{
+    margin-top: 40px;
+}
+.logo-container img {
+    max-width: 800px; /* Ajusta este valor según necesites */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+
+
+/* 🟡 Tablets (Pantallas menores a 1024px) */
+@media (max-width: 1024px) {
+    .container {
+        padding-top: 20px; /* Baja todo un poco más */
+    }
+
+    .logo-container img {
+        width: 600px; /* Reduce el tamaño del logo */
+        height: auto;
+    }
+
+    input.form-control {
+        width: 90%; /* Hacer los inputs más pequeños */
+        height: 45px;
+        font-size: 16px;
+    }
+
+    button {
+        width: 180px; /* Ajusta el botón */
+        height: 45px;
+    }
+}
+
+/* 🔵 Móviles (Pantallas menores a 768px) */
+@media (max-width: 768px) {
+    .container {
+        padding-top: 10px; /* Aún más centrado */
+        gap: 5px;
+    }
+
+    .logo-container img {
+        width: 80%; /* Reduce aún más el logo */
+        height: auto;
+    }
+
+    h2 {
+        font-size: 22px; /* Reduce el tamaño del título */
+    }
+
+    input.form-control {
+        width: 100%;
+        height: 40px;
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .invalid-feedback {
+        font-size: 12px;
+    }
+
+    button {
+        width: 150px;
+        height: 40px;
+        font-size: 14px;
+    }
+}
