@@ -73,35 +73,49 @@ input::placeholder{
 }
 
 /* 🔵 Móviles (Pantallas menores a 768px) */
+/* Responsive para móviles */
+/* Responsive para móviles */
 @media (max-width: 768px) {
     .container {
-        padding-top: 10px; /* Aún más centrado */
-        gap: 5px;
+        padding: 10px;
+        height: auto;
+        background-size: 150px 100px, 150px 100px; /* Más pequeño */
     }
 
     .logo-container img {
-        width: 80%; /* Reduce aún más el logo */
-        height: auto;
+        max-width: 300px; /* Logo más pequeño */
+    }
+    .container2{
+        margin-top: 200px;
     }
 
-    h2 {
-        font-size: 22px; /* Reduce el tamaño del título */
-    }
-
-    input.form-control {
+    #forms {
         width: 100%;
-        height: 40px;
-        font-size: 14px;
-        padding: 10px;
+        max-width: 300px; /* Reduce el formulario */
     }
 
-    .invalid-feedback {
+    .form-control {
+        height: 35px;
+        font-size: 12px;
+        padding: 6px;
+        width: 100% !important; /* Asegura que los inputs sean más pequeños */
+        max-width: 300px; /* Reduce aún más el tamaño */
+    }
+
+    label {
         font-size: 12px;
     }
 
+    #text {
+        margin-top: 15px;
+        font-size: 16px;
+    }
+
     button {
-        width: 150px;
+        width: 80%;
+        max-width: 150px;
         height: 40px;
         font-size: 14px;
+        margin-top: 50px;
     }
 }

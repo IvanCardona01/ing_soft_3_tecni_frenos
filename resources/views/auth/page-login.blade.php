@@ -8,9 +8,9 @@
 @section('content')
 
 <div class="container">
-<!-- Contenedor para centrar la imagen con el tamaño correcto -->
+
 <div class="container2">
-    <!-- Contenedor para centrar la imagen -->
+    
     <div class="logo-container">
         <img src="{{ asset('images/logo1.png') }}" alt="Logo">
     </div>
