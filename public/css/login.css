@@ -1,14 +1,11 @@
 
-
-
 .invalid-feedback {
     position: absolute;
-    bottom: -20px; /* Lo posiciona debajo sin afectar el tamaño del input */
-    left: 10px;
+    bottom: -20px; /* Ajusta según sea necesario */
+    left: 20px; /* Evita que se solape con el input */
     font-size: 14px;
     color: red;
-}
-
+  }
 
 .container {
     width: 100vw;  /* Ancho total de la ventana */
@@ -86,7 +83,7 @@ input::placeholder{
         max-width: 300px; /* Logo más pequeño */
     }
     .container2{
-        margin-top: 200px;
+        margin-top: 150px;
     }
 
     #forms {
@@ -118,4 +115,45 @@ input::placeholder{
         font-size: 14px;
         margin-top: 50px;
     }
+}
+
+
+@media (min-width: 768px) and (max-width: 768px) and (min-height: 1024px) and (max-height: 1024px){
+
+    .container {
+        padding: 10px;
+        height: auto;
+        background-size: 300px 300px, 250px 250px; /* Más pequeño */
+    }
+    .logo-container img {
+        max-width: 700px; /* Logo más pequeño */
+    }
+    .container2{
+        margin-top: 200px;
+    }
+    #forms {
+        width: 100%;
+        max-width: 600px; /* Reduce el formulario */
+    }
+
+    .form-control {
+        height: 35px;
+        font-size: 12px;
+        padding: 6px;
+        width: 100% !important; /* Asegura que los inputs sean más pequeños */
+        max-width: 400px; /* Reduce aún más el tamaño */
+    }
+
+    label {
+        font-size: 15px;
+        margin-left: 200px;
+    }
+    .invalid-feedback {
+        margin-left: 200px;
+    }
+
+    #togglePassword{
+        margin-right: 100px;
+    }
+
 }

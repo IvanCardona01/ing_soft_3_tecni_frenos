@@ -15,7 +15,7 @@
   </head>
   <body
 
-  
+
     @yield('content')
     @section('styles')
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Welcome')
+@section('title', 'login')
 
 @section('styles')
     <link rel="stylesheet" href="css/login.css">
@@ -10,7 +10,7 @@
 <div class="container">
 
 <div class="container2">
-    
+
     <div class="logo-container">
         <img src="{{ asset('images/logo1.png') }}" alt="Logo">
     </div>
@@ -19,11 +19,14 @@
 
     <form id="forms" class="d-flex flex-column align-items-center needs-validation" novalidate style="width: 100%;">
         <!-- Usuario -->
-        <div class="mb-3 w-100 d-flex flex-column align-items-center" style="max-width: 600px;">
+        <div class="mb-3 w-100 d-flex flex-column align-items-center position-relative" style="max-width: 600px;">
             <label for="username" class="form-label w-100 text-start">Usuario</label>
             <input type="text" class="form-control p-2 rounded-pill border opacity-75" id="username"
+
                 placeholder="Ingresa tu cédula"
                 style="height: 40px; width: 600px;" required>
+                <div class="invalid-feedback">Por favor, ingresa tu usuario.</div>
+
         </div>
 
         <!-- Contraseña -->
