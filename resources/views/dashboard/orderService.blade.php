@@ -22,7 +22,7 @@
                     </div>
                     <div class="form-group">
                         <label for="number_identification">Tipo y número de documento*</label>
-                        <div>
+                        <div class="form-group-select-identification">
                             <select id="type_identification" name="type_identification">
                                 <option value="cc">C.C.</option>
                                 <option value="nit">NIT</option>

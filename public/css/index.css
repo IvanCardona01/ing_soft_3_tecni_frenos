@@ -470,7 +470,7 @@ footer {
     height: 3.5rem;
 }
 
-.container-content-folio{
+.container-content-folio {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -486,10 +486,9 @@ footer {
     border-radius: 20px;
     width: 15rem;
     box-shadow: -2px 5px 4px rgba(0, 0, 0, 0.1);
-    
 }
 
-.container-content-folio-data  p{
+.container-content-folio-data p {
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
@@ -499,12 +498,12 @@ footer {
     color: #666;
 }
 
-.container_orders{
+.container_orders {
     display: flex;
     flex-direction: column;
     padding-top: 2rem;
 }
-.container_card_orders{
+.container_card_orders {
     border: 1px solid rgba(55, 44, 151, 1);
     margin: 2.5rem 2.5rem 0 2.5rem;
     padding: 0.8rem;
@@ -522,4 +521,286 @@ footer {
     border-radius: 50%;
     border: 1px solid #f7de0c;
     padding: 0.1rem;
+}
+
+@media (min-width: 2560px) {
+    header {
+        height: 6rem;
+    }
+    .burger {
+        padding: 1.2rem;
+    }
+
+    .burger svg {
+        width: 50px;
+        height: 50px;
+    }
+    .nav-menu {
+        width: 450px;
+        right: -450px;
+    }
+
+    .nav-content .user-info p {
+        font-size: large;
+    }
+    .nav-content .user-info span {
+        font-size: x-large;
+    }
+    .nav-content .user-info svg {
+        width: 50px;
+        height: 50px;
+    }
+
+    .nav-links li a {
+        font-size: x-large;
+    }
+    .nav-links li svg {
+        width: 50px;
+        height: 50px;
+    }
+    .container-logout {
+        font-size: x-large;
+    }
+    .container-logout svg {
+        width: 50px;
+        height: 50px;
+    }
+    .container_card .card {
+        width: 30rem;
+        height: 13rem;
+        font-size: x-large;
+    }
+    .container_card .card p {
+        margin-left: 5rem;
+    }
+    .container_card .card svg {
+        margin-left: 1.5rem;
+        width: 100px;
+        height: 100px;
+    }
+    .container_card_orders {
+        height: 6.5rem;
+
+        align-items: center;
+    }
+    .container_card_orders span {
+        font-size: 2rem;
+    }
+    .container_card_orders svg {
+        width: 50px;
+        height: 50px;
+    }
+    .data-client span {
+        font-size: 3rem;
+    }
+    .form-client-data .form-group input,
+    .form-client-data .form-group select,
+    .form-vehicle-data .form-group input,
+    .form-vehicle-data .form-group select,
+    .form-vehicle-data .form-group-checkbox {
+        font-size: 1.5rem;
+        padding: 1rem;
+    }
+    .form-client-data .form-group label,
+    .form-vehicle-data .form-group label,
+    .form-vehicle-data .form-group-checkbox label {
+        font-size: 1.5rem;
+    }
+    .checkbox-label {
+        width: 126px;
+        height: 109px;
+    }
+    .container-damage textarea {
+        width: 40rem;
+        height: 12rem;
+    }
+    .select-asigned {
+        width: 30rem;
+        height: 4rem;
+        font-size: 1.5rem;
+    }
+    .container-buttons button {
+        width: 30rem;
+        height: 4rem;
+        font-size: 1.5rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .data-client .form-client-data {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .form-group-select-identification {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+    .form-vehicle-data {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .container-damage svg {
+        width: 350px;
+        height: 250px;
+    }
+}
+
+@media (min-width: 425px) and (max-width: 767px) {
+    .data-client .form-client-data {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .form-group-select-identification {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+    .form-vehicle-data {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .observation-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .container-damage {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .container-damage svg {
+        width: 300px;
+        height: 200px;
+    }
+    .container-checkbox-one,
+    .container-checkbox-two {
+        flex-direction: column;
+        align-items: center;
+    }
+    .checkbox-label {
+        border-radius: 0 !important;
+    }
+    .container-damage textarea {
+        width: 100%;
+        height: 10rem;
+    }
+    .select-asigned {
+        width: 100%;
+        height: 3rem;
+        font-size: 1rem;
+    }
+    .form-observations {
+        flex-direction: row;
+        margin-bottom: 1.5rem;
+    }
+    .container-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 375px) and (max-width: 424px) {
+    .data-client .form-client-data {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .form-group-select-identification {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+    .form-vehicle-data {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .observation-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .container-damage {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .container-damage svg {
+        width: 300px;
+        height: 200px;
+    }
+    .container-checkbox-one,
+    .container-checkbox-two {
+        flex-direction: column;
+        align-items: center;
+    }
+    .checkbox-label {
+        border-radius: 0 !important;
+    }
+    .container-damage textarea {
+        width: 100%;
+        height: 10rem;
+    }
+    .select-asigned {
+        width: 100%;
+        height: 3rem;
+        font-size: 1rem;
+    }
+    .form-observations {
+        flex-direction: row;
+        margin-bottom: 1.5rem;
+    }
+    .container-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+@media (max-width: 374px) {
+    .data-client .form-client-data {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .form-group-select-identification {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .form-vehicle-data {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .observation-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .container-damage {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .container-damage svg {
+        width: 250px;
+        height: 150px;
+    }
+    .container-checkbox-one,
+    .container-checkbox-two {
+        flex-direction: column;
+        align-items: center;
+    }
+    .checkbox-label {
+        border-radius: 0 !important;
+    }
+    .container-damage textarea {
+        width: 100%;
+        height: 10rem;
+    }
+    .select-asigned {
+        width: 100%;
+        height: 3rem;
+        font-size: 1rem;
+    }
+    .form-observations {
+        flex-direction: row;
+        margin-bottom: 1.5rem;
+    }
+    .container-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    .form-client-data .form-group input,
+    .form-client-data .form-group select,
+    .form-vehicle-data .form-group input,
+    .form-vehicle-data .form-group select,
+    .form-vehicle-data .form-group-checkbox {
+        font-size: 0.9rem;
+        padding: 0.4rem;   
+    }
 }
