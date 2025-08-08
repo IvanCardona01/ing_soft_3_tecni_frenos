@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', function () {
@@ -11,3 +12,9 @@ Route::post('/login', function () {
 
 })->name('login.submit');
 
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dasboard');
+
+Route::get('/dashboard/order-service', [DashboardController::class, 'orderService'])->name('dashboard.orderService');
+
+Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
