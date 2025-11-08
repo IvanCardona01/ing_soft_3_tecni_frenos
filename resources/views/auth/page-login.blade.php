@@ -17,8 +17,9 @@
 
             <h2 class="text-center mt-3 fw-bold">Iniciar Sesión</h2>
 
-            <form id="forms" class="d-flex flex-column align-items-center needs-validation mt-3" novalidate
-                style="width: 100%;">
+            <form id="forms" action="/login" method="POST"
+                class="d-flex flex-column align-items-center needs-validation mt-3" novalidate style="width: 100%;">
+                @csrf
                 <!-- Usuario -->
                 <div class="mb-4 w-100 d-flex flex-column align-items-center position-relative" style="max-width: 600px;">
                     <label for="username" class="form-label w-100 text-start text-xl fw-bold">Usuario</label>
