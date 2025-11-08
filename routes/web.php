@@ -3,7 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/login', function () {
+Route::get('/', function () {
     return view('auth.page-login');
 })->name('login');
 

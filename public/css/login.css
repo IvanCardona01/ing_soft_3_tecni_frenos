@@ -19,7 +19,7 @@
     background-image:
         url('/images/image2.png'),  /* Engranaje inferior izquierdo */
         url('/images/image3.png');  /* Engranaje superior derecho */
-    background-size: 550px 320px, 550px 320px;
+    background-size: 550px 450px, 550px 320px;
     background-position: bottom left, top right;
     background-repeat: no-repeat;
 
@@ -43,6 +43,10 @@ input::placeholder{
 .logo-container img {
     max-width: 800px; /* Ajusta este valor según necesites */
     height: auto; /* Mantiene la proporción de la imagen */
+}
+
+.mt-\[165px\]{
+    margin-top: 165px;
 }
 
 
@@ -82,8 +86,11 @@ input::placeholder{
     .logo-container img {
         max-width: 300px; /* Logo más pequeño */
     }
+    .logo-container.mt-\[165px\]{
+        margin-top: 110px;
+    }
     .container2{
-        margin-top: 150px;
+        margin-top: 60px;
     }
 
     #forms {
@@ -100,7 +107,7 @@ input::placeholder{
     }
 
     label {
-        font-size: 12px;
+        font-size: 16px;
     }
 
     #text {
@@ -145,7 +152,7 @@ input::placeholder{
     }
 
     label {
-        font-size: 15px;
+        font-size: 16px;
         margin-left: 200px;
     }
     .invalid-feedback {
