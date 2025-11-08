@@ -16,8 +16,8 @@
 
             @include('layouts.shared/topbar')
 
-            <main class="flex-grow p-6" >
-                
+            <main class="flex-grow">
+
 
                 @include('layouts.shared/page-title', [
                     'title' => $title,
@@ -40,24 +40,24 @@
 </body>
 
 <script>
-        const menuToggle = document.getElementById('menu-toggle');
-        const closeBtn = document.getElementById('close-menu');
-        const navMenu = document.getElementById('nav-menu');
-        const overlay = document.getElementById('overlay');
+    const menuToggle = document.getElementById('menu-toggle');
+    const closeBtn = document.getElementById('close-menu');
+    const navMenu = document.getElementById('nav-menu');
+    const overlay = document.getElementById('overlay');
 
-        function openMenu() {
-            navMenu.classList.add('show');
-            overlay.classList.add('show');
-        }
+    function openMenu() {
+        navMenu.classList.add('show');
+        overlay.classList.add('show');
+    }
 
-        function closeMenu() {
-            navMenu.classList.remove('show');
-            overlay.classList.remove('show');
-        }
+    function closeMenu() {
+        navMenu.classList.remove('show');
+        overlay.classList.remove('show');
+    }
 
-        menuToggle.addEventListener('click', openMenu);
-        closeBtn.addEventListener('click', closeMenu);
-        overlay.addEventListener('click', closeMenu);
-    </script>
+    menuToggle.addEventListener('click', openMenu);
+    closeBtn.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeMenu);
+</script>
 
 </html>
