@@ -177,37 +177,10 @@ footer {
     background-size: 80% 80%; 
 }
 
-.container_card {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    height: 80%;
-}
-.container_card .card {
-    width: 19rem;
-    height: 9rem;
-    background: linear-gradient(
-        to right,
-        rgba(55, 44, 151, 1) 32%,
-        #f7de0c 32%
-    );
-
-    box-shadow: -3px 5px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 30px;
-    padding: 0.1rem;
-    margin: 1rem;
-    display: flex;
-    align-items: center;
-    font-size: large;
-    font-weight: 500;
-}
-.container_card .card svg {
-    margin-left: 0.5rem;
-}
-.container_card .card p {
-    margin-left: 1.7rem;
+@media (max-width: 767px) {
+    .dashboard-fondo {
+        background-position: center calc(50%);
+    }
 }
 
 .checkbox-icon {
