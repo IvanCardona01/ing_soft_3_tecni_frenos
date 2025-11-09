@@ -24,12 +24,10 @@
         </svg></button>
     <div class="nav-content">
         <div class="user-info flex items-center gap-3 md:gap-6">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#F7DE0C" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"
-                class="lucide lucide-user-icon lucide-user w-8 h-8 md:w-11 md:h-11">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-            </svg>
+            <div class="pl-1">
+                <img src="{{ asset('icons/profile-icon.svg') }}" alt="Perfil"
+                    class="w-12 h-12 md:w-14 md:h-14 object-contain">
+            </div>
             <div class="text-neutral-800">
                 <p class="text-lg md:text-xl font-semibold">Bienvenid@</p>
                 <span class="block text-base md:text-lg text-neutral-600">Administrador</span>
@@ -38,26 +36,27 @@
         </div>
         <div class="nav-links">
             <ul class="space-y-4 md:space-y-6">
-                <li class="flex items-center gap-3 text-base md:text-lg font-medium text-neutral-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#F7DE0C"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-house-icon lucide-house w-6 h-6 md:w-8 md:h-8">
-                        <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
-                        <path
-                            d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                    </svg><a href="{{ url('/dashboard') }}" class="hover:text-[#372C97] transition-colors">Inicio</a>
+                <li class="flex">
+                    <a href="{{ url('/dashboard') }}"
+                        class="ml-5 inline-flex items-center text-lg md:text-xl font-medium text-neutral-900 rounded-xl hover:bg-[#372C97]/10 hover:text-[#372C97] transition-colors px-1 py-2 w-full">
+                        <div class="flex items-center gap-4">
+                            <img src="{{ asset('icons/home-icon.svg') }}" alt="Inicio"
+                                class="w-10 h-10 md:w-12 md:h-12 object-contain">
+                            <span>Inicio</span>
+                        </div>
+                    </a>
                 </li>
             </ul>
         </div>
-        <div class="container-logout">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="#F7DE0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="lucide lucide-log-out-icon lucide-log-out">
-                <path d="m16 17 5-5-5-5" />
-                <path d="M21 12H9" />
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            </svg>
-            <a href="{{ url('/login') }}"><span>Cerrar sesión</span></a>
+        <div class="container-logout flex">
+            <a href="{{ url('/') }}"
+                class="inline-flex items-center text-lg md:text-xl font-semibold text-[#372C97] rounded-xl hover:bg-[#372C97]/10 transition-colors px-1 py-2 w-full">
+                <div class="flex items-center gap-4">
+                    <img src="{{ asset('icons/exit-icon.svg') }}" alt="Cerrar sesión"
+                        class="w-12 h-12 md:w-14 md:h-14 object-contain">
+                    <span>Cerrar sesión</span>
+                </div>
+            </a>
         </div>
     </div>
 
