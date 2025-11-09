@@ -164,18 +164,17 @@ footer {
 }
 
 .container-content-main {
-    /* background-image: url('/images/Group.png'); */
     height: 100vh;
     background-size: cover;
 }
 
 .dashboard-fondo {
     min-height: 100vh;
-    background-image: url("/images/Group.png");
-    background-position: center;
+    background-image: url("/icons/disc-brake-background.svg");
+    background-position: center calc(50% + 65px);
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-size: contain;
+    background-size: 70% 70%; 
     /* background-color: #f8f9fa; */
 }
 
