@@ -1,4 +1,4 @@
-<header class="bg-white !shadow-none">
+<header class="absolute top-0 left-0 w-full bg-transparent !shadow-none">
     <div class="flex flex-row justify-between items-center w-full ">
         <div> <a href="{{ url('/dashboard') }}"><img src="{{ asset('images/logo1.png') }}" alt=""
                     class="w-40 h-16 ml-4 md:w-[384px] md:h-[116px] md:ml-[30px]"></a></div>

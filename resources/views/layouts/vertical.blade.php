@@ -28,8 +28,6 @@
 
             </main>
 
-            @include('layouts.shared/footer')
-
         </div>
 
     </div>

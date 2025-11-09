@@ -174,8 +174,7 @@ footer {
     background-position: center calc(50% + 65px);
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-size: 70% 70%; 
-    /* background-color: #f8f9fa; */
+    background-size: 80% 80%; 
 }
 
 .container_card {
