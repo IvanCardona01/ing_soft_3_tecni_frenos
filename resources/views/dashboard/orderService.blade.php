@@ -5,14 +5,15 @@
     <div class="dashboard-fondo">
 
         <div class="container-content-main p-8" style="background-color: #ffffff91; height: 100%;">
-            <div class="container-content-folio">
-                <div class="container-content-folio-data">
-                    <span>Número de Folio</span>
-                    <p>Nª-000000</p>
+            <div class="flex flex-col items-end md:mr-[150px] mr-0 md:mt-6 mt-16">
+                <div
+                    class="flex md:px-[40px] px-[20px] md:py-[7px] py-[5px] flex-col items-center justify-center md:rounded-[25px] rounded-[16px] border border-[#666] bg-[#FFFFFF] text-[#333] shadow-sm">
+                    <span class="md:text-2xl text-base text-[#666]">Número de Folio</span>
+                    <p class="md:text-xl text-sm  text-[#000000]">Nª-000000</p>
                 </div>
             </div>
-            <h1>Orden De Servicio</h1>
-            <h3>Mecánica Rápida T.F.Q</h3>
+            <div class="md:text-[40px] text-2xl text-center font-semibold mt-10">Orden De Servicio</div>
+            <div class="text-[#372C97] text-center md:text-[40px] text-2xl mt-2 md:mt-6">Mecánica Rápida T.F.Q</div>
             <div class="data-client">
                 <span>Datos del cliente o empresa</span>
                 <div class="form-client-data">
@@ -22,14 +23,17 @@
                     </div>
                     <div class="form-group">
                         <label for="number_identification">Tipo y número de documento*</label>
-                        <div class="form-group-select-identification">
-                            <select id="type_identification" name="type_identification">
+                        <div
+                            class="form-group-select-identification flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                            <select id="type_identification" name="type_identification"
+                                class="w-full sm:w-28 md:w-32 border border-[#ccc] rounded px-3 py-2 text-base"">
                                 <option value="cc">C.C.</option>
                                 <option value="nit">NIT</option>
                                 <option value="ti">T.I.</option>
                             </select>
                             <input type="text" id="number_identification" name="number_identification"
-                                placeholder="Digita número de documento">
+                                placeholder="Digita número de documento"
+                                class="w-full border border-[#ccc] rounded px-3 py-2 text-base sm:flex-1 sm:min-w-[13rem]">
                         </div>
                     </div>
                     <div class="form-group">
