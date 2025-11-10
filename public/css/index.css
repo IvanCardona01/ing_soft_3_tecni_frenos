@@ -354,22 +354,6 @@ footer {
     border-radius: 4px;
     font-size: 1rem;
 }
-.form-group-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-.form-group-checkbox input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-.form-group-checkbox label {
-    font-weight: normal;
-    font-size: 1rem;
-    color: #333;
-}
-
 .observation-container {
     display: flex;
     justify-content: space-around;
@@ -539,14 +523,12 @@ footer {
     .form-client-data .form-group input,
     .form-client-data .form-group select,
     .form-vehicle-data .form-group input,
-    .form-vehicle-data .form-group select,
-    .form-vehicle-data .form-group-checkbox {
+    .form-vehicle-data .form-group select {
         font-size: 1.5rem;
         padding: 1rem;
     }
     .form-client-data .form-group label,
-    .form-vehicle-data .form-group label,
-    .form-vehicle-data .form-group-checkbox label {
+    .form-vehicle-data .form-group label {
         font-size: 1.5rem;
     }
     .checkbox-label {
@@ -741,8 +723,7 @@ footer {
     .form-client-data .form-group input,
     .form-client-data .form-group select,
     .form-vehicle-data .form-group input,
-    .form-vehicle-data .form-group select,
-    .form-vehicle-data .form-group-checkbox {
+    .form-vehicle-data .form-group select {
         font-size: 0.9rem;
         padding: 0.4rem;   
     }

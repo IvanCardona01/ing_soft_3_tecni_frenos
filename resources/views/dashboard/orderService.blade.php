@@ -96,15 +96,17 @@
                         <input type="number" id="Mileage" name="Mileage"
                             placeholder="Digita kilometraje del vehículo">
                     </div>
-                    <div class="form-group-checkbox">
-                        <label for="crane">Ingreso de grúa</label>
-                        <div>
-                            <label for="crane_yes">Si</label>
-                            <input type="checkbox" id="crane_yes" name="crane_yes">
+                    <div class="flex flex-wrap items-center gap-4 text-base font-medium text-[#333]">
+                        <label for="crane_yes">Ingreso de grúa:</label>
+                        <div class="flex items-center gap-2 text-sm text-[#333]">
+                            <label for="crane_yes" class="cursor-pointer">Sí</label>
+                            <input type="checkbox" id="crane_yes" name="crane_yes"
+                                class="h-5 w-5 rounded-full border border-[#372C97] bg-white text-[#372C97] transition-all duration-150 focus:ring-2 focus:ring-[#372C97] focus:ring-offset-1 checked:bg-[#372C97] checked:border-[#372C97] appearance-none">
                         </div>
-                        <div>
-                            <label for="crane_no">No</label>
-                            <input type="checkbox" id="crane_no" name="crane_no">
+                        <div class="flex items-center gap-2 text-sm text-[#333]">
+                            <label for="crane_no" class="cursor-pointer">No</label>
+                            <input type="checkbox" id="crane_no" name="crane_no"
+                                class="h-5 w-5 rounded-full border border-[#372C97] bg-white text-[#372C97] transition-all duración-150 focus:ring-2 focus:ring-[#372C97] focus:ring-offset-1 checked:bg-[#372C97] checked:border-[#372C97] appearance-none">
                         </div>
                     </div>
                 </div>
