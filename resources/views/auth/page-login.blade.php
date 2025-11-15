@@ -23,10 +23,13 @@
                 <!-- Usuario -->
                 <div class="mb-4 w-100 d-flex flex-column align-items-center position-relative" style="max-width: 600px;">
                     <label for="credential" class="form-label w-100 text-start text-xl fw-bold">Usuario</label>
-                    <input type="text" name="credential" class="form-control p-3 h-100 rounded-pill border opacity-75 mb-2 @error('credential') is-invalid @enderror"
+                    <input type="text" name="credential"
+                        class="form-control p-3 h-100 rounded-pill border opacity-75 mb-2 @error('credential') is-invalid @enderror"
                         id="credential" placeholder="Ingresa tu correo o cédula" value="{{ old('credential') }}"
                         style="height: 40px; width: 600px;" autocomplete="username" required>
-                    <div class="invalid-feedback t-20">Por favor, ingresa tu usuario.</div>
+                    @if (!$errors->has('credential'))
+                        <div class="invalid-feedback t-20">Por favor, ingresa tu usuario.</div>
+                    @endif
                     @error('credential')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror

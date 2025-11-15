@@ -19,6 +19,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/order-service', [OrderServiceController::class, 'create'])->name('dashboard.orderService');
     Route::post('/dashboard/order-service', [OrderServiceController::class, 'store'])->name('dashboard.orderService.store');
-    Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
-    Route::get('/order/admin', [OrdersController::class, 'index'])->name('order.admin');
+    Route::get('/dashboard/orders', [OrdersController::class, 'index'])->name('dashboard.orders');
 });
