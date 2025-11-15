@@ -1,0 +1,166 @@
+
+.invalid-feedback {
+    position: absolute;
+    bottom: -20px; /* Ajusta según sea necesario */
+    left: 20px; /* Evita que se solape con el input */
+    font-size: 14px;
+    color: red;
+  }
+
+.container {
+    width: 100vw;  /* Ancho total de la ventana */
+    height: 100vh; /* Alto total de la ventana */
+    background-color: #F7DE0C;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Instrument Sans', sans-serif;
+    background-image:
+        url('/images/image2.png'),  /* Engranaje inferior izquierdo */
+        url('/images/image3.png');  /* Engranaje superior derecho */
+    background-size: 550px 450px, 550px 320px;
+    background-position: bottom left, top right;
+    background-repeat: no-repeat;
+
+}
+
+input::placeholder{
+    font-weight: bold;
+    color: gray;
+    font-size: 15px;
+}
+#username{
+    font-weight: bold;
+}
+
+#forms{
+    margin-top:50px
+}
+#text{
+    margin-top: 40px;
+}
+.logo-container img {
+    max-width: 800px; /* Ajusta este valor según necesites */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+
+.mt-\[165px\]{
+    margin-top: 165px;
+}
+
+
+/* 🟡 Tablets (Pantallas menores a 1024px) */
+@media (max-width: 1024px) {
+    .container {
+        padding-top: 20px; /* Baja todo un poco más */
+    }
+
+    .logo-container img {
+        width: 600px; /* Reduce el tamaño del logo */
+        height: auto;
+    }
+
+    input.form-control {
+        width: 90%; /* Hacer los inputs más pequeños */
+        height: 45px;
+        font-size: 16px;
+    }
+
+    button {
+        width: 180px; /* Ajusta el botón */
+        height: 45px;
+    }
+}
+
+/* 🔵 Móviles (Pantallas menores a 768px) */
+/* Responsive para móviles */
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        height: auto;
+        background-size: 150px 100px, 150px 100px; /* Más pequeño */
+    }
+
+    .logo-container img {
+        max-width: 300px; /* Logo más pequeño */
+    }
+    .logo-container.mt-\[165px\]{
+        margin-top: 110px;
+    }
+    .container2{
+        margin-top: 60px;
+    }
+
+    #forms {
+        width: 100%;
+        max-width: 300px; /* Reduce el formulario */
+    }
+
+    .form-control {
+        height: 35px;
+        font-size: 12px;
+        padding: 6px;
+        width: 100% !important; /* Asegura que los inputs sean más pequeños */
+        max-width: 300px; /* Reduce aún más el tamaño */
+    }
+
+    label {
+        font-size: 16px;
+    }
+
+    #text {
+        margin-top: 15px;
+        font-size: 16px;
+    }
+
+    button {
+        width: 80%;
+        max-width: 150px;
+        height: 40px;
+        font-size: 14px;
+        margin-top: 50px;
+    }
+}
+
+
+@media (min-width: 768px) and (max-width: 768px) and (min-height: 1024px) and (max-height: 1024px){
+
+    .container {
+        padding: 10px;
+        height: auto;
+        background-size: 300px 300px, 250px 250px; /* Más pequeño */
+    }
+    .logo-container img {
+        max-width: 700px; /* Logo más pequeño */
+    }
+    .container2{
+        margin-top: 200px;
+    }
+    #forms {
+        width: 100%;
+        max-width: 600px; /* Reduce el formulario */
+    }
+
+    .form-control {
+        height: 35px;
+        font-size: 12px;
+        padding: 6px;
+        width: 100% !important; /* Asegura que los inputs sean más pequeños */
+        max-width: 400px; /* Reduce aún más el tamaño */
+    }
+
+    label {
+        font-size: 16px;
+        margin-left: 200px;
+    }
+    .invalid-feedback {
+        margin-left: 200px;
+    }
+
+    #togglePassword{
+        margin-right: 100px;
+    }
+
+}
