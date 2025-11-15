@@ -7,6 +7,9 @@
     @yield('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="referrer" content="no-referrer">
+    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
 </head>
 
 <body class="min-h-screen">

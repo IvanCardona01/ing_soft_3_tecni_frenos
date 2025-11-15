@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Orders;
 
 Route::get('/', function () {
     return view('auth.page-login');
@@ -16,3 +17,5 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::get('/dashboard/order-service', [DashboardController::class, 'orderService'])->name('dashboard.orderService');
 
 Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
+
+Route::get('/order/admin', [Orders::class, 'OrderAdmin'])->name('order.admin');
