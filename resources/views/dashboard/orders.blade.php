@@ -2,6 +2,79 @@
 
 @section('content')
     <div class="orders-background">
+        <div class="xl:px-[74px] px-[20px] py-2 md:mt-[160px] mt-[100px]">
+            <div
+                class="flex items-center justify-end w-[280px] gap-3 md:mb-12 mb-6 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-105 origin-right ml-auto">
+                <span class="text-[#808080] font-light text-[20px]">Exportar tabla a:</span>
+                <img src="{{ asset('icons/csv-icon.svg') }}" alt="exportar CSV" width="60" height="60">
+            </div>
+            <div class="flex flex-col md:flex-row w-full justify-between items-center gap-y-2">
+                <div class="w-full md:max-w-[250px]">
+                    <form method="GET" action="/buscar" class="relative">
+                        <input type="text" name="placa" placeholder="Buscar por placa"
+                            class="w-full border-2 border-indigo-700 rounded-xl py-3 pl-4 pr-12 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2">
+                            <img src="{{ asset('icons/searcher-icon.svg') }}" alt="Buscar" class="w-5 h-5" />
+                        </button>
+                    </form>
+                </div>
+
+                <div
+                    class="flex flex-row md:flex-col lg:flex-row gap-2 md:gap-0 lg:gap-2 items-center w-full md:w-[160px] lg:w-[250px]">
+                    <label for="date-from" class="block text-[18px] text-[#292D32]">Desde</label>
+
+                    <div class="relative w-full">
+
+                        <input type="date" id="date-from" value="2020-02-01"
+                            class="w-full h-[50px] border-2 border-indigo-700 rounded-xl px-4 pr-12
+                                   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                                   [&::-webkit-calendar-picker-indicator]:opacity-0
+                                   [&::-webkit-inner-spin-button]:hidden
+                                   [&::-webkit-clear-button]:hidden" />
+
+                        <button type="button" onclick="document.getElementById('date-from').showPicker();"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer">
+                            <img src="/icons/calendar-icon.svg" class="w-5 h-5" />
+                        </button>
+
+                    </div>
+                </div>
+
+
+                <div
+                    class="flex flex-row md:flex-col lg:flex-row gap-2 md:gap-0 lg:gap-2 items-center w-full md:w-[160px] lg:w-[250px]">
+                    <label for="date-until" class="block text-[18px] text-[#292D32]">Hasta</label>
+
+                    <div class="relative w-full">
+
+                        <input type="date" id="date-until" value="2020-02-01"
+                            class="w-full h-[50px] border-2 border-indigo-700 rounded-xl px-4 pr-12
+                                   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                                   [&::-webkit-calendar-picker-indicator]:opacity-0
+                                   [&::-webkit-inner-spin-button]:hidden
+                                   [&::-webkit-clear-button]:hidden" />
+
+                        <button type="button" onclick="document.getElementById('date-from').showPicker();"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer">
+                            <img src="/icons/calendar-icon.svg" class="w-5 h-5" />
+                        </button>
+
+                    </div>
+                </div>
+
+                <select id="status-filter"
+                    class="h-[50px] border-2 border-indigo-700 rounded-xl px-4 pr-12 w-full md:max-w-[250px]
+           appearance-none bg-no-repeat bg-right-4 bg-center bg-contain
+           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    style="background-size: 20px; background-position: right 12px center; background-image: url('/icons/arrow-down.svg');">
+                    <option value="todas">Todas</option>
+                    <option value="abiertas">Abiertas</option>
+                    <option value="asignadas">Asignadas</option>
+                    <option value="cerradas">Cerradas</option>
+                </select>
+
+            </div>
+        </div>
 
         {{-- <div
             class="container-content-main bg-transparent min-h-[calc(100vh-120px)] px-8 py-6 pb-24 md:px-5 md:py-5 md:pb-20 sm:px-3 sm:py-4 sm:pb-16 relative">
