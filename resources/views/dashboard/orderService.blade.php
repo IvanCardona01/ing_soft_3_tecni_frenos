@@ -4,8 +4,8 @@
 @section('content')
     <div class="dashboard-fondo">
 
-        <div class="container-content-main p-8" style="background-color: #ffffff91; height: 100%;">
-            <div class="flex flex-col items-end md:mr-[150px] mr-0 md:mt-6 mt-16">
+        <div class="container-content-main md:p-8" style="background-color: #ffffff91; height: 100%;">
+            <div class="flex flex-col items-end md:mr-[150px] mr-10 md:mt-6 mt-[100px]">
                 <div
                     class="flex md:px-[40px] px-[20px] md:py-[7px] py-[5px] flex-col items-center justify-center md:rounded-[25px] rounded-[16px] border border-[#666] bg-[#FFFFFF] text-[#333] shadow-sm">
                     <span class="md:text-2xl text-base text-[#666]">Número de Folio</span>
