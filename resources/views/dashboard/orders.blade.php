@@ -1,47 +1,169 @@
 @extends('layouts.vertical', ['title' => 'Dashboard', 'sub_title' => 'Orden Servicio', 'mode' => $mode ?? '', 'demo' => $demo ?? ''])
 
-
 @section('content')
-    <div class="dashboard-fondo">
+    <div class="orders-background">
 
-        <div class="container-content-main p-8 container_orders">
-            <div class="container_card_orders">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
-                    stroke="#F7DE0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-user-icon lucide-user">
-                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span>Matias Quiroga</span>
-            </div>
-            <div class="container_card_orders">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="#F7DE0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-user-icon lucide-user">
-                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span>Ian Salazar</span>
-            </div>
-            <div class="container_card_orders">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="#F7DE0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-user-icon lucide-user">
-                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span>Enzo Morales</span>
-            </div>
-            <div class="container_card_orders">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="#F7DE0C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-user-icon lucide-user">
-                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span>Noah Pineda</span>
-            </div>
-        </div>
+        {{-- <div
+            class="container-content-main bg-transparent min-h-[calc(100vh-120px)] px-8 py-6 pb-24 md:px-5 md:py-5 md:pb-20 sm:px-3 sm:py-4 sm:pb-16 relative">
 
+            <div class="flex justify-end items-center mb-2">
+                <div
+                    class="flex items-center gap-1 text-[0.95rem] bg-transparent border-none text-black font-medium cursor-pointer transition-colors duration-300 hover:text-primary">
+                    <span>Exportar tabla a</span>
+                    <img src="{{ asset('images/Group_15679.png') }}" alt="importar" width="60px" height="60px">
+                </div>
+            </div>
+
+            <div
+                class="flex justify-between items-center flex-wrap bg-gradient-to-r from-yellow-light to-[#f1f1fb] rounded-xl px-4 py-2.5 gap-x-8 gap-y-3 md:flex-col md:items-stretch md:gap-y-4 md:px-2.5 md:py-2 sm:px-2.5 sm:py-2 sm:gap-1.5">
+                <div class="flex-1 min-w-[290px] max-w-[560px] flex items-center gap-2 md:min-w-full md:max-w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-gray-500">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="search-plate"
+                        class="h-[42px] leading-[42px] border-[1.8px] border-primary rounded-xl px-3.5 text-[0.95rem] text-gray-600 bg-white transition-all duration-300 font-sans placeholder:text-gray-400 focus:outline-none focus:border-primary-light focus:ring-4 focus:ring-[rgba(59,45,176,0.18)] w-full md:w-full"
+                        placeholder="Buscar por placa">
+                </div>
+
+                <div class="flex items-center gap-7 md:flex-wrap md:justify-start sm:flex-col sm:items-stretch sm:gap-2">
+                    <div class="flex items-center gap-2.5 sm:w-full sm:justify-between">
+                        <label for="date-from" class="text-sm text-[#1e1e1e] m-0">Desde</label>
+                        <div>
+                            <input type="date" id="date-from"
+                                class="h-[42px] leading-[42px] border-[1.8px] border-primary rounded-xl px-3.5 text-[0.95rem] text-gray-600 bg-white transition-all duration-300 font-sans focus:outline-none focus:border-primary-light focus:ring-4 focus:ring-[rgba(59,45,176,0.18)] w-[220px] sm:w-[60%]"
+                                value="2020-02-01">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2.5 sm:w-full sm:justify-between">
+                        <label for="date-to" class="text-sm text-[#1e1e1e] m-0">Hasta</label>
+                        <div>
+                            <input type="date" id="date-to"
+                                class="h-[42px] leading-[42px] border-[1.8px] border-primary rounded-xl px-3.5 text-[0.95rem] text-gray-600 bg-white transition-all duration-300 font-sans focus:outline-none focus:border-primary-light focus:ring-4 focus:ring-[rgba(59,45,176,0.18)] w-[220px] sm:w-[60%]"
+                                value="2025-03-01">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-40 md:w-full sm:w-full">
+                    <select id="status-filter"
+                        class="h-[42px] leading-[42px] border-[1.8px] border-primary rounded-xl px-3.5 text-[0.95rem] text-gray-600 bg-white transition-all duration-300 font-sans focus:outline-none focus:border-primary-light focus:ring-4 focus:ring-[rgba(59,45,176,0.18)] w-full cursor-pointer">
+                        <option value="all">Todas</option>
+                        <option value="abierto">Abierto</option>
+                        <option value="asignada">Asignada</option>
+                        <option value="cerrada">Cerrada</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-5 mt-6 relative z-10 sm:mt-4 sm:gap-3.5">
+                @forelse($orders ?? [] as $order)
+                    <div
+                        class="flex flex-row rounded-[20px] shadow-[0_3px_6px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_5px_10px_rgba(0,0,0,0.25)] sm:flex-col">
+                        <div
+                            class="w-[28%] bg-primary text-white flex items-center justify-center text-[42px] font-bold tracking-[2px] leading-none py-3 sm:w-full sm:py-2.5">
+                            <span>{{ $order['plate'] }}</span>
+                        </div>
+                        <div
+                            class="w-[72%] bg-yellow text-primary flex items-center justify-between px-6 py-4.5 sm:w-full sm:flex-col sm:items-start sm:px-3.5 sm:py-3">
+                            <div class="flex flex-col gap-1.5">
+                                <p class="text-[22px] font-semibold text-primary leading-tight">
+                                    {{ $order['customer_name'] }}</p>
+                                <p
+                                    class="text-sm font-semibold tracking-[0.5px] uppercase text-primary leading-tight opacity-90">
+                                    {{ $order['vehicle_model'] }}</p>
+                            </div>
+                            <div class="flex flex-col items-end gap-2 sm:items-start sm:mt-2">
+                                <span
+                                    class="bg-white px-2.5 py-1 rounded-full text-xs font-semibold text-gray-600 leading-none shadow-[0_1px_2px_rgba(0,0,0,0.15)]">{{ $order['date'] }}</span>
+                                <span class="font-bold text-xl capitalize text-primary leading-tight">
+                                    {{ $order['status'] }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div
+                        class="flex flex-row rounded-[20px] shadow-[0_3px_6px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_5px_10px_rgba(0,0,0,0.25)] sm:flex-col">
+                        <div
+                            class="w-[28%] bg-primary text-white flex items-center justify-center text-[42px] font-bold tracking-[2px] leading-none py-3 sm:w-full sm:py-2.5">
+                            <span>LXV28F</span>
+                        </div>
+                        <div
+                            class="w-[72%] bg-yellow text-primary flex items-center justify-between px-6 py-4.5 sm:w-full sm:flex-col sm:items-start sm:px-3.5 sm:py-3">
+                            <div class="flex flex-col gap-1.5">
+                                <p class="text-[22px] font-semibold text-primary leading-tight">Camilo Andrade Suárez</p>
+                                <p
+                                    class="text-sm font-semibold tracking-[0.5px] uppercase text-primary leading-tight opacity-90">
+                                    TOYOTA TXL 2027</p>
+                            </div>
+                            <div class="flex flex-col items-end gap-2 sm:items-start sm:mt-2">
+                                <span
+                                    class="bg-white px-2.5 py-1 rounded-full text-xs font-semibold text-gray-600 leading-none shadow-[0_1px_2px_rgba(0,0,0,0.15)]">22/10/2025</span>
+                                <span class="font-bold text-xl capitalize text-primary leading-tight">Abierto</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex flex-row rounded-[20px] shadow-[0_3px_6px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_5px_10px_rgba(0,0,0,0.25)] sm:flex-col">
+                        <div
+                            class="w-[28%] bg-primary text-white flex items-center justify-center text-[42px] font-bold tracking-[2px] leading-none py-3 sm:w-full sm:py-2.5">
+                            <span>MTR59K</span>
+                        </div>
+                        <div
+                            class="w-[72%] bg-yellow text-primary flex items-center justify-between px-6 py-4.5 sm:w-full sm:flex-col sm:items-start sm:px-3.5 sm:py-3">
+                            <div class="flex flex-col gap-1.5">
+                                <p class="text-[22px] font-semibold text-primary leading-tight">Juliana Torres Bedoya</p>
+                                <p
+                                    class="text-sm font-semibold tracking-[0.5px] uppercase text-primary leading-tight opacity-90">
+                                    TOYOTA TXL 2027</p>
+                            </div>
+                            <div class="flex flex-col items-end gap-2 sm:items-start sm:mt-2">
+                                <span
+                                    class="bg-white px-2.5 py-1 rounded-full text-xs font-semibold text-gray-600 leading-none shadow-[0_1px_2px_rgba(0,0,0,0.15)]">22/10/2025</span>
+                                <span class="font-bold text-xl capitalize text-primary leading-tight">Asignada</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex flex-row rounded-[20px] shadow-[0_3px_6px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_5px_10px_rgba(0,0,0,0.25)] sm:flex-col">
+                        <div
+                            class="w-[28%] bg-primary text-white flex items-center justify-center text-[42px] font-bold tracking-[2px] leading-none py-3 sm:w-full sm:py-2.5">
+                            <span>LXV28F</span>
+                        </div>
+                        <div
+                            class="w-[72%] bg-yellow text-primary flex items-center justify-between px-6 py-4.5 sm:w-full sm:flex-col sm:items-start sm:px-3.5 sm:py-3">
+                            <div class="flex flex-col gap-1.5">
+                                <p class="text-[22px] font-semibold text-primary leading-tight">Samuel Pineda Lozano</p>
+                                <p
+                                    class="text-sm font-semibold tracking-[0.5px] uppercase text-primary leading-tight opacity-90">
+                                    TOYOTA TXL 2027</p>
+                            </div>
+                            <div class="flex flex-col items-end gap-2 sm:items-start sm:mt-2">
+                                <span
+                                    class="bg-white px-2.5 py-1 rounded-full text-xs font-semibold text-gray-600 leading-none shadow-[0_1px_2px_rgba(0,0,0,0.15)]">22/10/2025</span>
+                                <span class="font-bold text-xl capitalize text-primary leading-tight">Cerrada</span>
+                            </div>
+                        </div>
+                    </div>
+                @endforelse
+            </div>
+
+            <div
+                class="absolute left-0 bottom-0 w-full flex items-end justify-start gap-6 px-6 pb-2 pointer-events-none z-0 sm:px-3 sm:pb-1.5 sm:gap-3.5">
+                <div class="max-w-[60px] sm:max-w-[45px]">
+                    <img src="{{ asset('images/management_3.png') }}" alt="management_3"
+                        class="block w-full h-auto opacity-95">
+                </div>
+                <div class="max-w-[120px] sm:max-w-[90px]">
+                    <img src="{{ asset('images/Group_2.png') }}" alt="Group_2" class="block w-full h-auto opacity-95">
+                </div>
+            </div>
+        </div> --}}
     </div>
 @endsection
