@@ -26,7 +26,7 @@
                     <div class="relative w-full">
 
                         <input type="date" id="date-from" value="2020-02-01"
-                            class="w-full h-[50px] border-2 border-indigo-700 rounded-xl px-4 pr-12
+                            class="w-full h-[50px] border-2 border-indigo-700 rounded-xl md:px-4
                                    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
                                    [&::-webkit-calendar-picker-indicator]:opacity-0
                                    [&::-webkit-inner-spin-button]:hidden
@@ -42,13 +42,13 @@
 
 
                 <div
-                    class="flex flex-row md:flex-col lg:flex-row gap-2 md:gap-0 lg:gap-2 items-center w-full md:w-[160px] lg:w-[250px]">
+                    class="flex flex-row md:flex-col lg:flex-row gap-2 md:gap-0 lg:gap-2 items-center w-full  md:w-[160px] lg:w-[250px]">
                     <label for="date-until" class="block text-[18px] text-[#292D32]">Hasta</label>
 
                     <div class="relative w-full">
 
                         <input type="date" id="date-until" value="2020-02-01"
-                            class="w-full h-[50px] border-2 border-indigo-700 rounded-xl px-4 pr-12
+                            class="w-full h-[50px] border-2 border-indigo-700 rounded-xl md:px-4
                                    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
                                    [&::-webkit-calendar-picker-indicator]:opacity-0
                                    [&::-webkit-inner-spin-button]:hidden
