@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class Orders extends Controller
+class OrdersController extends Controller
 {
-    public function OrderAdmin() {
-        // Datos de ejemplo de órdenes (reemplazar con datos reales de la base de datos)
+    public function index() {
         $orders = [
             [
                 'plate' => 'LXV28F',

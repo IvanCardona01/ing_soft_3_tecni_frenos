@@ -23,14 +23,17 @@
             <path d="m6 6 12 12" />
         </svg></button>
     <div class="nav-content">
+
         <div class="user-info flex items-center gap-3 md:gap-6">
             <div class="pl-1">
                 <img src="{{ asset('icons/profile-icon.svg') }}" alt="Perfil"
                     class="w-12 h-12 md:w-14 md:h-14 object-contain">
             </div>
             <div class="text-neutral-800">
-                <p class="text-lg md:text-xl font-semibold">Bienvenid@</p>
-                <span class="block text-base md:text-lg text-neutral-600">Administrador</span>
+                <p class="text-lg md:text-xl font-semibold">
+                    Bienvenido {{ Auth::user()->name ?? 'Operario' }}
+                </p>
+                <span class="block text-base md:text-lg text-neutral-600">{{ Auth::user()->email ?? 'Sin sesión' }}</span>
             </div>
 
         </div>
@@ -49,14 +52,17 @@
             </ul>
         </div>
         <div class="container-logout flex">
-            <a href="{{ url('/') }}"
-                class="inline-flex items-center text-lg md:text-xl font-semibold text-[#372C97] rounded-xl hover:bg-[#372C97]/10 transition-colors px-1 py-2 w-full">
-                <div class="flex items-center gap-4">
-                    <img src="{{ asset('icons/exit-icon.svg') }}" alt="Cerrar sesión"
-                        class="w-12 h-12 md:w-14 md:h-14 object-contain">
-                    <span>Cerrar sesión</span>
-                </div>
-            </a>
+            <form method="POST" action="{{ route('logout') }}" class="inline-flex items-center w-full">
+                @csrf
+                <button type="submit"
+                    class="inline-flex items-center text-lg md:text-xl font-semibold text-[#372C97] rounded-xl hover:bg-[#372C97]/10 transition-colors px-1 py-2 w-full">
+                    <div class="flex items-center gap-4">
+                        <img src="{{ asset('icons/exit-icon.svg') }}" alt="Cerrar sesión"
+                            class="w-12 h-12 md:w-14 md:h-14 object-contain">
+                        <span>Cerrar sesión</span>
+                    </div>
+                </button>
+            </form>
         </div>
     </div>
 
