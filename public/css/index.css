@@ -177,9 +177,22 @@ footer {
     background-size: 80% 80%; 
 }
 
+.orders-background {
+    min-height: 100vh;
+    width: 100%;
+    background-image: url("/icons/orders-background.svg");
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 35%; 
+}
+
 @media (max-width: 767px) {
     .dashboard-fondo {
         background-position: center calc(50%);
+    }
+    .orders-background {
+        background-size: 60%;
     }
 }
 
