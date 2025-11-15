@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $orders = [
             [
                 'plate' => 'LXV28F',
@@ -31,6 +32,6 @@ class OrdersController extends Controller
             ]
         ];
 
-        return view('dashboard.orderadmin', compact('orders'));
+        return view('dashboard.orders', compact('orders'));
     }
 }

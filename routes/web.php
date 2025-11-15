@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\OrdersController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OrdersController;
 
 Route::redirect('/', '/login');
 
@@ -17,6 +17,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/order-service', [DashboardController::class, 'orderService'])->name('dashboard.orderService');
-    Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
-    Route::get('/order/admin', [OrdersController::class, 'OrderAdmin'])->name('order.admin');
+    Route::get('/dashboard/orders', [OrdersController::class, 'index'])->name('dashboard.orders');
 });
