@@ -2,60 +2,164 @@
 
 
 @section('content')
+    <style>
+        .damage-section {
+            margin-bottom: 2rem;
+        }
+
+        .damage-canvas {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .damage-canvas svg {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .damage-pins {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .damage-pin {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            background-color: #ff4d4d;
+            border: 2px solid #ffffff;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .damage-pin:hover {
+            background-color: #d90429;
+        }
+
+        .damage-hint {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
     <div class="dashboard-fondo">
 
         <div class="container-content-main p-8" style="background-color: #ffffff91; height: 100%;">
-            <div class="flex flex-col items-end md:mr-[150px] mr-0 md:mt-6 mt-16">
+            @if (session('status'))
+                <div class="alert alert-success mb-4">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger mb-4">
+                    <p class="fw-bold mb-2">Por favor corrige los siguientes campos:</p>
+                    <ul class="mb-0 ps-3">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('dashboard.orderService.store') }}" class="space-y-8">
+                @csrf
+                <input type="hidden" name="folio_number" value="{{ old('folio_number', $folioNumber ?? '') }}">
+                <input type="hidden" name="testigos" id="witness_states" value='{{ old('testigos', '{}') }}'>
+
+                <div class="flex flex-col items-end md:mr-[150px] mr-0 md:mt-6 mt-16">
                 <div
                     class="flex md:px-[40px] px-[20px] md:py-[7px] py-[5px] flex-col items-center justify-center md:rounded-[25px] rounded-[16px] border border-[#666] bg-[#FFFFFF] text-[#333] shadow-sm">
                     <span class="md:text-2xl text-base text-[#666]">Número de Folio</span>
-                    <p class="md:text-xl text-sm  text-[#000000]">Nª-000000</p>
+                        <p class="md:text-xl text-sm  text-[#000000]">Nª- {{ old('folio_number', $folioNumber ?? '------') }}
+                        </p>
                 </div>
-            </div>
+                </div>
             <div class="md:text-[40px] text-2xl text-center font-semibold mt-10">Orden De Servicio</div>
             <div class="text-[#372C97] text-center md:text-[40px] text-2xl mt-2 md:mt-6">Mecánica Rápida T.F.Q</div>
             <div class="data-client">
                 <span>Datos del cliente o empresa</span>
                 <div class="form-client-data">
                     <div class="form-group">
-                        <label for="name">Nombre Completo*</label>
-                        <input type="text" id="name" name="name" placeholder="Digita nombre completo">
+                        <label for="client_full_name">Nombre Completo*</label>
+                        <input type="text" id="client_full_name" name="client_full_name"
+                            placeholder="Digita nombre completo" value="{{ old('client_full_name') }}" required>
+                        @error('client_full_name')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="number_identification">Tipo y número de documento*</label>
                         <div
                             class="form-group-select-identification flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-                            <select id="type_identification" name="type_identification"
-                                class="w-full sm:w-28 md:w-32 border border-[#ccc] rounded px-3 py-2 text-base"">
-                                <option value="cc">C.C.</option>
-                                <option value="nit">NIT</option>
-                                <option value="ti">T.I.</option>
+                            <select id="client_document_type" name="client_document_type"
+                                class="w-full sm:w-28 md:w-32 border border-[#ccc] rounded px-3 py-2 text-base" required>
+                                <option value="">Selecciona</option>
+                                <option value="cc" @selected(old('client_document_type') === 'cc')>C.C.</option>
+                                <option value="nit" @selected(old('client_document_type') === 'nit')>NIT</option>
+                                <option value="ti" @selected(old('client_document_type') === 'ti')>T.I.</option>
                             </select>
-                            <input type="text" id="number_identification" name="number_identification"
+                            <input type="text" id="client_document_number" name="client_document_number"
                                 placeholder="Digita número de documento"
-                                class="w-full border border-[#ccc] rounded px-3 py-2 text-base sm:flex-1 sm:min-w-[13rem]">
+                                class="w-full border border-[#ccc] rounded px-3 py-2 text-base sm:flex-1 sm:min-w-[13rem]"
+                                value="{{ old('client_document_number') }}" required>
                         </div>
+                        @error('client_document_type')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
+                        @error('client_document_number')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="phone">Teléfono*</label>
-                        <input type="number" id="phone" name="phone" placeholder="Digita numero de teléfono">
+                        <input type="text" id="phone" name="client_phone" placeholder="Digita número de teléfono"
+                            value="{{ old('client_phone') }}" required>
+                        @error('client_phone')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="address">Dirección*</label>
-                        <input type="text" id="address" name="address" placeholder="Digita dirección">
+                        <input type="text" id="address" name="client_address" placeholder="Digita dirección"
+                            value="{{ old('client_address') }}" required>
+                        @error('client_address')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="name_driver">Nombre del conductor*</label>
-                        <input type="text" id="name_driver" name="name_driver" placeholder="Digita nombre del conductor">
+                        <input type="text" id="name_driver" name="driver_name"
+                            placeholder="Digita nombre del conductor" value="{{ old('driver_name') }}" required>
+                        @error('driver_name')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="phone_driver">Teléfono del conductor*</label>
-                        <input type="number" id="phone_driver" name="phone_driver"
-                            placeholder="Digita número del conductor">
+                        <input type="text" id="phone_driver" name="driver_phone"
+                            placeholder="Digita número del conductor" value="{{ old('driver_phone') }}" required>
+                        @error('driver_phone')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="email">Correo Electrónico*</label>
-                        <input type="email" id="email" name="email" placeholder="Digita correo electrónico">
+                        <input type="email" id="email" name="driver_email" placeholder="Digita correo electrónico"
+                            value="{{ old('driver_email') }}" required>
+                        @error('driver_email')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -64,51 +168,94 @@
                 <div class="form-vehicle-data">
                     <div class="form-group">
                         <label for="brand">Marca*</label>
-                        <input type="text" id="brand" name="brand" placeholder="Digita marca del vehículo">
+                        <input type="text" id="brand" name="vehicle_brand" placeholder="Digita marca del vehículo"
+                            value="{{ old('vehicle_brand') }}" required>
+                        @error('vehicle_brand')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="year">Año*</label>
-                        <input type="number" id="year" name="year" placeholder="Digita año del vehículo">
+                        <input type="number" id="year" name="vehicle_year" placeholder="Digita año del vehículo"
+                            value="{{ old('vehicle_year') }}" required>
+                        @error('vehicle_year')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="plate">Placa*</label>
-                        <input type="text" id="plate" name="plate" placeholder="Digita placa del vehículo">
+                        <input type="text" id="plate" name="vehicle_plate" placeholder="Digita placa del vehículo"
+                            value="{{ old('vehicle_plate') }}" required>
+                        @error('vehicle_plate')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="cylindranje">Cilindraje*</label>
-                        <input type="text" id="cylindranje" name="cylindranje"
-                            placeholder="Digita cilindraje del vehículo">
+                        <label for="cilindraje">Cilindraje*</label>
+                        <input type="text" id="cilindraje" name="vehicle_cilindraje"
+                            placeholder="Digita cilindraje del vehículo" value="{{ old('vehicle_cilindraje') }}"
+                            required>
+                        @error('vehicle_cilindraje')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="model">Modelo*</label>
-                        <input type="text" id="model" name="model" placeholder="Digita modelo del vehículo">
+                        <input type="text" id="model" name="vehicle_model" placeholder="Digita modelo del vehículo"
+                            value="{{ old('vehicle_model') }}" required>
+                        @error('vehicle_model')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="vin">VIN*</label>
-                        <input type="text" id="vin" name="vin" placeholder="Digita VIN del vehículo">
+                        <input type="text" id="vin" name="vehicle_vin" placeholder="Digita VIN del vehículo"
+                            value="{{ old('vehicle_vin') }}" required>
+                        @error('vehicle_vin')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="engine">Motor*</label>
-                        <input type="text" id="engine" name="engine" placeholder="Digita motor del vehículo">
+                        <input type="text" id="engine" name="vehicle_motor" placeholder="Digita motor del vehículo"
+                            value="{{ old('vehicle_motor') }}" required>
+                        @error('vehicle_motor')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="Mileage">Kilometraje*</label>
-                        <input type="number" id="Mileage" name="Mileage"
-                            placeholder="Digita kilometraje del vehículo">
+                        <input type="number" id="Mileage" name="vehicle_kilometraje"
+                            placeholder="Digita kilometraje del vehículo" value="{{ old('vehicle_kilometraje') }}"
+                            required>
+                        @error('vehicle_kilometraje')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="vehicle_observaciones">Observaciones del vehículo</label>
+                        <textarea id="vehicle_observaciones" name="vehicle_observaciones" rows="2"
+                            placeholder="Observaciones relevantes del vehículo">{{ old('vehicle_observaciones') }}</textarea>
+                        @error('vehicle_observaciones')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div class="flex flex-wrap items-center gap-4 text-base font-medium text-[#333]">
-                        <label for="crane_yes">Ingreso de grúa:</label>
+                        <label class="mb-0">Ingreso de grúa:</label>
                         <div class="flex items-center gap-2 text-sm text-[#333]">
+                            <input type="radio" id="crane_yes" name="ingreso_en_grua" value="1"
+                                class="form-check-input" @checked(old('ingreso_en_grua', '0') === '1') required>
                             <label for="crane_yes" class="cursor-pointer">Sí</label>
-                            <input type="checkbox" id="crane_yes" name="crane_yes"
-                                class="h-5 w-5 rounded-full border border-[#372C97] bg-white text-[#372C97] transition-all duration-150 focus:ring-2 focus:ring-[#372C97] focus:ring-offset-1 checked:bg-[#372C97] checked:border-[#372C97] appearance-none">
                         </div>
                         <div class="flex items-center gap-2 text-sm text-[#333]">
+                            <input type="radio" id="crane_no" name="ingreso_en_grua" value="0"
+                                class="form-check-input" @checked(old('ingreso_en_grua', '0') === '0')>
                             <label for="crane_no" class="cursor-pointer">No</label>
-                            <input type="checkbox" id="crane_no" name="crane_no"
-                                class="h-5 w-5 rounded-full border border-[#372C97] bg-white text-[#372C97] transition-all duración-150 focus:ring-2 focus:ring-[#372C97] focus:ring-offset-1 checked:bg-[#372C97] checked:border-[#372C97] appearance-none">
                         </div>
                     </div>
+                    @error('ingreso_en_grua')
+                        <p class="text-danger small mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
             <div class="data-client" id="witness-section">
@@ -175,18 +322,26 @@
                             <span style="color: goldenrod;">F</span>
                         </div>
 
-                        <input class="slider" type="range" min="0" max="100" value="50"
-                            id="slider">
-
+                        <div class="flex items-center gap-3 mt-3">
+                            <input class="slider flex-1" type="range" min="0" max="100"
+                                value="{{ old('gasolina', 50) }}" id="slider" name="gasolina">
+                            <span id="gasolina-value" class="font-semibold text-[#372C97]">
+                                {{ old('gasolina', 50) }}%
+                            </span>
+                        </div>
+                        @error('gasolina')
+                            <p class="text-danger small mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
 
             </div>
-            <div class="data-client">
-                <span>Daños preexistentes del vehículo</span>
-                <div class="container-damage">
-                    <div>
-                        <span>Frente</span>
+        <div class="data-client">
+            <span>Daños preexistentes del vehículo</span>
+            <div class="container-damage">
+                <div class="damage-section" data-damage-section="front">
+                    <span>Frente</span>
+                    <div class="damage-canvas">
                         <svg width="427" height="305" viewBox="0 0 427 305" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -208,10 +363,16 @@
                                 d="M155.397 0.925446C111.242 2.8512 102.489 4.77695 94.1244 14.5982C88.6779 20.9532 76.0344 44.6398 69.8098 60.4309C59.5005 85.8506 58.1388 90.2798 61.0566 86.6209C62.6127 84.5026 66.6976 75.8368 70.0043 67.3635C82.8424 34.6259 94.9025 14.5982 104.823 9.39871C113.965 4.77695 173.682 2.0809 240.012 3.42892C301.868 4.58435 318.791 6.12494 326.572 11.9022C333.38 16.9091 346.607 40.4031 356.527 65.8229C362.168 79.8808 368.393 91.2427 374.034 98.5605C382.982 109.73 388.817 121.092 388.817 127.254C388.817 129.18 386.483 126.869 383.176 121.862C380.064 117.24 373.645 109.537 368.587 104.723C363.724 100.101 359.64 94.709 359.64 92.9759C359.64 91.0501 353.61 75.8368 346.023 58.8903C338.632 42.1363 332.407 26.923 332.407 25.1898C332.407 17.4868 327.933 17.2943 213.752 17.1017C100.543 17.1017 95.097 17.4868 95.097 24.8047C95.097 26.1526 89.067 41.366 81.4808 58.3125C74.0892 75.0665 67.8647 90.2798 67.8647 92.013C67.8647 93.7462 62.8072 100.294 56.3882 106.456C50.1637 112.811 43.9391 120.707 42.5775 123.788C38.4927 133.802 36.5475 130.335 40.4378 119.936C44.1336 110.308 46.0788 107.226 54.6375 96.0571C56.9717 92.9759 57.9443 91.2427 56.5827 92.013C55.2211 92.7833 52.6924 92.3982 50.7472 90.8576C47.8295 88.5467 47.6349 88.7393 50.1637 91.8204C51.7198 93.5536 52.3033 95.8645 51.5253 96.6348C49.7746 98.1754 44.5227 91.6279 44.5227 87.7764C44.5227 86.4284 45.4953 85.8506 46.6624 86.6209C49.1911 87.969 47.2459 79.8808 44.3282 76.9922C43.3556 76.0294 35.1859 74.6813 26.0436 74.2962C13.011 73.5259 8.53711 74.1036 4.64677 76.6071C-1.38324 80.6511 -1.57776 86.6209 4.25774 95.2868C9.89872 103.567 15.9287 106.649 27.0162 106.649C40.0488 106.649 41.0214 107.997 37.5201 119.166C34.7968 127.447 34.6023 139.964 35.7694 213.527C36.9365 286.513 37.5201 298.645 40.0488 301.534C42.5775 304.422 46.4678 305 60.084 305C70.3934 305 77.785 304.037 79.1466 302.689C80.7028 301.149 81.4808 294.023 81.4808 283.432V266.485H95.2915C106.573 266.485 110.075 265.715 115.91 261.863C122.135 257.434 123.107 257.434 129.332 259.938C138.474 263.789 286.89 263.789 297.783 259.938C304.591 257.434 305.564 257.627 311.399 261.863C316.457 265.715 319.958 266.485 330.851 266.485H344.078V281.506C344.078 303.459 345.634 305 367.226 305C381.036 305 384.927 304.422 387.261 301.534C389.79 298.838 390.568 285.743 391.735 213.527C392.902 137.075 392.707 127.832 389.79 119.359C385.899 108.189 387.066 106.649 400.488 106.649C411.186 106.649 420.523 101.449 424.803 92.9759C428.887 85.2729 427.137 78.1477 420.718 75.8368C414.299 73.3333 391.346 73.3333 389.79 75.8368C389.012 76.9922 391.735 77.7625 396.598 77.7625C413.91 77.7625 426.553 88.7393 418.967 97.0199C415.077 101.257 406.129 104.338 396.987 104.338C393.68 104.53 389.012 104.915 387.066 105.686C382.982 106.841 378.897 101.834 380.453 97.4051C381.036 95.8645 380.258 95.4794 378.313 96.2496C374.617 97.5977 374.423 96.2496 377.341 90.665C379.675 86.4284 379.48 86.4284 375.59 89.8947C371.7 93.361 371.7 93.1685 366.837 83.1546C364.308 77.57 359.834 66.7858 356.916 59.468C347.969 35.7814 335.909 15.7537 327.155 9.78387C320.153 4.77695 317.04 4.00662 297.2 2.65863C258.102 -0.0374146 196.44 -0.807709 155.397 0.925446ZM317.818 21.916C330.657 23.264 286.307 22.4937 224.451 19.9903C192.355 18.6423 196.051 18.6423 245.847 19.4126C279.11 19.9903 311.399 21.1457 317.818 21.916ZM167.457 21.3383C157.537 21.7234 141.781 21.7234 132.444 21.3383C123.107 21.1457 131.277 20.7606 150.534 20.7606C169.791 20.7606 177.378 21.1457 167.457 21.3383ZM111.242 23.264C108.713 23.6492 104.823 23.6492 102.489 23.264C99.9599 22.8789 101.905 22.4937 106.768 22.4937C111.631 22.4937 113.576 22.8789 111.242 23.264ZM326.572 26.5378C330.462 28.271 358.278 91.4353 356.138 93.5536C355.166 94.5165 344.662 93.9388 332.213 92.2056C311.205 89.317 292.726 88.9318 183.602 88.7393C167.846 88.7393 147.616 90.0873 135.362 91.8204C112.603 95.2868 72.7276 96.2496 70.7824 93.361C70.1989 92.2056 76.2289 76.9922 84.0095 59.0828L98.4038 26.7304L116.688 25.575C140.614 24.0343 322.876 24.8047 326.572 26.5378ZM14.3726 78.1477C12.2329 79.3031 8.53711 81.9992 6.20291 84.1175C1.53451 88.3541 0.172892 86.2358 4.06322 81.2289C6.78646 77.9551 10.6768 76.2219 15.3452 76.0294C17.2904 76.0294 16.9013 76.6071 14.3726 78.1477ZM418.773 77.7625C422.274 78.918 423.83 81.0363 423.635 83.9249C423.635 86.4284 423.052 87.1987 422.468 85.8506C421.885 84.31 418.773 81.614 415.271 79.4957C408.852 75.6442 410.603 74.6813 418.773 77.7625ZM41.0214 81.9992C40.8269 83.7323 41.7994 88.5467 43.5501 92.3982C47.8295 102.605 45.8843 107.226 38.1036 105.493C34.6023 104.723 30.1284 104.145 27.9888 104.338C21.9587 104.723 12.2329 101.064 8.5371 97.0199C0.367408 88.1615 13.9836 77.3774 31.8791 78.3403C39.8543 78.7254 41.4104 79.3031 41.0214 81.9992ZM224.451 93.1685C225.229 94.5165 211.029 95.0942 183.213 94.9016C159.482 94.709 143.726 93.9388 147.616 93.1685C158.315 90.8576 223.089 90.8576 224.451 93.1685ZM313.928 93.1685C320.347 94.1313 310.427 94.5165 284.751 94.5165C263.159 94.5165 248.96 93.9388 252.655 93.1685C261.798 91.2427 301.868 91.2427 313.928 93.1685ZM261.02 98.368C233.982 98.7531 189.632 98.7531 162.789 98.368C135.751 98.1754 157.731 97.9828 211.807 97.9828C265.883 97.9828 287.863 98.1754 261.02 98.368ZM86.7328 104.723C100.738 111.078 117.077 125.521 122.329 135.535C124.08 139.194 127.192 149.208 128.943 157.681C134.389 184.641 141.586 190.226 173.293 191.959C200.136 193.5 238.067 193.5 260.825 191.766C273.469 190.804 279.11 189.456 283.195 186.374C290.197 181.175 296.811 169.428 298.367 159.607C301.09 141.312 303.813 135.15 314.317 123.788C324.627 112.811 347.774 98.9457 355.749 98.9457C360.418 98.9457 377.73 116.855 384.149 128.41C395.042 147.86 389.595 173.857 371.7 189.456C355.749 203.513 334.936 210.639 301.09 213.527L286.501 214.683L284.167 223.541C282.805 228.355 279.11 234.71 276.192 237.792L270.551 243.376H213.752H156.953L151.312 237.792C148.2 234.71 144.699 228.163 143.337 222.963C141.003 214.298 140.225 213.527 127.581 207.557C113.771 201.01 97.0422 196.773 71.9495 193.5C55.9991 191.381 49.3856 186.952 41.994 173.087C35.7694 161.725 36.1585 141.505 42.5775 128.987C48.413 117.625 66.114 98.9457 71.1714 98.9457C73.1166 98.9457 80.1192 101.449 86.7328 104.723ZM330.657 106.841C318.402 113.774 302.063 131.876 298.95 141.505C296.616 149.208 296.616 149.4 288.836 148.437C250.516 143.815 213.947 142.66 181.073 144.971C162.205 146.319 143.143 147.86 138.669 148.437C130.888 149.4 130.694 149.4 127.387 140.542C123.107 129.372 108.908 113.581 96.8476 106.841L87.5108 101.642H213.752H339.799L330.657 106.841ZM274.636 149.785C286.112 151.326 296.033 152.866 296.616 153.444C298.172 154.985 291.753 168.85 287.085 173.857C278.332 183.101 274.247 183.678 213.752 183.678C153.257 183.678 149.173 183.101 140.419 173.857C135.751 168.658 129.332 154.985 130.888 153.444C136.529 147.667 237.678 145.163 274.636 149.785ZM389.206 206.209C388.622 230.089 387.65 243.376 386.288 245.109C380.453 252.042 368.782 254.931 345.634 254.931C333.185 254.931 320.736 253.968 318.207 252.812C314.512 251.079 311.594 251.464 304.008 254.738C294.671 258.782 292.337 258.782 211.807 258.204C137.307 257.819 128.359 257.434 120.384 254.16C113.771 251.657 110.853 251.272 108.324 252.812C106.379 253.968 95.097 254.931 82.0644 254.931C61.8346 254.931 57.9443 254.353 48.802 250.116L38.6872 245.495V218.919C38.6872 204.284 38.1036 187.53 37.7146 181.753C36.742 172.702 36.9365 171.739 39.0762 174.82C50.9417 192.344 57.5553 195.81 82.6479 197.929C98.2093 199.469 109.88 202.551 126.22 209.868C137.307 214.683 137.891 215.453 140.808 225.082C144.115 236.636 151.896 244.532 161.816 246.265C165.317 246.843 190.994 247.228 219.004 246.843C277.748 246.265 277.554 246.265 285.14 227.778L289.419 217.379L304.397 216.031C345.829 212.179 374.228 198.699 385.121 177.709C387.066 173.664 389.012 170.198 389.401 170.198C389.595 170.198 389.595 186.374 389.206 206.209ZM213.752 185.604H275.414L283 180.597C289.808 175.975 290.197 175.975 286.696 179.827C278.137 189.263 275.997 189.456 213.752 189.456C151.507 189.456 149.367 189.263 140.808 179.827C137.307 175.975 137.696 175.975 144.504 180.597L152.09 185.604H213.752ZM48.802 253.198C55.4156 256.471 61.6401 257.434 81.6753 258.397C98.7928 258.975 106.573 258.59 107.546 257.049C108.324 255.894 111.242 254.931 114.16 254.931L119.412 255.123L114.743 258.782C110.853 262.056 107.157 262.634 87.1218 262.634C55.6101 262.634 38.6872 258.59 38.6872 250.887C38.6872 248.383 39.8543 248.576 48.802 253.198ZM386.872 252.62C386.872 258.975 377.73 261.093 346.996 262.249C319.569 263.019 317.624 262.826 312.956 259.167L308.093 255.123L313.345 254.931C316.262 254.931 319.18 255.894 319.958 257.049C320.931 258.59 328.711 258.975 345.829 258.397C365.864 257.434 372.089 256.471 378.313 253.39C382.398 251.079 386.094 249.346 386.483 249.154C386.677 249.154 386.872 250.694 386.872 252.62ZM45.1062 260.901C47.2459 262.249 55.8046 263.597 63.7798 264.367L78.5631 265.522L79.1466 281.506C79.5357 291.712 78.9521 298.645 77.396 300.378C75.8398 302.304 70.5879 303.074 59.8895 303.074C39.4652 303.074 38.6872 302.304 38.6872 277.847C38.6872 267.448 39.2707 258.782 39.8543 258.782C40.4378 258.782 42.772 259.745 45.1062 260.901ZM387.261 278.425C386.872 289.401 385.51 299.415 384.538 300.571C381.814 303.845 353.61 304.037 350.303 300.763C348.747 299.223 347.969 292.098 347.969 281.506V264.559L360.223 264.367C366.837 264.367 375.395 263.211 379.091 261.863C382.787 260.323 386.288 259.167 386.872 258.975C387.455 258.975 387.455 267.641 387.261 278.425Z"
                                 fill="#292D32" />
                         </svg>
-                        <textarea name="observation_damage_front" id="observation_damage_front"></textarea>
+                    <div class="damage-pins"></div>
                     </div>
-                    <div>
-                        <span>Detrás</span>
+                    <small class="damage-hint">Haz clic sobre el vehículo para marcar un punto. Haz clic en el punto para
+                        eliminarlo.</small>
+                    <input type="hidden" name="damage_points_front" value='{{ old('damage_points_front', '[]') }}'>
+                    <textarea name="observation_damage_front" id="observation_damage_front">{{ old('observation_damage_front') }}</textarea>
+                    </div>
+                <div class="damage-section" data-damage-section="behind">
+                    <span>Detrás</span>
+                    <div class="damage-canvas">
                         <svg width="427" height="305" viewBox="0 0 427 305" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -233,12 +394,19 @@
                                 d="M343.937 237.036C338.672 242.192 342.673 251.061 350.255 251.061C355.94 251.061 368.786 244.461 368.786 241.367C368.786 235.592 348.991 232.086 343.937 237.036ZM365.417 240.336C367.733 241.573 354.466 248.792 349.623 248.999C344.358 248.999 342.673 242.398 347.096 239.098C350.465 236.623 360.363 237.242 365.417 240.336Z"
                                 fill="#292D32" />
                         </svg>
-                        <textarea name="observation_damage_behind" id="observation_damage_behind"></textarea>
+                    <div class="damage-pins"></div>
                     </div>
-                    <div>
+                    <small class="damage-hint">Haz clic sobre el vehículo para marcar un punto. Haz clic en el punto para
+                        eliminarlo.</small>
+                    <input type="hidden" name="damage_points_behind" value='{{ old('damage_points_behind', '[]') }}'>
+                    <textarea name="observation_damage_behind"
+                        id="observation_damage_behind">{{ old('observation_damage_behind') }}</textarea>
+                    </div>
+                    <div class="damage-section" data-damage-section="left_side">
                         <span>Lado Izquierdo</span>
-                        <svg width="596" height="211" viewBox="0 0 596 211" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <div class="damage-canvas">
+                            <svg width="596" height="211" viewBox="0 0 596 211" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M291.307 1.01048C246.548 4.8662 232.973 9.90828 169.128 47.5755L145.472 61.5154L125.982 64.0364C91.9762 68.337 67.9166 74.4172 43.3195 84.7979C18.3191 95.4753 7.7007 104.966 5.68454 118.461C5.1469 122.02 4.07162 125.728 3.13074 126.914C2.18987 128.249 1.51781 136.85 1.3834 149.603C1.11458 161.022 0.71135 170.81 0.308119 171.551C-1.30481 174.517 3.66838 181.635 9.31363 184.305C14.018 186.381 19.9321 186.974 40.3625 187.567C72.621 188.309 71.5457 189.05 72.4866 165.916C73.1587 147.824 76.1157 139.371 85.6589 127.952C103.535 106.597 138.213 105.708 155.418 126.321C164.558 137.295 168.993 150.493 171.01 171.848L171.95 181.932H294.533H417.25L417.922 168.14C418.863 152.124 422.223 140.706 429.078 131.956C446.686 109.119 480.288 106.004 499.778 125.135C508.515 134.032 514.16 146.341 516.714 162.653C517.789 169.623 519.402 176.148 520.208 177.187C521.015 178.373 524.375 180.746 527.735 182.525C533.112 185.491 534.994 185.788 542.655 184.75C547.494 184.156 557.44 183.118 564.833 182.525C572.225 181.932 579.887 180.597 581.903 179.559C586.338 177.038 588.758 168.437 587.548 159.836C586.876 155.09 587.145 153.756 588.623 153.756C591.312 153.756 594.672 149.455 595.747 144.561C596.822 139.816 594.269 130.028 591.849 130.028C589.43 130.028 585.666 125.135 585.666 122.02C585.666 120.686 586.607 117.423 587.817 115.05C589.833 110.75 589.699 110.453 587.145 109.712C584.591 108.97 584.322 107.784 584.322 96.365C584.322 86.8741 584.86 83.315 586.473 81.3871C588.892 78.7178 588.489 68.4853 585.532 61.3671C583.919 57.5114 583.785 57.5114 570.612 57.5114C563.354 57.5114 552.467 56.7699 546.418 55.7318C536.875 54.2489 533.784 52.9142 523.434 45.9443C490.1 23.6998 454.213 7.98041 425.046 3.08664C409.185 0.269012 316.711 -1.06566 291.307 1.01048ZM381.765 2.04857C378.674 2.34515 373.163 2.34515 369.668 2.04857C366.174 1.75197 368.728 1.60367 375.314 1.60367C382.034 1.60367 384.857 1.75197 381.765 2.04857ZM416.981 3.97641C429.884 5.60768 447.089 9.31508 448.299 10.6497C448.702 11.0946 448.433 12.1327 447.761 12.8742C446.955 13.764 443.191 13.3191 437.277 11.3912C428.137 8.57359 406.094 4.42131 394.803 3.53152C389.696 3.08664 389.964 2.93834 396.819 2.79004C401.255 2.64175 410.395 3.23494 416.981 3.97641ZM407.572 6.94234C434.858 11.0946 450.449 17.9163 499.375 46.8341C520.208 58.9944 548.3 67.4473 562.144 65.3711C565.908 64.9262 571.822 63.1467 575.317 61.5154C578.811 59.7358 582.037 58.8461 582.575 59.291C584.188 61.0705 586.742 75.0104 586.07 77.9763C585.263 81.6837 584.725 81.6837 567.521 78.8661C554.483 76.6416 553.677 76.6416 541.58 79.9041L529.079 83.315L529.886 88.357C530.289 91.0264 531.902 97.5514 533.381 102.593C538.354 120.241 553.139 129.435 579.215 131.066C591.849 131.956 592.252 132.104 593.462 135.96C596.554 145.599 590.908 153.756 580.962 153.756C568.865 153.756 543.999 160.726 528.407 168.585L520.208 172.589L518.595 161.764C516.31 147.082 509.456 131.956 500.988 123.652C480.423 103.335 442.788 107.932 426.255 132.846C421.417 140.261 416.981 154.497 415.637 166.657L414.696 174.517H296.818H178.94L177.192 162.95C172.757 133.587 159.585 115.05 138.079 107.636C127.192 103.928 106.896 103.632 92.6482 106.894C82.7018 109.267 66.3037 115.792 63.0779 118.609C60.2552 121.131 60.1208 119.054 62.9435 112.381C64.422 108.674 65.094 105.263 64.422 104.521C62.4058 102.297 46.2765 100.072 39.0184 101.111C30.5505 102.297 21.545 110.157 20.3353 117.72C19.5288 122.169 19.6632 122.465 24.502 123.503C27.3247 124.096 35.3893 124.096 42.513 123.652L55.4165 122.613L48.0239 127.359C35.7925 135.07 16.7062 144.561 11.1954 145.748C6.62542 146.637 6.08777 146.489 6.75983 144.413C7.16306 143.078 6.75983 141.002 5.68454 139.816C3.26515 137.147 2.99633 129.435 5.41572 127.359C6.3566 126.469 7.29747 123.8 7.43188 121.279C7.96952 112.974 9.98568 109.563 14.6901 108.525C17.1094 107.932 24.2332 104.966 30.5505 101.852C46.1421 94.2889 58.2391 90.7298 86.8685 85.5394C112.944 80.6456 126.251 76.345 138.348 68.337C146.009 63.1467 146.009 63.1467 160.929 63.5915L175.983 64.0364L170.472 68.4853C165.364 72.6376 164.961 73.3791 164.961 80.349C164.961 90.2849 167.649 101.407 173.698 117.423C179.074 131.808 182.3 147.824 182.434 161.467V170.068H289.022C371.819 169.92 396.147 169.623 398.567 168.14C400.18 167.102 404.884 160.281 408.782 153.014C417.384 137.591 425.583 126.469 433.379 119.648C436.471 116.83 438.756 114.161 438.352 113.567C438.083 112.826 441.175 109.563 445.207 106.301C454.616 98.5895 457.976 92.8059 457.976 83.9081C457.976 49.5034 437.411 22.6618 404.212 13.764C389.696 9.90826 369.4 8.42531 333.109 8.42531C292.517 8.42531 272.355 10.2049 256.495 15.2469C240.903 20.289 216.306 33.784 195.876 48.6136C180.015 60.1807 178.671 60.7739 171.01 61.2188L162.945 61.6637L166.036 58.8461C170.875 54.5455 199.101 37.4914 217.65 27.8521C247.624 12.281 261.199 8.12871 291.979 5.60768C313.082 3.82812 393.728 4.7179 407.572 6.94234ZM261.737 7.68382C256.898 8.87019 249.64 10.9463 245.607 12.5776C226.118 20.289 189.424 40.309 168.725 54.6938C161.735 59.4393 156.762 61.812 153.939 61.812H149.504L154.208 58.6978C164.961 51.4312 221.682 20.1407 233.242 15.0986C246.28 9.46338 259.586 5.60768 266.441 5.75597C268.726 5.75597 266.576 6.64575 261.737 7.68382ZM305.42 11.5395C268.457 13.9123 255.151 17.6197 226.521 33.9323C219.397 37.9363 211.736 43.4232 209.72 45.9443C207.569 48.6136 203.403 51.5795 200.446 52.6176C193.187 54.9904 182.972 64.7779 184.182 68.1887C185.526 72.0444 190.902 73.6757 202.327 73.824C211.87 73.9723 212.274 74.1206 206.628 75.307C203.268 75.9001 197.354 76.4933 193.322 76.4933C185.257 76.6416 168.993 73.9723 168.993 72.341C168.993 70.8581 196.548 49.8 209.451 41.1988C245.607 17.4714 269.667 10.3531 313.485 10.3531C322.49 10.3531 320.34 10.6497 305.42 11.5395ZM375.448 11.3912C397.491 13.4674 409.051 16.285 421.551 22.81C432.573 28.5936 441.981 37.9363 447.761 48.9102C453.81 60.0324 450.987 60.1807 443.863 49.0585C435.395 36.0084 429.616 30.0766 420.207 24.7379C405.287 16.285 389.964 13.3191 351.792 11.5395C329.48 10.5014 328.539 10.3531 342.518 10.2049C351.12 10.0566 365.905 10.6497 375.448 11.3912ZM329.749 27.8521C328.673 34.6738 327.464 45.796 326.926 52.4693C325.985 64.333 325.851 64.7779 322.625 64.7779C319.264 64.7779 319.264 64.6296 320.205 55.4352C321.953 38.2329 326.254 15.2469 327.867 14.2089C331.227 11.8361 331.63 15.5435 329.749 27.8521ZM464.966 16.7299C483.649 24.1447 529.214 49.8 529.214 52.9142C529.214 55.287 511.606 51.4312 504.214 47.4272C494.67 42.0886 457.573 21.1788 452.197 18.0646C448.164 15.6918 448.433 12.8742 452.6 12.8742C453.944 12.8742 459.589 14.6537 464.966 16.7299ZM317.517 16.8782C316.576 19.3992 311.065 49.2068 309.453 60.6256L308.646 65.9643L298.969 67.0024C241.844 72.4893 215.096 74.5655 214.155 73.5274C212.274 71.5995 216.575 62.4052 220.742 59.4393C222.623 58.1046 224.102 56.4733 224.102 55.7318C224.102 53.9523 218.725 50.9864 213.349 50.0966L208.779 49.2068L212.005 45.6477C213.887 43.7198 223.833 37.6397 234.183 32.1527C260.527 17.9163 272.49 14.802 301.926 14.5054C317.248 14.3572 318.458 14.5054 317.517 16.8782ZM324.372 16.8782C322.894 22.0686 318.189 54.8421 318.189 59.7358C318.189 64.9262 315.904 67.299 312.275 65.816C310.797 65.0745 310.797 62.5535 312.947 49.6517C317.517 21.772 319.533 14.3572 322.49 14.3572C324.372 14.3572 324.91 15.0986 324.372 16.8782ZM399.642 18.6577C415.771 23.1066 416.981 23.8481 419.4 32.5976C420.476 36.8982 421.551 43.5715 421.82 47.7238C422.223 61.2188 423.029 60.329 409.992 60.329C397.626 60.329 357.84 62.5535 338.62 64.1847L327.464 65.0745L328.27 55.7318C329.749 40.309 332.974 17.0265 333.915 15.3952C334.453 14.5054 344.265 14.2089 361.738 14.802C382.437 15.3952 391.309 16.285 399.642 18.6577ZM438.756 44.7579C448.836 59.7358 448.971 58.8461 435.798 58.8461H424.374V53.2108C424.374 50.2449 423.433 43.1266 422.357 37.3431C421.282 31.7078 420.341 26.814 420.341 26.5175C420.341 26.2209 423.164 28.297 426.659 30.9663C430.019 33.6357 435.53 39.8641 438.756 44.7579ZM220.069 54.3972C221.682 55.5835 221.682 56.1767 219.397 58.5495C216.978 61.0705 216.44 61.0705 213.618 59.1427C211.87 57.808 207.435 56.9182 202.865 56.9182C195.338 57.0665 195.338 56.9182 199.236 54.9904C203.94 52.7659 217.112 52.321 220.069 54.3972ZM558.784 59.291C570.344 60.9222 572.091 61.3671 568.327 62.2569C560.263 64.1847 547.897 63.295 535.8 60.1807C529.214 58.5495 523.837 56.7699 523.837 56.325C523.837 55.287 538.891 56.6216 558.784 59.291ZM212.542 60.7739C214.827 62.7018 214.962 62.9984 212.677 67.5956L210.392 72.4893L199.908 71.8961C193.994 71.4512 188.349 70.4132 187.139 69.2268C185.257 67.4473 185.257 67.0024 187.273 64.4813C191.574 59.291 207.704 56.9182 212.542 60.7739ZM454.213 65.5194C456.094 72.7859 456.094 88.9502 454.213 93.6957C453.272 96.0684 449.105 100.814 444.938 104.076C429.884 115.94 420.072 128.694 405.153 156.128C402.465 161.022 398.701 165.916 396.819 166.806C394.4 167.992 382.034 168.585 357.168 168.585H321.146V146.637C321.146 134.625 320.474 120.537 319.668 115.199C318.861 109.86 318.189 97.1065 318.189 86.7258V67.8921L325.313 67.1507C342.518 65.0745 428.944 60.6256 444.401 60.9222C452.869 61.0705 453.137 61.2188 454.213 65.5194ZM134.853 68.337C126.116 74.4172 109.987 79.311 83.5083 84.0564C58.2391 88.6536 40.3625 94.1406 28.2655 100.962C24.6364 102.89 19.5288 105.263 16.5718 106.004L11.3298 107.636L14.5556 103.928C22.3515 94.7338 55.9541 80.2007 86.3309 72.9342C102.729 69.0785 126.788 65.2228 135.391 64.9262H140.095L134.853 68.337ZM316.711 87.319C316.711 98.1446 317.383 111.64 318.055 117.423C319.668 128.694 320.071 162.505 318.727 166.213C318.055 168.289 310.797 168.585 250.984 168.585H184.182L183.375 153.756C182.569 139.074 180.822 131.808 171.278 104.818C167.784 94.8821 165.096 75.1587 167.112 75.1587C167.784 75.1587 173.16 76.0484 179.074 77.0865C188.483 78.8661 193.591 78.7178 218.053 76.345C256.36 72.4893 305.689 68.0404 311.738 67.8921L316.711 67.7438V87.319ZM556.096 80.349C557.037 81.5354 557.843 85.3911 557.978 88.6536C557.978 93.3991 557.306 95.327 555.021 97.5514C551.929 100.221 551.795 100.221 545.209 97.4031C541.58 95.7719 537.413 94.4372 535.934 94.4372C533.112 94.4372 532.574 93.844 531.499 88.357C530.692 84.7979 530.961 84.5013 541.714 81.6837C547.763 79.9041 553.139 78.4212 553.542 78.4212C554.08 78.2729 555.155 79.1627 556.096 80.349ZM567.655 81.5354C567.79 81.6837 568.193 85.6877 568.462 90.2849L569.134 98.8861L564.295 100.369C558.112 102.297 554.752 102.297 554.752 100.369C554.752 99.4793 555.29 98.8861 555.962 98.8861C558.247 98.8861 560.397 90.1366 559.456 84.6496L558.65 79.1627L562.951 80.2007C565.37 80.6456 567.386 81.2388 567.655 81.5354ZM576.258 86.8741C576.258 90.1366 575.586 94.5855 574.779 96.9582L573.301 101.111L571.419 96.6616C570.478 94.1406 569.671 89.6917 569.537 86.5775C569.537 81.6837 569.94 81.0905 572.897 81.0905C575.854 81.0905 576.258 81.6837 576.258 86.8741ZM582.978 95.9201C582.978 103.78 582.44 109.267 581.634 109.267C580.828 109.267 580.29 103.78 580.29 95.9201C580.29 88.0604 580.828 82.5735 581.634 82.5735C582.44 82.5735 582.978 88.0604 582.978 95.9201ZM582.978 110.75C587.682 110.75 587.548 110.453 584.994 117.275C583.112 122.169 583.112 123.058 585.129 126.321L587.279 130.028H582.575C574.913 130.028 557.575 125.876 551.257 122.613C545.746 119.648 535.934 109.267 535.934 106.301C535.934 105.559 538.488 106.301 541.714 107.784C549.779 111.936 561.876 111.64 568.865 107.339C572.897 104.818 574.779 102.445 576.258 97.5514L578.274 91.1747L578.677 100.962C579.08 110.75 579.08 110.75 582.978 110.75ZM546.015 99.6276C554.752 103.632 560.532 104.225 566.311 101.852C568.731 100.814 570.478 100.814 571.284 101.704C572.225 102.742 570.612 104.225 566.177 106.449C561.204 108.822 558.112 109.415 552.736 108.822C546.687 108.08 534.59 103.038 534.59 101.259C534.59 100.814 534.187 99.6276 533.784 98.2929C532.574 94.8821 536.472 95.327 546.015 99.6276ZM62.2714 105.263C62.809 105.708 62.137 109.119 60.9273 112.826L58.6423 119.351L48.5615 120.982C37.1366 122.91 31.357 123.058 25.3085 121.724C21.8138 120.834 21.1418 120.241 21.9482 117.571C22.3515 115.94 25.1741 111.936 28.1311 108.674L33.5075 103.038L47.3518 103.632C55.0132 103.928 61.7338 104.67 62.2714 105.263ZM134.45 108.525C158.778 115.495 172.085 134.625 176.252 168.882C176.655 173.034 176.386 174.517 175.042 174.517C173.967 174.517 173.026 171.7 172.354 166.657C168.456 131.956 152.327 112.084 126.251 109.712C104.611 107.784 86.1965 118.609 76.2501 139.223C72.3522 147.379 71.5457 150.345 71.0081 162.653L70.2016 176.742L40.0937 177.187C14.8245 177.483 9.44804 177.187 6.89424 175.259C5.1469 173.924 3.66838 173.627 3.66838 174.369C3.66838 178.818 9.98568 179.708 40.3625 179.411C57.1638 179.263 70.8737 179.708 70.8737 180.301C70.8737 184.453 66.3037 185.046 39.6904 184.601C15.0933 184.156 12.0018 183.86 7.7007 181.042C2.18987 177.631 1.24899 174.369 4.47485 170.81C6.22219 168.882 6.89424 165.619 6.89424 158.501L7.02865 148.714L12.1363 147.527C18.7224 146.044 33.3731 138.481 50.3089 128.1C66.1693 118.313 80.8201 111.64 93.1858 108.674C105.417 105.856 124.772 105.708 134.45 108.525ZM4.60926 161.467C4.34044 165.768 4.20603 162.653 4.20603 154.497C4.20603 146.341 4.34044 142.782 4.60926 146.637C4.87808 150.493 4.87808 157.167 4.60926 161.467ZM585.398 164.433C585.935 175.407 583.65 178.225 572.763 179.411C568.462 180.004 557.843 181.191 549.375 182.08C534.59 183.86 533.649 183.712 528.273 180.746C525.182 178.966 522.224 176.89 521.821 176C519.94 172.589 552.064 159.836 570.209 156.87C584.591 154.497 584.994 154.645 585.398 164.433ZM309.184 177.483C378.808 177.483 414.965 177.928 414.965 178.966C414.965 180.004 373.701 180.449 293.995 180.449C182.435 180.449 173.026 180.301 173.026 177.928C173.026 175.852 174.639 175.704 188.214 176.445C196.413 177.038 250.85 177.483 309.184 177.483Z"
                                 fill="#292D32" />
@@ -274,12 +442,19 @@
                                 fill="#292D32" />
                         </svg>
 
-                        <textarea name="observation_damage_left_side" id="observation_damage_left_side"></textarea>
+                        <div class="damage-pins"></div>
+                        </div>
+                        <small class="damage-hint">Haz clic sobre el vehículo para marcar un punto. Haz clic en el punto para
+                            eliminarlo.</small>
+                        <input type="hidden" name="damage_points_left_side" value='{{ old('damage_points_left_side', '[]') }}'>
+                        <textarea name="observation_damage_left_side"
+                            id="observation_damage_left_side">{{ old('observation_damage_left_side') }}</textarea>
                     </div>
-                    <div>
+                    <div class="damage-section" data-damage-section="right_side">
                         <span>Lado Derecho</span>
-                        <svg width="597" height="211" viewBox="0 0 597 211" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <div class="damage-canvas">
+                            <svg width="597" height="211" viewBox="0 0 597 211" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M196.87 0.722824C156.013 3.2137 120.01 15.8146 78.4785 42.1885C62.4322 52.2985 59.196 53.9103 49.757 55.3755C43.9587 56.4011 33.0365 57.2803 25.6201 57.4268L12.1359 57.5733L10.2481 61.969C7.82088 67.5368 7.41635 80.5772 9.84352 81.3098C10.9223 81.7494 11.4616 85.852 11.4616 94.9364C11.4616 106.658 11.192 107.83 8.62994 108.563C6.06793 109.296 5.93308 109.589 7.95572 113.838C11.192 120.578 10.6526 123.508 5.12403 128.343C0.539371 132.299 0 133.472 0 139.626C0 145.633 0.539371 147.098 4.31497 150.468C8.09057 153.985 8.62994 155.157 8.4951 161.604C8.36025 165.706 8.76478 170.395 9.30415 172.3C10.6526 176.696 16.7205 179.919 23.8672 179.919C27.1034 179.919 36.9469 180.945 45.8465 182.117C61.3535 184.168 62.1625 184.168 67.4214 181.384C76.8604 176.256 77.6694 175.084 79.0179 163.655C81.7147 143.142 88.7266 129.222 100.997 120.285C109.357 114.131 116.369 112.079 128.775 111.933C140.911 111.933 149.81 115.01 158.845 122.043C171.52 132.299 178.397 148.27 178.936 169.076L179.206 179.919L302.722 179.626L426.103 179.186L426.912 167.465C429.205 134.79 443.093 115.303 467.5 111.2C484.49 108.123 501.48 114.277 512.133 127.171C521.842 138.893 524.269 145.926 524.943 163.802C525.752 187.099 524.404 186.219 556.496 185.487C579.554 185.047 583.195 184.608 588.724 181.824C592.229 180.212 595.466 177.868 596.005 176.842C598.028 173.472 596.679 129.809 594.522 126.146C593.443 124.387 592.634 121.31 592.634 119.552C592.499 114.131 587.915 104.607 583.195 100.211C565.531 84.2403 515.234 68.1229 465.612 62.8481L452.532 61.3829L426.777 46.4376C360.974 8.48848 349.917 4.53239 300.43 1.30891C279.529 -0.156311 216.962 -0.449356 196.87 0.722824ZM204.961 3.50674C202.804 3.79979 195.118 4.82544 188.106 5.70457C181.094 6.43718 169.632 8.78152 162.755 10.8328C150.889 14.2028 147.653 14.3493 147.653 11.5654C147.653 8.63501 182.173 2.92065 198.893 3.06717C204.422 3.06717 207.253 3.36021 204.961 3.50674ZM297.328 5.55804C336.028 8.19543 347.49 11.4189 382.953 29.5876C401.022 38.965 428.665 55.522 432.171 59.185C433.789 60.9433 433.115 61.2364 426.777 61.2364C419.766 61.2364 418.417 60.5037 401.831 48.6355C373.784 28.562 346.816 15.375 325.645 11.4189C320.791 10.5398 298.946 9.36761 277.102 8.92805C204.961 7.46283 178.397 12.7376 158.71 32.6646C154.53 36.9137 149.001 43.9468 146.574 48.3424C138.753 62.555 136.056 86.7312 141.45 95.5225C142.664 97.5738 146.979 101.969 151.024 105.193C155.204 108.563 158.171 111.64 157.901 112.372C157.496 112.959 159.789 115.596 162.89 118.38C171.25 125.559 179.206 136.402 187.566 151.494C193.499 162.19 195.927 165.413 199.972 167.318C204.557 169.516 214.67 169.663 309.464 169.369L413.967 168.93L415.585 152.08C417.204 133.911 418.417 128.929 426.103 109.002C430.014 98.7459 431.362 93.3246 431.767 84.0938L432.576 72.079L426.643 67.8298L420.844 63.4342L424.755 62.9946C427.047 62.7016 434.194 62.7016 440.936 62.9946C451.588 63.4342 453.746 64.0203 459.14 67.6833C469.657 75.1559 485.164 80.1377 513.616 85.4125C540.18 90.2477 553.395 94.3503 574.43 104.314C578.88 106.365 583.6 108.123 584.813 108.123C587.645 108.123 589.398 111.347 590.611 119.406C591.151 122.922 592.095 125.999 592.769 126.585C594.387 127.611 594.387 137.428 592.634 137.428C591.96 137.428 591.286 139.186 591.286 141.237C591.286 144.9 591.016 145.047 586.296 144.168C580.903 143.142 565.126 135.376 550.968 126.878L542.473 121.603L556.631 122.336C574.43 123.362 577.801 122.629 577.801 117.354C577.801 114.717 575.914 111.64 571.868 107.391C567.014 102.262 564.856 101.09 559.463 100.504C551.237 99.6251 534.921 101.383 533.034 103.435C532.224 104.314 532.764 106.951 534.652 111.054C536.27 114.424 537.349 117.501 536.944 117.794C536.674 118.087 533.168 116.622 529.123 114.57C525.213 112.372 516.043 109.149 509.031 107.098C492.041 102.409 466.961 102.702 454.825 107.977C435.542 116.182 423.811 135.816 419.361 167.025L418.552 172.593H341.422C298.946 172.593 245.818 173.033 223.165 173.619L181.903 174.498L180.42 162.043C177.453 138.746 169.093 124.973 151.968 115.889C142.124 110.614 141.18 110.321 128.101 110.321C115.56 110.321 113.942 110.614 105.582 115.156C89.1311 123.948 80.7708 138.453 76.8604 165.413L76.1862 170.835L65.6684 165.853C51.9145 159.406 32.2274 153.838 19.1477 152.666C5.52855 151.347 2.02264 148.71 2.02264 139.626C2.02264 136.109 2.56201 132.886 3.23623 132.446C3.91044 132.006 10.3829 130.834 17.6644 130.102C49.8918 126.439 62.0277 115.889 66.2078 87.6103L67.0169 82.482L54.2068 79.2585C43.8239 76.4746 40.1832 76.1816 34.2501 77.2072C30.2048 78.0864 23.193 79.112 18.6083 79.5516L10.1132 80.5772V73.9837C10.1132 67.0972 12.4055 58.3059 14.1585 58.3059C14.6979 58.3059 17.7992 59.6246 21.0355 61.0898C24.2717 62.555 30.0699 64.3133 33.7107 64.8994C48.2737 66.9507 75.1074 59.0385 97.8959 45.8516C132.82 25.7781 156.013 14.2028 166.935 11.4189C176.644 9.07457 192.286 6.73022 210.355 5.11848C223.165 3.9463 276.832 4.23935 297.328 5.55804ZM355.311 11.8585C366.503 15.8146 429.744 49.2216 442.959 58.0129L447.678 61.2364H443.363C440.531 61.2364 434.868 58.4524 426.508 52.8846C410.192 42.042 377.02 23.7268 360.704 16.6937C353.693 13.6167 342.77 9.80717 336.433 8.34196L324.971 5.55804L333.736 6.43718C338.59 6.87674 348.299 9.36761 355.311 11.8585ZM258.898 10.9794C233.413 12.005 206.309 14.4959 197.14 16.6937C176.509 21.822 162.62 31.932 152.103 49.6611C144.821 61.969 141.72 61.2364 148.462 48.782C163.564 20.6498 192.016 10.2467 252.156 10.3933C261.865 10.5398 264.831 10.6863 258.898 10.9794ZM322.274 13.0307C336.568 15.082 349.917 19.9172 369.469 30.4668C385.111 38.8185 409.922 55.815 423.137 67.0972L429.474 72.6651L420.979 74.2768C411.405 76.0351 394.55 76.1816 388.347 74.4233C385.381 73.5442 386.999 73.2511 394.685 73.1046C406.146 72.9581 411.54 71.3464 412.889 67.5368C414.102 64.1668 403.854 54.4963 396.573 52.152C393.606 51.1263 389.426 48.1959 387.268 45.705C380.796 37.6463 345.332 19.3311 329.151 15.8146C324.836 14.7889 309.869 13.1772 296.115 12.1515L271.034 10.1002L291.26 10.8328C302.452 11.2724 316.341 12.1515 322.274 13.0307ZM147.248 15.2285C147.518 15.9611 139.967 20.7963 130.528 25.7781C120.954 30.7598 106.256 38.8185 97.761 43.6537C86.1645 50.2472 80.3663 52.7381 74.5681 53.3242C69.8486 53.9103 66.7472 53.7637 66.7472 52.8846C66.7472 51.1263 91.9628 35.302 105.177 28.855C132.55 15.2285 145.9 10.8328 147.248 15.2285ZM264.696 24.1663C266.854 37.3533 269.281 62.8481 268.607 63.5807C268.337 64.0203 251.482 63.2877 231.121 61.969C210.759 60.7968 189.724 59.7711 184.195 59.7711H174.217L174.891 47.6098C175.296 39.6976 176.374 33.5437 178.127 29.7341C180.42 24.4594 181.498 23.5802 190.398 20.6498C203.478 16.2541 215.883 14.7889 241.503 14.4959L263.213 14.3493L264.696 24.1663ZM271.573 21.822C273.461 31.3459 277.102 57.2803 277.102 61.2364C277.102 63.2877 276.158 64.1668 273.866 64.1668C270.899 64.1668 270.629 63.5807 269.82 52.0055C268.876 39.8442 266.854 23.7268 265.371 17.5728C264.831 15.082 265.236 14.3493 267.393 14.3493C269.551 14.3493 270.495 15.8146 271.573 21.822ZM278.315 19.7707C279.934 26.2176 284.653 52.152 285.597 60.0642C286.271 65.1924 286.136 65.632 283.17 65.632C280.338 65.632 279.934 64.7529 278.585 54.9359C277.776 49.2216 276.023 37.6463 274.675 29.2946C272.248 14.9354 272.248 14.3493 274.54 14.3493C276.293 14.3493 277.372 16.1076 278.315 19.7707ZM331.983 18.5985C350.052 23.4337 387.673 43.9468 387.673 49.075C387.673 50.2472 387.134 50.6868 386.325 50.2472C384.572 49.075 374.593 52.152 373.38 54.2033C372.84 55.0824 374.054 57.1337 376.077 58.7455C380.257 61.969 384.167 69.4416 383.088 72.2255C382.684 73.6907 380.796 74.1303 376.616 73.5442C373.38 73.2511 352.344 71.1998 329.825 69.2951C307.307 67.2437 288.698 65.4855 288.564 65.339C288.429 65.0459 286.945 56.6942 285.192 46.8772C283.574 36.9137 281.417 25.3385 280.338 21.3824L278.585 13.9098L299.755 14.7889C314.184 15.375 324.432 16.5472 331.983 18.5985ZM175.97 27.9759C175.97 28.1224 175.026 32.9576 173.947 38.5255C172.868 44.2398 171.925 51.1263 171.925 53.9103V59.185L162.216 58.599C156.822 58.3059 151.563 58.0129 150.619 57.8663C147.923 57.4268 160.733 38.965 167.879 32.8111C173.138 28.2689 175.97 26.5107 175.97 27.9759ZM397.786 54.6429C401.831 56.5477 401.697 56.5477 393.876 56.6942C388.887 56.8407 384.976 57.7198 383.763 58.892C381.875 60.7968 381.201 60.6503 378.234 58.1594C375.402 55.815 375.133 55.229 376.886 53.9103C379.852 51.8589 393.067 52.2985 397.786 54.6429ZM64.7245 58.599C55.2855 61.969 34.3849 63.7272 27.6428 61.5294L22.9233 60.0642L29.6654 59.7711C33.441 59.6246 41.2619 58.7455 47.195 57.7198C53.1281 56.6942 61.3535 55.815 65.3988 55.6685H72.8151L64.7245 58.599ZM407.63 62.262C409.383 63.7272 410.866 65.4855 410.866 66.3646C411.001 69.2951 404.393 71.4929 395.494 71.4929C386.729 71.4929 386.325 71.3464 384.302 66.9507C383.088 64.4598 382.279 62.262 382.549 62.1155C387.673 57.5733 401.831 57.5733 407.63 62.262ZM192.825 61.969C219.389 63.1411 259.977 65.4855 270.225 66.5111L278.72 67.3903L277.911 91.7129C277.506 105.193 276.697 127.611 276.293 141.384L275.484 166.732H238.941C212.647 166.586 201.455 166.146 199.298 164.827C197.68 163.802 192.825 156.915 188.51 149.443C174.756 125.706 168.284 117.354 155.743 106.951C149.136 101.53 143.068 95.3759 142.259 93.0316C140.506 88.7825 140.911 64.7529 142.799 61.5294C143.608 60.0642 147.383 59.7711 158.845 60.3572C167.205 60.7968 182.442 61.5294 192.825 61.969ZM478.152 66.3646C506.469 70.4672 526.831 75.449 547.731 83.3612C562.294 88.929 579.015 98.1599 583.195 102.995L586.296 106.512L581.038 104.9C578.071 104.167 573.082 101.969 569.711 100.065C555.417 92.299 539.236 87.7568 505.256 81.7494C487.187 78.6724 471.141 73.3977 462.646 67.8298C455.903 63.4342 456.982 63.2877 478.152 66.3646ZM316.881 70.0277C335.489 71.6394 363.401 74.2768 378.908 75.742C396.842 77.5003 409.518 78.0864 413.293 77.3538C416.664 76.7677 421.923 75.8885 425.159 75.3024L430.823 74.4233V79.8446C430.823 88.4894 427.452 102.116 421.923 115.449C416.664 128.49 413.428 144.754 413.293 158.234V166.732H345.872H278.585L277.641 161.604C276.563 155.01 277.776 123.655 279.799 104.46C280.608 96.4016 281.012 84.8264 280.473 78.3794C279.799 69.4416 279.934 67.0972 281.417 67.0972C282.361 67.0972 298.407 68.4159 316.881 70.0277ZM65.3988 84.9729C65.3988 88.6359 62.4322 93.4712 60.1399 93.4712C58.6566 93.4712 54.7462 94.7899 51.3751 96.4016C44.7678 99.4786 41.8013 99.039 39.7786 94.7899C38.0257 91.2733 38.0257 81.3098 39.7786 79.4051C41.2619 77.7933 65.3988 83.0681 65.3988 84.9729ZM36.6772 84.6798C35.3288 89.8081 35.5985 90.9803 38.1605 94.7899C39.7786 97.2807 41.127 99.6251 41.127 100.065C41.127 101.383 35.0591 100.944 30.6093 99.1855C26.8337 97.7203 26.4292 97.1342 27.2382 93.7642C27.9125 91.5664 28.317 87.7568 28.1821 85.1194C28.1821 80.4307 29.126 79.6981 35.8682 78.9655C37.756 78.819 37.8908 79.5516 36.6772 84.6798ZM26.2943 85.9985C26.2943 93.4712 24.002 100.358 22.1142 98.3064C21.3052 97.4272 20.3613 93.0316 19.9567 88.4894C19.1477 80.4307 19.1477 80.2842 22.7884 80.2842C26.0247 80.2842 26.2943 80.7238 26.2943 85.9985ZM15.5069 95.0829C15.5069 103.435 14.9675 107.977 14.1585 107.391C12.6752 106.365 12.2707 84.2403 13.754 82.7751C15.3721 80.8703 15.5069 81.7494 15.5069 95.0829ZM27.2382 106.365C30.0699 107.977 34.2501 109.589 36.6772 110.028C41.127 111.054 55.2855 107.684 58.2521 104.9C61.3535 102.116 60.2747 106.658 56.634 111.933C50.7009 120.431 30.2048 128.49 14.4282 128.636H8.76478L10.7874 125.12C12.8101 121.896 12.8101 121.017 10.9223 116.182C8.22541 109.149 8.09057 109.296 12.5404 109.882C16.1811 110.321 16.1811 110.175 16.5857 100.797L17.125 91.2733L19.5522 97.4272C21.3052 101.823 23.5975 104.46 27.2382 106.365ZM62.1625 97.2807C61.758 98.5994 61.3535 100.065 61.3535 100.651C61.3535 102.849 46.3859 108.123 40.7225 108.123C33.8455 108.123 22.5187 102.849 24.5414 100.651C25.3504 99.7716 27.1034 99.7716 29.5306 100.797C35.3288 103.142 41.5316 102.556 50.7009 98.5994C60.9489 94.3503 63.2413 94.0572 62.1625 97.2807ZM569.711 107.684C576.318 114.863 577.667 119.112 573.486 120.431C568.632 121.75 557.979 121.457 548.54 119.699C540.45 118.233 539.776 117.647 537.349 112.372C535.865 109.296 534.652 106.072 534.652 105.339C534.652 103.435 539.506 102.702 553.26 102.409L564.452 102.262L569.711 107.684ZM510.65 109.442C521.302 112.372 528.314 115.889 560.541 134.058C570.655 139.919 581.577 145.047 584.813 145.779L590.611 147.098L591.016 157.208C591.286 162.923 592.095 167.904 593.039 168.49C594.117 169.223 593.848 170.395 591.96 172.593C589.533 175.523 588.454 175.523 558.384 175.23L527.235 174.791L526.561 160.871C525.752 144.021 522.516 135.816 512.403 124.827C504.042 115.742 497.57 111.933 486.378 109.589C474.647 106.951 463.05 108.563 452.802 113.984C436.621 122.629 428.935 136.988 424.755 167.025C423.811 174.058 421.384 174.205 421.384 167.318C421.384 159.699 425.024 145.486 429.474 136.109C433.385 127.464 443.633 116.036 450.779 111.933C463.724 104.607 490.288 103.581 510.65 109.442ZM595.331 152.813C595.331 159.553 594.792 165.56 593.982 165.999C593.173 166.586 592.634 161.897 592.634 152.813C592.634 143.728 593.173 139.039 593.982 139.626C594.792 140.065 595.331 146.073 595.331 152.813ZM23.193 155.01C41.6664 157.794 74.8377 169.663 74.8377 173.765C74.8377 174.351 72.2757 176.549 69.3092 178.454C64.32 181.384 62.7019 181.677 53.3977 180.798C47.7343 180.212 36.8121 179.333 29.126 178.6C16.5857 177.575 14.9675 177.135 12.6752 173.912C9.43899 169.369 9.03447 153.545 12.2707 153.545C12.4055 153.545 17.3947 154.278 23.193 155.01ZM595.196 174.205C594.387 175.816 591.151 178.454 587.915 180.066C583.06 182.41 578.61 182.849 557.44 182.996C527.235 183.143 529.662 183.436 528.044 180.066C526.696 177.282 527.505 177.282 558.249 177.428C589.398 177.721 589.937 177.721 592.904 174.351C596.679 170.395 597.219 170.249 595.196 174.205ZM424.081 176.989C424.081 178.014 382.684 178.454 302.722 178.454C222.76 178.454 181.364 178.014 181.364 176.989C181.364 175.963 222.76 175.523 302.722 175.523C382.684 175.523 424.081 175.963 424.081 176.989Z"
                                 fill="black" />
@@ -315,21 +490,28 @@
                                 fill="black" />
                         </svg>
 
-                        <textarea name="observation_damage_right_side" id="observation_damage_right_side"></textarea>
+                        <div class="damage-pins"></div>
+                        </div>
+                        <small class="damage-hint">Haz clic sobre el vehículo para marcar un punto. Haz clic en el punto para
+                            eliminarlo.</small>
+                        <input type="hidden" name="damage_points_right_side" value='{{ old('damage_points_right_side', '[]') }}'>
+                        <textarea name="observation_damage_right_side"
+                            id="observation_damage_right_side">{{ old('observation_damage_right_side') }}</textarea>
                     </div>
                 </div>
 
             </div>
 
             <div class="data-client container-buttons">
-                <select name="asigned" id="asigned" class="select-asigned">
+                <select name="assigned_technician" id="asigned" class="select-asigned">
                     <option value="">Seleccione un técnico</option>
-                    <option value="">Ian Salazar</option>
-                    <option value="">Enzo Morales</option>
-                    <option value="">Matias Quiroga</option>
+                    <option value="ian" @selected(old('assigned_technician') === 'ian')>Ian Salazar</option>
+                    <option value="enzo" @selected(old('assigned_technician') === 'enzo')>Enzo Morales</option>
+                    <option value="matias" @selected(old('assigned_technician') === 'matias')>Matias Quiroga</option>
                 </select>
-                <button>Guardar</button>
+                <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">Guardar</button>
             </div>
+            </form>
         </div>
 
     </div>
@@ -338,21 +520,154 @@
 @section('script')
     <script src="{{ asset('js/witness.js') }}"></script>
     <script>
-        const slider = document.getElementById('slider');
-        const aguja = document.getElementById('aguja');
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.getElementById('slider');
+            const aguja = document.getElementById('aguja');
+            const sliderValue = document.getElementById('gasolina-value');
 
-        function actualizarAguja(valor) {
-            console.log('hola');
-            // De -90 grados (E) a +90 grados (F)
-            const angulo = (valor / 100) * 180 - 90;
-            aguja.style.transform = `rotate(${angulo}deg)`;
-        }
+            const actualizarAguja = (valor) => {
+                const angulo = (valor / 100) * 180 - 90;
+                if (aguja) {
+                    aguja.style.transform = `rotate(${angulo}deg)`;
+                }
+                if (sliderValue) {
+                    sliderValue.textContent = `${valor}%`;
+                }
+            };
 
-        slider.addEventListener('input', (e) => {
-            actualizarAguja(e.target.value);
+            if (slider) {
+                slider.addEventListener('input', (e) => {
+                    actualizarAguja(e.target.value);
+                });
+                actualizarAguja(slider.value);
+            }
+
+            const witnessStatesInput = document.getElementById('witness_states');
+            const witnessContainer = document.querySelector('[data-witness-base]');
+
+            const syncWitnessStates = () => {
+                if (!witnessStatesInput || !witnessContainer) {
+                    return;
+                }
+
+                const states = {};
+                witnessContainer.querySelectorAll('.witness-indicator').forEach((indicator) => {
+                    const id = indicator.dataset.witnessId;
+                    const state = indicator.dataset.witnessState || 'natural';
+                    if (id) {
+                        states[id] = state;
+                    }
+                });
+
+                witnessStatesInput.value = JSON.stringify(states);
+            };
+
+            if (witnessContainer && witnessStatesInput) {
+                witnessContainer.querySelectorAll('.witness-indicator').forEach((indicator) => {
+                    indicator.addEventListener('click', () => syncWitnessStates());
+                });
+                syncWitnessStates();
+            }
+
+            class DamageSectionManager {
+                constructor(sectionElement) {
+                    this.sectionElement = sectionElement;
+                    this.sectionKey = sectionElement.dataset.damageSection;
+                    this.input = sectionElement.querySelector(`input[name="damage_points_${this.sectionKey}"]`);
+                    this.canvas = sectionElement.querySelector('.damage-canvas');
+                    this.pinLayer = sectionElement.querySelector('.damage-pins');
+                    this.points = [];
+
+                    if (!this.canvas || !this.pinLayer || !this.input) {
+                        return;
+                    }
+
+                    this.loadInitialPoints();
+                    this.canvas.addEventListener('click', (event) => this.handleCanvasClick(event));
+                }
+
+                handleCanvasClick(event) {
+                    if (event.target.closest('.damage-pin')) {
+                        return;
+                    }
+
+                    const rect = this.canvas.getBoundingClientRect();
+                    const x = ((event.clientX - rect.left) / rect.width) * 100;
+                    const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+                    const note = prompt('Describe el daño identificado en esta zona:');
+                    if (!note || !note.trim()) {
+                        return;
+                    }
+
+                    const point = {
+                        id: this.generateId(),
+                        x: Number(x.toFixed(2)),
+                        y: Number(y.toFixed(2)),
+                        note: note.trim(),
+                    };
+
+                    this.points.push(point);
+                    this.renderPoint(point);
+                    this.persist();
+                }
+
+                renderPoint(point) {
+                    const pin = document.createElement('button');
+                    pin.type = 'button';
+                    pin.className = 'damage-pin';
+                    pin.style.left = `${point.x}%`;
+                    pin.style.top = `${point.y}%`;
+                    pin.title = point.note;
+                    pin.setAttribute('aria-label', point.note);
+                    pin.dataset.pointId = point.id;
+
+                    pin.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        if (confirm('¿Eliminar este punto de daño?')) {
+                            this.removePoint(point.id);
+                        }
+                    });
+
+                    this.pinLayer.appendChild(pin);
+                }
+
+                removePoint(id) {
+                    this.points = this.points.filter((point) => point.id !== id);
+                    const pin = this.pinLayer.querySelector(`[data-point-id="${id}"]`);
+                    if (pin) {
+                        pin.remove();
+                    }
+                    this.persist();
+                }
+
+                loadInitialPoints() {
+                    let initial = [];
+                    try {
+                        initial = JSON.parse(this.input.value || '[]');
+                        if (!Array.isArray(initial)) {
+                            initial = [];
+                        }
+                    } catch (error) {
+                        initial = [];
+                    }
+
+                    this.points = initial;
+                    this.points.forEach((point) => this.renderPoint(point));
+                }
+
+                persist() {
+                    this.input.value = JSON.stringify(this.points);
+                }
+
+                generateId() {
+                    return `damage-${Math.random().toString(36).slice(2, 10)}-${Date.now()}`;
+                }
+            }
+
+            document.querySelectorAll('.damage-section').forEach((section) => {
+                new DamageSectionManager(section);
+            });
         });
-
-        // Inicializar al valor inicial del slider
-        actualizarAguja(slider.value);
     </script>
 @endsection

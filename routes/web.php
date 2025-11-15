@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderServiceController;
 use App\Http\Controllers\OrdersController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,7 +17,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/order-service', [DashboardController::class, 'orderService'])->name('dashboard.orderService');
+    Route::get('/dashboard/order-service', [OrderServiceController::class, 'create'])->name('dashboard.orderService');
+    Route::post('/dashboard/order-service', [OrderServiceController::class, 'store'])->name('dashboard.orderService.store');
     Route::get('/dashboard/orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
-    Route::get('/order/admin', [OrdersController::class, 'OrderAdmin'])->name('order.admin');
+    Route::get('/order/admin', [OrdersController::class, 'index'])->name('order.admin');
 });
