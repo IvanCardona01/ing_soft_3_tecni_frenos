@@ -77,7 +77,7 @@
             @if (isset($orders) && is_array($orders))
                 <div class="flex flex-col gap-10 mt-10">
                     @foreach ($orders as $order)
-                        <a href="{{ route('dashboard.orderService') }}"
+                        <a href="{{ route('dashboard.orderService', ['isEdit' => 'true']) }}"
                             class="flex flex-col md:flex-row w-full rounded-[30px] overflow-hidden shadow-xl 
                     cursor-pointer transition-transform duration-300 ease-out hover:scale-[1.02] no-underline">
                             <div

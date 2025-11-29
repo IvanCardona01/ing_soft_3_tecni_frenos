@@ -703,13 +703,15 @@
             const welcomeModalClose = document.getElementById('welcome-modal-close');
             const modalStorageKey = 'orderService-modal-shown';
 
+            const isEdit = @json($isEdit ?? false);
+
             if (welcomeModal && welcomeModalClose) {
                 const navigationType = performance.getEntriesByType('navigation')[0]?.type;
                 const isRefresh = navigationType === 'reload';
 
                 const modalAlreadyShown = sessionStorage.getItem(modalStorageKey);
 
-                if (!isRefresh && !modalAlreadyShown) {
+                if (!isRefresh && !isEdit && !modalAlreadyShown) {
                     welcomeModal.classList.remove('hidden');
                     welcomeModal.classList.add('flex');
                 } else {

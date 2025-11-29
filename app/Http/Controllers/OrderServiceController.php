@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Vehicle;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderServiceController extends Controller
@@ -15,11 +16,12 @@ class OrderServiceController extends Controller
     /**
      * Muestra el formulario de creación de órdenes de servicio con un folio único.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
         $folioNumber = $this->generateUniqueFolio();
+        $isEdit = $request->query('isEdit', 'false') === 'true';
 
-        return view('dashboard.orderService', compact('folioNumber'));
+        return view('dashboard.orderService', compact('folioNumber', 'isEdit'));
     }
 
     /**
@@ -125,4 +127,3 @@ class OrderServiceController extends Controller
         return empty($sections) ? null : json_encode($sections);
     }
 }
-
