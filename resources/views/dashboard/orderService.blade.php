@@ -55,14 +55,25 @@
     <div class="dashboard-fondo">
 
         <div id="welcome-modal" class="fixed inset-0 bg-black/45 hidden items-center justify-center z-[9999]">
-            <div class="bg-white rounded-2xl p-6 max-w-[420px] w-[90%] shadow-[0_10px_25px_rgba(0,0,0,0.18)] text-center">
-                <h2 class="text-[1.4rem] font-semibold text-[#372C97] mb-2">Nueva orden de servicio</h2>
-                <p class="text-[0.98rem] text-[#444] mb-5">
-                    Por favor diligencia todos los campos obligatorios antes de guardar la orden de servicio.
+            <div class="bg-white rounded-[20px] p-9 w-[90%] md:max-w-[800px] text-center">
+                <div class="mb-8 max-w-[403px] mx-auto max-h-[122px] h-full">
+                    <img src="{{ asset('images/logo1.png') }}" alt="Logo" class="mx-auto">
+                </div>
+                <p class="text-[#1E1E1E] text-base md:text-xl font-semibold mb-6">
+                    Ingrese el numero de placa para validar<br>
+                    registros anteriores
                 </p>
-                <div class="flex justify-center gap-3">
-                    <button type="button" id="welcome-modal-close" class="btn btn-primary px-4 py-2 fw-bold">
-                        Entendido
+                <div class="relative max-w-[400px] mx-auto mb-6">
+                    <input type="text" id="modal-plate-search" placeholder="Buscar por placa"
+                        class="w-full border-2 border-[#372C97] rounded-xl py-3 pl-4 pr-12 placeholder-[#CBCBCB] focus:outline-none focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]">
+                    <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2">
+                        <img src="{{ asset('icons/searcher-icon.svg') }}" alt="Buscar" class="w-5 h-5" />
+                    </button>
+                </div>
+                <div class="flex justify-center">
+                    <button type="button" id="welcome-modal-close" class="btn btn-primary font-bold text-lg mt-4"
+                        style="background-color: #F7DE0C; color:#FFFFFF; width: 300px; height: 55px; border-radius: 1000px;">
+                        Continuar
                     </button>
                 </div>
             </div>
@@ -171,8 +182,8 @@
                         </div>
                         <div class="form-group">
                             <label for="email">Correo Electrónico*</label>
-                            <input type="email" id="email" name="driver_email" placeholder="Digita correo electrónico"
-                                value="{{ old('driver_email') }}" required>
+                            <input type="email" id="email" name="driver_email"
+                                placeholder="Digita correo electrónico" value="{{ old('driver_email') }}" required>
                             @error('driver_email')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
