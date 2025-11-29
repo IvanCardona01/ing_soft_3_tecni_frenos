@@ -63,12 +63,15 @@
                     Ingrese el numero de placa para validar<br>
                     registros anteriores
                 </p>
-                <div class="relative max-w-[400px] mx-auto mb-6">
-                    <input type="text" id="modal-plate-search" placeholder="Buscar por placa"
-                        class="w-full border-2 border-[#372C97] rounded-xl py-3 pl-4 pr-12 placeholder-[#CBCBCB] focus:outline-none focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]">
-                    <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2">
-                        <img src="{{ asset('icons/searcher-icon.svg') }}" alt="Buscar" class="w-5 h-5" />
-                    </button>
+                <div class="max-w-[400px] mx-auto mb-6">
+                    <div class="relative">
+                        <input type="text" id="modal-plate-search" placeholder="Buscar por placa"
+                            class="w-full border-2 border-[#372C97] rounded-xl py-3 pl-4 pr-12 placeholder-[#CBCBCB] focus:outline-none focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]">
+                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2">
+                            <img src="{{ asset('icons/searcher-icon.svg') }}" alt="Buscar" class="w-5 h-5" />
+                        </button>
+                    </div>
+                    <div id="modal-plate-feedback" class="text-start mt-1 text-sm" style="display: none;"></div>
                 </div>
                 <div class="flex justify-center">
                     <button type="button" id="welcome-modal-close" class="btn btn-primary font-bold text-lg mt-4"
@@ -747,6 +750,98 @@
                 window.addEventListener('beforeunload', () => {
                     sessionStorage.removeItem(modalStorageKey);
                 });
+            }
+
+            const plateInput = document.getElementById('modal-plate-search');
+            const plateFeedback = document.getElementById('modal-plate-feedback');
+            const continueButton = document.getElementById('welcome-modal-close');
+            let hasStartedTyping = false;
+
+            if (plateInput && plateFeedback && continueButton) {
+                const validatePlate = (value, hasStartedTyping) => {
+                    const trimmedValue = value.trim();
+                    let message = '';
+                    let isValid = true;
+
+                    if (hasStartedTyping && trimmedValue === '') {
+                        message = 'La placa no puede estar vacía';
+                        isValid = false;
+                    } else if (trimmedValue.length > 0 && trimmedValue.length < 3) {
+                        message = 'La placa debe tener mínimo 3 caracteres';
+                        isValid = false;
+                    } else if (trimmedValue.length > 6) {
+                        message = 'La placa debe tener máximo 6 caracteres';
+                        isValid = false;
+                    } else if (trimmedValue.length > 0 && /[*@.\-+_=!?#$%&(){}[\]|\\/<>~`]/.test(
+                        trimmedValue)) {
+                        message =
+                            'La placa no puede contener caracteres especiales como asteriscos, arrobas, puntos ni signos';
+                        isValid = false;
+                    } else if (trimmedValue.length >= 3 && trimmedValue.length <= 6) {
+                        message = 'Placa válida';
+                        isValid = true;
+                    }
+
+                    return {
+                        isValid,
+                        message
+                    };
+                };
+
+                const updateValidation = (value) => {
+                    const validation = validatePlate(value, hasStartedTyping);
+
+                    if (!hasStartedTyping && value === '') {
+                        plateFeedback.style.display = 'none';
+                        plateInput.classList.remove('border-red-500', 'border-green-500');
+                        plateInput.classList.add('border-[#372C97]');
+                        continueButton.disabled = true;
+                        continueButton.style.opacity = '0.6';
+                        continueButton.style.cursor = 'not-allowed';
+                    } else {
+                        plateFeedback.style.display = 'block';
+                        plateFeedback.textContent = validation.message;
+
+                        if (validation.isValid) {
+                            plateInput.classList.remove('border-[#372C97]', 'border-red-500');
+                            plateInput.classList.add('border-green-500');
+                            plateFeedback.classList.remove('text-red-500', 'text-red-600');
+                            plateFeedback.classList.add('text-green-500');
+                            plateFeedback.style.color = '#22c55e';
+                            continueButton.disabled = false;
+                            continueButton.style.opacity = '1';
+                            continueButton.style.cursor = 'pointer';
+                        } else {
+                            plateInput.classList.remove('border-[#372C97]', 'border-green-500');
+                            plateInput.classList.add('border-red-500');
+                            plateFeedback.classList.remove('text-green-500', 'text-green-600');
+                            plateFeedback.classList.add('text-red-500');
+                            plateFeedback.style.color = '#ef4444';
+                            continueButton.disabled = true;
+                            continueButton.style.opacity = '0.6';
+                            continueButton.style.cursor = 'not-allowed';
+                        }
+                    }
+                };
+
+                plateInput.addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    if (!hasStartedTyping && value.length > 0) {
+                        hasStartedTyping = true;
+                    }
+                    updateValidation(value);
+                });
+
+                plateInput.addEventListener('blur', (e) => {
+                    const value = e.target.value;
+                    if (hasStartedTyping) {
+                        updateValidation(value);
+                    }
+                });
+
+                continueButton.disabled = true;
+                continueButton.style.opacity = '0.6';
+                continueButton.style.cursor = 'not-allowed';
             }
         });
     </script>
