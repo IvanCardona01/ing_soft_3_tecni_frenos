@@ -564,6 +564,8 @@
 
 @section('script')
     <script src="{{ asset('js/witness.js') }}"></script>
+    <script src="{{ asset('js/order-service-modal.js') }}"></script>
+    <script src="{{ asset('js/plate-validator.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('slider');
@@ -713,136 +715,24 @@
             document.querySelectorAll('.damage-section').forEach((section) => {
                 new DamageSectionManager(section);
             });
-            const welcomeModal = document.getElementById('welcome-modal');
-            const welcomeModalClose = document.getElementById('welcome-modal-close');
-            const modalStorageKey = 'orderService-modal-shown';
 
             const isEdit = @json($isEdit ?? false);
+            new OrderServiceModal('welcome-modal', 'welcome-modal-close', isEdit);
 
-            if (welcomeModal && welcomeModalClose) {
-                const navigationType = performance.getEntriesByType('navigation')[0]?.type;
-                const isRefresh = navigationType === 'reload';
+            const plateValidator = new PlateValidator('modal-plate-search', 'modal-plate-feedback',
+                'welcome-modal-close');
 
-                const modalAlreadyShown = sessionStorage.getItem(modalStorageKey);
-
-                if (!isRefresh && !isEdit && !modalAlreadyShown) {
-                    welcomeModal.classList.remove('hidden');
-                    welcomeModal.classList.add('flex');
-                } else {
-                    welcomeModal.classList.add('hidden');
-                    welcomeModal.classList.remove('flex');
+            window.addEventListener('modalClosed', () => {
+                if (plateValidator) {
+                    plateValidator.reset();
                 }
+            });
 
-                welcomeModalClose.addEventListener('click', () => {
-                    welcomeModal.classList.add('hidden');
-                    welcomeModal.classList.remove('flex');
-                    sessionStorage.setItem(modalStorageKey, 'true');
-                });
-
-                welcomeModal.addEventListener('click', (e) => {
-                    if (e.target === welcomeModal) {
-                        welcomeModal.classList.add('hidden');
-                        welcomeModal.classList.remove('flex');
-                        sessionStorage.setItem(modalStorageKey, 'true');
-                    }
-                });
-
-                window.addEventListener('beforeunload', () => {
-                    sessionStorage.removeItem(modalStorageKey);
-                });
-            }
-
-            const plateInput = document.getElementById('modal-plate-search');
-            const plateFeedback = document.getElementById('modal-plate-feedback');
-            const continueButton = document.getElementById('welcome-modal-close');
-            let hasStartedTyping = false;
-
-            if (plateInput && plateFeedback && continueButton) {
-                const validatePlate = (value, hasStartedTyping) => {
-                    const trimmedValue = value.trim();
-                    let message = '';
-                    let isValid = true;
-
-                    if (hasStartedTyping && trimmedValue === '') {
-                        message = 'La placa no puede estar vacía';
-                        isValid = false;
-                    } else if (trimmedValue.length > 0 && trimmedValue.length < 3) {
-                        message = 'La placa debe tener mínimo 3 caracteres';
-                        isValid = false;
-                    } else if (trimmedValue.length > 6) {
-                        message = 'La placa debe tener máximo 6 caracteres';
-                        isValid = false;
-                    } else if (trimmedValue.length > 0 && /[*@.\-+_=!?#$%&(){}[\]|\\/<>~`]/.test(
-                        trimmedValue)) {
-                        message =
-                            'La placa no puede contener caracteres especiales como asteriscos, arrobas, puntos ni signos';
-                        isValid = false;
-                    } else if (trimmedValue.length >= 3 && trimmedValue.length <= 6) {
-                        message = 'Placa válida';
-                        isValid = true;
-                    }
-
-                    return {
-                        isValid,
-                        message
-                    };
-                };
-
-                const updateValidation = (value) => {
-                    const validation = validatePlate(value, hasStartedTyping);
-
-                    if (!hasStartedTyping && value === '') {
-                        plateFeedback.style.display = 'none';
-                        plateInput.classList.remove('border-red-500', 'border-green-500');
-                        plateInput.classList.add('border-[#372C97]');
-                        continueButton.disabled = true;
-                        continueButton.style.opacity = '0.6';
-                        continueButton.style.cursor = 'not-allowed';
-                    } else {
-                        plateFeedback.style.display = 'block';
-                        plateFeedback.textContent = validation.message;
-
-                        if (validation.isValid) {
-                            plateInput.classList.remove('border-[#372C97]', 'border-red-500');
-                            plateInput.classList.add('border-green-500');
-                            plateFeedback.classList.remove('text-red-500', 'text-red-600');
-                            plateFeedback.classList.add('text-green-500');
-                            plateFeedback.style.color = '#22c55e';
-                            continueButton.disabled = false;
-                            continueButton.style.opacity = '1';
-                            continueButton.style.cursor = 'pointer';
-                        } else {
-                            plateInput.classList.remove('border-[#372C97]', 'border-green-500');
-                            plateInput.classList.add('border-red-500');
-                            plateFeedback.classList.remove('text-green-500', 'text-green-600');
-                            plateFeedback.classList.add('text-red-500');
-                            plateFeedback.style.color = '#ef4444';
-                            continueButton.disabled = true;
-                            continueButton.style.opacity = '0.6';
-                            continueButton.style.cursor = 'not-allowed';
-                        }
-                    }
-                };
-
-                plateInput.addEventListener('input', (e) => {
-                    const value = e.target.value;
-                    if (!hasStartedTyping && value.length > 0) {
-                        hasStartedTyping = true;
-                    }
-                    updateValidation(value);
-                });
-
-                plateInput.addEventListener('blur', (e) => {
-                    const value = e.target.value;
-                    if (hasStartedTyping) {
-                        updateValidation(value);
-                    }
-                });
-
-                continueButton.disabled = true;
-                continueButton.style.opacity = '0.6';
-                continueButton.style.cursor = 'not-allowed';
-            }
+            window.addEventListener('beforeunload', () => {
+                if (plateValidator) {
+                    plateValidator.reset();
+                }
+            });
         });
     </script>
 @endsection
