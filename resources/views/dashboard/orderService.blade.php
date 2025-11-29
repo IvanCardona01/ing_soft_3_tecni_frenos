@@ -54,6 +54,20 @@
     </style>
     <div class="dashboard-fondo">
 
+        <div id="welcome-modal" class="fixed inset-0 bg-black/45 hidden items-center justify-center z-[9999]">
+            <div class="bg-white rounded-2xl p-6 max-w-[420px] w-[90%] shadow-[0_10px_25px_rgba(0,0,0,0.18)] text-center">
+                <h2 class="text-[1.4rem] font-semibold text-[#372C97] mb-2">Nueva orden de servicio</h2>
+                <p class="text-[0.98rem] text-[#444] mb-5">
+                    Por favor diligencia todos los campos obligatorios antes de guardar la orden de servicio.
+                </p>
+                <div class="flex justify-center gap-3">
+                    <button type="button" id="welcome-modal-close" class="btn btn-primary px-4 py-2 fw-bold">
+                        Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="container-content-main md:p-8" style="background-color: #ffffff91; height: 100%;">
             @if (session('status'))
                 <div class="alert alert-success mb-4">
@@ -685,6 +699,42 @@
             document.querySelectorAll('.damage-section').forEach((section) => {
                 new DamageSectionManager(section);
             });
+            const welcomeModal = document.getElementById('welcome-modal');
+            const welcomeModalClose = document.getElementById('welcome-modal-close');
+            const modalStorageKey = 'orderService-modal-shown';
+
+            if (welcomeModal && welcomeModalClose) {
+                const navigationType = performance.getEntriesByType('navigation')[0]?.type;
+                const isRefresh = navigationType === 'reload';
+
+                const modalAlreadyShown = sessionStorage.getItem(modalStorageKey);
+
+                if (!isRefresh && !modalAlreadyShown) {
+                    welcomeModal.classList.remove('hidden');
+                    welcomeModal.classList.add('flex');
+                } else {
+                    welcomeModal.classList.add('hidden');
+                    welcomeModal.classList.remove('flex');
+                }
+
+                welcomeModalClose.addEventListener('click', () => {
+                    welcomeModal.classList.add('hidden');
+                    welcomeModal.classList.remove('flex');
+                    sessionStorage.setItem(modalStorageKey, 'true');
+                });
+
+                welcomeModal.addEventListener('click', (e) => {
+                    if (e.target === welcomeModal) {
+                        welcomeModal.classList.add('hidden');
+                        welcomeModal.classList.remove('flex');
+                        sessionStorage.setItem(modalStorageKey, 'true');
+                    }
+                });
+
+                window.addEventListener('beforeunload', () => {
+                    sessionStorage.removeItem(modalStorageKey);
+                });
+            }
         });
     </script>
 @endsection
