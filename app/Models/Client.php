@@ -15,9 +15,6 @@ class Client extends Model
         'document_number',
         'phone',
         'address',
-        'driver_name',
-        'driver_phone',
-        'email',
     ];
 
     public function vehicles()

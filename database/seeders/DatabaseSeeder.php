@@ -21,5 +21,9 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('Mauricio123*'),
             ]
         );
+
+        $this->call([
+            OrderStatusSeeder::class,
+        ]);
     }
 }

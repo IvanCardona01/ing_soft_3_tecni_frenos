@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\Client;
 use App\Models\Order;
+use App\Models\OrderStatus;
 use App\Models\Vehicle;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -30,6 +31,7 @@ class OrderServiceController extends Controller
         $validated = $request->validated();
 
         $order = DB::transaction(function () use ($validated, $request) {
+            // Guardar solo los datos del cliente (propietario), sin datos del conductor
             $client = Client::updateOrCreate(
                 ['document_number' => $validated['client_document_number']],
                 [
@@ -37,9 +39,6 @@ class OrderServiceController extends Controller
                     'document_type' => $validated['client_document_type'],
                     'phone' => $validated['client_phone'],
                     'address' => $validated['client_address'],
-                    'driver_name' => $validated['driver_name'],
-                    'driver_phone' => $validated['driver_phone'],
-                    'email' => $validated['driver_email'],
                 ]
             );
 
@@ -60,10 +59,18 @@ class OrderServiceController extends Controller
             $testigos = $this->decodeJson($validated['testigos'] ?? null);
             $damageNotes = $this->formatDamageNotes($validated);
 
+            // Obtener el estado "Abierto" por defecto
+            $statusAbierto = OrderStatus::where('slug', 'abierto')->first();
+
+            // Guardar los datos del conductor en la orden para mantener el historial
             return Order::create([
                 'folio_number' => $validated['folio_number'],
                 'user_id' => $request->user()->id,
                 'vehicle_id' => $vehicle->id,
+                'status_id' => $statusAbierto->id,
+                'driver_name' => $validated['driver_name'],
+                'driver_phone' => $validated['driver_phone'],
+                'driver_email' => $validated['driver_email'],
                 'ingreso_en_grua' => (bool) $validated['ingreso_en_grua'],
                 'testigos' => $testigos,
                 'gasolina' => $validated['gasolina'],

@@ -13,6 +13,10 @@ class Order extends Model
         'folio_number',
         'user_id',
         'vehicle_id',
+        'status_id',
+        'driver_name',
+        'driver_phone',
+        'driver_email',
         'ingreso_en_grua',
         'testigos',
         'gasolina',
@@ -32,6 +36,11 @@ class Order extends Model
     public function vehicle()
     {
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(OrderStatus::class);
     }
 }
 
