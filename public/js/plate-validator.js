@@ -1,9 +1,10 @@
 class PlateValidator {
-    constructor(inputId, feedbackId, buttonId) {
+    constructor(inputId, feedbackId, buttonId, onValidPlateCallback = null) {
         this.input = document.getElementById(inputId);
         this.feedback = document.getElementById(feedbackId);
         this.button = document.getElementById(buttonId);
         this.hasStartedTyping = false;
+        this.onValidPlateCallback = onValidPlateCallback;
 
         if (this.input && this.feedback && this.button) {
             this.init();
@@ -98,6 +99,10 @@ class PlateValidator {
         this.disableButton();
     }
 
+    getPlateValue() {
+        return this.input ? this.input.value.trim().toUpperCase() : "";
+    }
+
     init() {
         this.input.addEventListener("input", (e) => {
             const value = e.target.value;
@@ -110,6 +115,18 @@ class PlateValidator {
         this.input.addEventListener("blur", () => {
             if (this.hasStartedTyping) {
                 this.updateValidation(this.input.value);
+            }
+        });
+
+        this.button.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!this.button.disabled && this.onValidPlateCallback) {
+                const plate = this.getPlateValue();
+                if (plate.length >= 3 && plate.length <= 6) {
+                    this.onValidPlateCallback(plate);
+                }
             }
         });
 

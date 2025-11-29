@@ -82,6 +82,28 @@
             </div>
         </div>
 
+        <div id="previous-record-modal" class="fixed inset-0 bg-black/45 hidden items-center justify-center z-[9999]">
+            <div class="bg-white rounded-[20px] p-9 w-[90%] md:max-w-[800px] text-center">
+                <div class="mb-8 max-w-[403px] mx-auto max-h-[122px] h-full">
+                    <img src="{{ asset('images/logo1.png') }}" alt="Logo" class="mx-auto">
+                </div>
+                <p class="text-[#1E1E1E] text-base md:text-xl font-semibold mb-6">
+                    Se encontró un registro previo<br>
+                    para esta placa
+                </p>
+                <div class="flex flex-col md:flex-row justify-center gap-4 mt-8">
+                    <button type="button" id="load-previous-record-btn" class="btn btn-primary font-bold text-lg"
+                        style="background-color: #372C97; color:#F7DE0C; width: 300px; height: 55px; border-radius: 1000px;">
+                        Cargar registro
+                    </button>
+                    <button type="button" id="create-new-order-btn" class="btn btn-primary font-bold text-lg"
+                        style="background-color: #F7DE0C; color:#FFFFFF; width: 300px; height: 55px; border-radius: 1000px;">
+                        Crear nueva orden
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="container-content-main md:p-8" style="background-color: #ffffff91; height: 100%;">
             @if (session('status'))
                 <div class="alert alert-success mb-4">
@@ -153,8 +175,8 @@
                         </div>
                         <div class="form-group">
                             <label for="phone">Teléfono*</label>
-                            <input type="text" id="phone" name="client_phone" placeholder="Digita número de teléfono"
-                                value="{{ old('client_phone') }}" required>
+                            <input type="text" id="phone" name="client_phone"
+                                placeholder="Digita número de teléfono" value="{{ old('client_phone') }}" required>
                             @error('client_phone')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -566,6 +588,7 @@
     <script src="{{ asset('js/witness.js') }}"></script>
     <script src="{{ asset('js/order-service-modal.js') }}"></script>
     <script src="{{ asset('js/plate-validator.js') }}"></script>
+    <script src="{{ asset('js/previous-record-modal.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('slider');
@@ -717,10 +740,77 @@
             });
 
             const isEdit = @json($isEdit ?? false);
-            new OrderServiceModal('welcome-modal', 'welcome-modal-close', isEdit);
+            const welcomeModal = new OrderServiceModal('welcome-modal', 'welcome-modal-close', isEdit, true);
+            const previousRecordModal = new PreviousRecordModal('previous-record-modal', 'load-previous-record-btn',
+                'create-new-order-btn');
+
+            const validatePlateWithService = async (plate) => {
+                try {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute(
+                        'content');
+                    const response = await fetch('{{ route('dashboard.orderService.validatePlate') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken || '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            plate: plate
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.found && data.data) {
+                        previousRecordModal.show();
+                        welcomeModal.hide();
+                    } else {
+                        const vehiclePlateInput = document.getElementById('plate');
+                        if (vehiclePlateInput) {
+                            vehiclePlateInput.value = plate.toUpperCase();
+                            vehiclePlateInput.dispatchEvent(new Event('input', {
+                                bubbles: true
+                            }));
+                            vehiclePlateInput.dispatchEvent(new Event('change', {
+                                bubbles: true
+                            }));
+                            vehiclePlateInput.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center'
+                            });
+                        } else {
+                            console.error('No se encontró el input con id "plate"');
+                        }
+                        welcomeModal.hide();
+                    }
+                } catch (error) {
+                    const vehiclePlateInput = document.getElementById('plate');
+                    if (vehiclePlateInput) {
+                        vehiclePlateInput.value = plate.toUpperCase();
+                        vehiclePlateInput.dispatchEvent(new Event('input', {
+                            bubbles: true
+                        }));
+                        vehiclePlateInput.dispatchEvent(new Event('change', {
+                            bubbles: true
+                        }));
+                        vehiclePlateInput.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    } else {
+                        console.error('No se encontró el input con id "plate"');
+                    }
+                    welcomeModal.hide();
+                }
+            };
 
             const plateValidator = new PlateValidator('modal-plate-search', 'modal-plate-feedback',
-                'welcome-modal-close');
+                'welcome-modal-close', validatePlateWithService);
 
             window.addEventListener('modalClosed', () => {
                 if (plateValidator) {

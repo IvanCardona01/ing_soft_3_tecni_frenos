@@ -1,9 +1,15 @@
 class OrderServiceModal {
-    constructor(modalId, closeButtonId, isEdit = false) {
+    constructor(
+        modalId,
+        closeButtonId,
+        isEdit = false,
+        skipButtonHandler = false
+    ) {
         this.modal = document.getElementById(modalId);
         this.closeButton = document.getElementById(closeButtonId);
         this.storageKey = "orderService-modal-shown";
         this.isEdit = isEdit;
+        this.skipButtonHandler = skipButtonHandler;
 
         if (this.modal && this.closeButton) {
             this.init();
@@ -42,9 +48,11 @@ class OrderServiceModal {
             this.hide();
         }
 
-        this.closeButton.addEventListener("click", () => {
-            this.hide();
-        });
+        if (!this.skipButtonHandler) {
+            this.closeButton.addEventListener("click", () => {
+                this.hide();
+            });
+        }
 
         this.modal.addEventListener("click", (e) => {
             if (e.target === this.modal) {

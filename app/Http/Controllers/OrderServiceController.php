@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Order;
 use App\Models\Vehicle;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -76,6 +77,40 @@ class OrderServiceController extends Controller
         return redirect()
             ->route('dashboard.orderService')
             ->with('status', "Orden creada correctamente. Folio Nª-{$order->folio_number}");
+    }
+
+    public function validatePlate(Request $request): JsonResponse
+    {
+        $plate = strtoupper($request->input('plate', ''));
+
+        if ($plate === 'ABC123') {
+            return response()->json([
+                'found' => true,
+                'data' => [
+                    'client_full_name' => 'Juan Pérez',
+                    'client_document_type' => 'cc',
+                    'client_document_number' => '1234567890',
+                    'client_phone' => '3001234567',
+                    'client_address' => 'Calle 123 #45-67',
+                    'driver_name' => 'Juan Pérez',
+                    'driver_phone' => '3001234567',
+                    'driver_email' => 'juan@example.com',
+                    'vehicle_brand' => 'Toyota',
+                    'vehicle_model' => 'Corolla',
+                    'vehicle_year' => 2020,
+                    'vehicle_plate' => 'ABC123',
+                    'vehicle_cilindraje' => '1600',
+                    'vehicle_vin' => '1HGBH41JXMN109186',
+                    'vehicle_motor' => '1.6L',
+                    'vehicle_kilometraje' => 50000,
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'found' => false,
+            'data' => null
+        ]);
     }
 
     /**
