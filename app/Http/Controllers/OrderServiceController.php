@@ -24,6 +24,43 @@ class OrderServiceController extends Controller
     }
 
     /**
+     * Muestra el detalle de una orden existente.
+     */
+    public function show(Order $order)
+    {
+
+        $order->load(['vehicle.client', 'status']);
+
+        // Preparar datos para la vista
+        $orderData = [
+            'folio_number' => $order->folio_number,
+            'client_full_name' => $order->vehicle->client->full_name ?? '',
+            'client_document_type' => $order->vehicle->client->document_type ?? '',
+            'client_document_number' => $order->vehicle->client->document_number ?? '',
+            'client_phone' => $order->vehicle->client->phone ?? '',
+            'client_address' => $order->vehicle->client->address ?? '',
+            'driver_name' => $order->driver_name ?? '',
+            'driver_phone' => $order->driver_phone ?? '',
+            'driver_email' => $order->driver_email ?? '',
+            'vehicle_brand' => $order->vehicle->brand ?? '',
+            'vehicle_model' => $order->vehicle->model ?? '',
+            'vehicle_year' => $order->vehicle->year ?? '',
+            'vehicle_plate' => $order->vehicle->plate ?? '',
+            'vehicle_cilindraje' => $order->vehicle->cilindraje ?? '',
+            'vehicle_vin' => $order->vehicle->vin ?? '',
+            'vehicle_motor' => $order->vehicle->motor ?? '',
+            'vehicle_kilometraje' => $order->vehicle->kilometraje ?? '',
+            'vehicle_observaciones' => $order->vehicle->observaciones ?? '',
+            'ingreso_en_grua' => $order->ingreso_en_grua ? '1' : '0',
+            'testigos' => $order->testigos ?? [],
+            'gasolina' => $order->gasolina ?? 50,
+            'danos_preexistentes' => $this->parseDamageNotes($order->danos_preexistentes),
+        ];
+
+        return view('dashboard.orderService', compact('order', 'orderData', 'isViewMode'));
+    }
+
+    /**
      * Persiste la orden de servicio con toda la información relacionada.
      */
     public function store(StoreOrderRequest $request): RedirectResponse
@@ -130,6 +167,43 @@ class OrderServiceController extends Controller
         }
 
         return empty($sections) ? null : json_encode($sections);
+    }
+
+    /**
+     * Parsea las notas de daños preexistentes desde JSON.
+     */
+    protected function parseDamageNotes(?string $json): array
+    {
+        if (blank($json)) {
+            return [
+                'front' => ['notes' => '', 'points' => []],
+                'behind' => ['notes' => '', 'points' => []],
+                'left_side' => ['notes' => '', 'points' => []],
+                'right_side' => ['notes' => '', 'points' => []],
+            ];
+        }
+
+        $decoded = json_decode($json, true);
+        if (!is_array($decoded)) {
+            return [
+                'front' => ['notes' => '', 'points' => []],
+                'behind' => ['notes' => '', 'points' => []],
+                'left_side' => ['notes' => '', 'points' => []],
+                'right_side' => ['notes' => '', 'points' => []],
+            ];
+        }
+
+        // Asegurar que todas las secciones existan
+        $sections = ['front', 'behind', 'left_side', 'right_side'];
+        $result = [];
+        foreach ($sections as $section) {
+            $result[$section] = [
+                'notes' => $decoded[$section]['notes'] ?? '',
+                'points' => $decoded[$section]['points'] ?? [],
+            ];
+        }
+
+        return $result;
     }
 }
 

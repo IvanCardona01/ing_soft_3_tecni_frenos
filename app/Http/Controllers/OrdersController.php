@@ -47,49 +47,69 @@ class OrdersController extends Controller
             });
         }
 
-        $orders = $query->get()->map(function ($order) {
-            return [
-                'id' => $order->id,
-                'folio_number' => $order->folio_number,
-                'plate' => $order->vehicle->plate ?? 'N/A',
-                'customer_name' => $order->vehicle->client->full_name ?? 'N/A',
-                'vehicle_model' => $this->formatVehicleModel($order->vehicle),
-                'date' => $order->created_at->format('d/m/Y'),
-                'status' => $order->status->name ?? 'Sin estado',
-                'status_slug' => $order->status->slug ?? null,
-            ];
-        });
+        $orders = $query->get();
 
-        // Obtener estados para el filtro
-        $statuses = OrderStatus::orderBy('id')->get();
+        // Determinar si hay filtros aplicados
+        $hasFilters = $this->hasActiveFilters($request);
 
         return view('dashboard.orders', [
             'orders' => $orders,
-            'statuses' => $statuses,
             'filters' => [
                 'placa' => $request->input('placa', ''),
                 'date_from' => $request->input('date-from', ''),
                 'date_until' => $request->input('date-until', ''),
                 'status' => $request->input('status', 'todas'),
             ],
+            'hasFilters' => $hasFilters,
         ]);
     }
 
+
     /**
-     * Formatea el modelo del vehículo para mostrar.
+     * Verifica si hay filtros activos en la solicitud.
      */
-    private function formatVehicleModel($vehicle): string
+    private function hasActiveFilters(Request $request): bool
     {
-        if (!$vehicle) {
-            return 'N/A';
+        return $request->filled('placa') ||
+            $request->filled('date-from') ||
+            $request->filled('date-until') ||
+            ($request->filled('status') && $request->input('status') !== 'todas');
+    }
+
+    /**
+     * Parsea las notas de daños preexistentes desde JSON.
+     */
+    private function parseDamageNotes(?string $json): array
+    {
+        if (blank($json)) {
+            return [
+                'front' => ['notes' => '', 'points' => []],
+                'behind' => ['notes' => '', 'points' => []],
+                'left_side' => ['notes' => '', 'points' => []],
+                'right_side' => ['notes' => '', 'points' => []],
+            ];
         }
 
-        $parts = array_filter([
-            strtoupper($vehicle->brand ?? ''),
-            strtoupper($vehicle->model ?? ''),
-            $vehicle->year ?? '',
-        ]);
+        $decoded = json_decode($json, true);
+        if (!is_array($decoded)) {
+            return [
+                'front' => ['notes' => '', 'points' => []],
+                'behind' => ['notes' => '', 'points' => []],
+                'left_side' => ['notes' => '', 'points' => []],
+                'right_side' => ['notes' => '', 'points' => []],
+            ];
+        }
 
-        return !empty($parts) ? implode(' ', $parts) : 'N/A';
+        // Asegurar que todas las secciones existan
+        $sections = ['front', 'behind', 'left_side', 'right_side'];
+        $result = [];
+        foreach ($sections as $section) {
+            $result[$section] = [
+                'notes' => $decoded[$section]['notes'] ?? '',
+                'points' => $decoded[$section]['points'] ?? [],
+            ];
+        }
+
+        return $result;
     }
 }
