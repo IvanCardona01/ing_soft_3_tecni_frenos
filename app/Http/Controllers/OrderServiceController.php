@@ -28,9 +28,11 @@ class OrderServiceController extends Controller
      */
     public function show(Order $order)
     {
-
+      
+        return $order;
+        
         $order->load(['vehicle.client', 'status']);
-
+        
         // Preparar datos para la vista
         $orderData = [
             'folio_number' => $order->folio_number,
