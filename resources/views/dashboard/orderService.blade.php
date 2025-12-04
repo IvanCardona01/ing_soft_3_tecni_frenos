@@ -767,7 +767,7 @@
                     const data = await response.json();
 
                     if (data.found && data.data) {
-                        previousRecordModal.show();
+                        previousRecordModal.show(data);
                         welcomeModal.hide();
                     } else {
                         const vehiclePlateInput = document.getElementById('plate');

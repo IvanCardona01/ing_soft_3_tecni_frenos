@@ -132,7 +132,8 @@ class OrderServiceController extends Controller
 
         $lastOrder = null;
         if ($foundVehicle) {
-            $lastOrder = Order::where('vehicle_id', $foundVehicle->id)
+            $lastOrder = Order::with(['vehicle.client'])
+                ->where('vehicle_id', $foundVehicle->id)
                 ->orderBy('created_at', 'desc')
                 ->first();
         }
