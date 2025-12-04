@@ -83,22 +83,21 @@
         </div>
 
         <div id="previous-record-modal" class="fixed inset-0 bg-black/45 hidden items-center justify-center z-[9999]">
-            <div class="bg-white rounded-[20px] p-9 w-[90%] md:max-w-[800px] text-center">
-                <div class="mb-8 max-w-[403px] mx-auto max-h-[122px] h-full">
-                    <img src="{{ asset('images/logo1.png') }}" alt="Logo" class="mx-auto">
-                </div>
-                <p class="text-[#1E1E1E] text-base md:text-xl font-semibold mb-6">
-                    Se encontró un registro previo<br>
-                    para esta placa
+            <div class="bg-white rounded-[20px] p-9 w-[90%] md:max-w-[700px] text-center">
+                <p class="text-[#282828] text-xl md:text-[28px] font-semibold mb-2 md:mb-6 text-start">
+                    ¡Registro encontrado!
                 </p>
-                <div class="flex flex-col md:flex-row justify-center gap-4 mt-8">
+                <p class="text-[#282828]/80 text-lg md:text-[24px] font-thin mb-2 md:mb-6 text-start">
+                    ¿desea restaurar la información anterior?
+                </p>
+                <div class="flex flex-col md:flex-row justify-center gap-4 mt-6 md:mt-8">
                     <button type="button" id="load-previous-record-btn" class="btn btn-primary font-bold text-lg"
-                        style="background-color: #372C97; color:#F7DE0C; width: 300px; height: 55px; border-radius: 1000px;">
-                        Cargar registro
+                        style="background-color: #FFFFFF; color:#372C97; width: 300px; height: 55px; border-radius: 1000px; border: 1px solid #372C97;">
+                        Cancelar
                     </button>
                     <button type="button" id="create-new-order-btn" class="btn btn-primary font-bold text-lg"
                         style="background-color: #F7DE0C; color:#FFFFFF; width: 300px; height: 55px; border-radius: 1000px;">
-                        Crear nueva orden
+                        Aceptar
                     </button>
                 </div>
             </div>
@@ -175,8 +174,8 @@
                         </div>
                         <div class="form-group">
                             <label for="phone">Teléfono*</label>
-                            <input type="text" id="phone" name="client_phone"
-                                placeholder="Digita número de teléfono" value="{{ old('client_phone') }}" required>
+                            <input type="text" id="phone" name="client_phone" placeholder="Digita número de teléfono"
+                                value="{{ old('client_phone') }}" required>
                             @error('client_phone')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
