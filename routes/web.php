@@ -21,12 +21,10 @@ Route::middleware('auth')->group(function () {
 
 
     // Order Service
-    
+
     Route::get('/dashboard/order-service', [OrderServiceController::class, 'create'])->name('dashboard.orderService');
     Route::post('/dashboard/order-service', [OrderServiceController::class, 'store'])->name('dashboard.orderService.store');
     Route::get('/dashboard/order-service/{order}', [OrderServiceController::class, 'show'])->name('dashboard.orderService.show');
-
-
-    // Orders
+    Route::post('/dashboard/order-service/validate-plate', [OrderServiceController::class, 'validatePlate'])->name('dashboard.orderService.validatePlate');
     Route::get('/dashboard/orders', [OrdersController::class, 'index'])->name('dashboard.orders');
 });

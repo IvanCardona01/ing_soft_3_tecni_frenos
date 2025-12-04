@@ -4,7 +4,7 @@
     <div class="dashboard-fondo">
 
         <div class="min-h-[calc(100vh)] w-full flex flex-col items-center justify-center gap-6 md:flex-row md:gap-10">
-            <a href="{{ route('dashboard.orderService') }}"
+            <a href="{{ route('dashboard.orderService', ['isEdit' => 'false']) }}"
                 class="flex w-full max-w-[18rem] flex-row overflow-hidden rounded-[28px] shadow-md transition hover:shadow-lg md:w-[24rem] md:max-w-none h-[110px] md:h-[150px]">
                 <div
                     class="flex h-full w-[100px] max-w-[100px] items-center justify-center bg-[#372C97] md:h-full md:w-[160px] md:max-w-[160px]">

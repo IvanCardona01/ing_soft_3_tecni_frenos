@@ -8,8 +8,7 @@
 @section('content')
 
     <div class="container d-flex flex-column align-items-center justify-content-start">
-
-        <div class="logo-container md:mt-[165px] mt-0 mb-4">
+        <div class="logo-container mt-[165px]">
             <img src="{{ asset('images/logo1.png') }}" alt="Logo">
         </div>
 

@@ -8,19 +8,23 @@ use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\Vehicle;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderServiceController extends Controller
 {
     /**
      * Muestra el formulario de creación de órdenes de servicio con un folio único.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
         $folioNumber = $this->generateUniqueFolio();
+        $isEdit = $request->query('isEdit', 'false') === 'true';
 
-        return view('dashboard.orderService', compact('folioNumber'));
+        return view('dashboard.orderService', compact('folioNumber', 'isEdit'));
     }
 
     /**
@@ -28,11 +32,11 @@ class OrderServiceController extends Controller
      */
     public function show(Order $order)
     {
-      
+
         return $order;
-        
+
         $order->load(['vehicle.client', 'status']);
-        
+
         // Preparar datos para la vista
         $orderData = [
             'folio_number' => $order->folio_number,
@@ -122,6 +126,33 @@ class OrderServiceController extends Controller
             ->with('status', "Orden creada correctamente. Folio Nª-{$order->folio_number}");
     }
 
+    public function validatePlate(Request $request)
+    {
+        $foundVehicle = Vehicle::with('client')->where('plate', strtoupper($request->input('plate', '')))->first();
+
+        $lastOrder = null;
+        if ($foundVehicle) {
+            $lastOrder = Order::where('vehicle_id', $foundVehicle->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+        }
+
+        Log::info('Mensaje informativo', ['data' => $foundVehicle]);
+        if ($foundVehicle) {
+            return response()->json([
+                'found' => true,
+                'data' => $foundVehicle,
+                'lastOrder' => $lastOrder
+            ]);
+        }
+
+        return response()->json([
+            'found' => false,
+            'data' => null,
+            'lastOrder' => null,
+        ]);
+    }
+
     /**
      * Genera un folio de seis dígitos que no exista en la base de datos.
      */
@@ -208,4 +239,3 @@ class OrderServiceController extends Controller
         return $result;
     }
 }
-

@@ -1,7 +1,6 @@
 @extends('layouts.vertical', ['title' => 'Dashboard', 'sub_title' => 'Orden Servicio', 'mode' => $mode ?? '', 'demo' => $demo ?? ''])
 
 @section('content')
-
     <div class="orders-background">
         <div class="xl:px-[74px] px-[20px] py-2 md:mt-[160px] mt-[100px] pb-20">
             <div

@@ -54,6 +54,56 @@
     </style>
     <div class="dashboard-fondo">
 
+        <div id="welcome-modal" class="fixed inset-0 bg-black/45 hidden items-center justify-center z-[9999]">
+            <div class="bg-white rounded-[20px] p-9 w-[90%] md:max-w-[800px] text-center">
+                <div class="mb-8 max-w-[403px] mx-auto max-h-[122px] h-full">
+                    <img src="{{ asset('images/logo1.png') }}" alt="Logo" class="mx-auto">
+                </div>
+                <p class="text-[#1E1E1E] text-base md:text-xl font-semibold mb-6">
+                    Ingrese el numero de placa para validar<br>
+                    registros anteriores
+                </p>
+                <div class="max-w-[400px] mx-auto mb-6">
+                    <div class="relative">
+                        <input type="text" id="modal-plate-search" placeholder="Buscar por placa"
+                            class="w-full border-2 border-[#372C97] rounded-xl py-3 pl-4 pr-12 placeholder-[#CBCBCB] focus:outline-none focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]">
+                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2">
+                            <img src="{{ asset('icons/searcher-icon.svg') }}" alt="Buscar" class="w-5 h-5" />
+                        </button>
+                    </div>
+                    <div id="modal-plate-feedback" class="text-start mt-1 text-sm" style="display: none;"></div>
+                </div>
+                <div class="flex justify-center">
+                    <button type="button" id="welcome-modal-close" class="btn btn-primary font-bold text-lg mt-4"
+                        style="background-color: #F7DE0C; color:#FFFFFF; width: 300px; height: 55px; border-radius: 1000px;">
+                        Continuar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="previous-record-modal" class="fixed inset-0 bg-black/45 hidden items-center justify-center z-[9999]">
+            <div class="bg-white rounded-[20px] p-9 w-[90%] md:max-w-[800px] text-center">
+                <div class="mb-8 max-w-[403px] mx-auto max-h-[122px] h-full">
+                    <img src="{{ asset('images/logo1.png') }}" alt="Logo" class="mx-auto">
+                </div>
+                <p class="text-[#1E1E1E] text-base md:text-xl font-semibold mb-6">
+                    Se encontró un registro previo<br>
+                    para esta placa
+                </p>
+                <div class="flex flex-col md:flex-row justify-center gap-4 mt-8">
+                    <button type="button" id="load-previous-record-btn" class="btn btn-primary font-bold text-lg"
+                        style="background-color: #372C97; color:#F7DE0C; width: 300px; height: 55px; border-radius: 1000px;">
+                        Cargar registro
+                    </button>
+                    <button type="button" id="create-new-order-btn" class="btn btn-primary font-bold text-lg"
+                        style="background-color: #F7DE0C; color:#FFFFFF; width: 300px; height: 55px; border-radius: 1000px;">
+                        Crear nueva orden
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="container-content-main md:p-8" style="background-color: #ffffff91; height: 100%;">
             @if (session('status'))
                 <div class="alert alert-success mb-4">
@@ -125,8 +175,8 @@
                         </div>
                         <div class="form-group">
                             <label for="phone">Teléfono*</label>
-                            <input type="text" id="phone" name="client_phone" placeholder="Digita número de teléfono"
-                                value="{{ old('client_phone') }}" required>
+                            <input type="text" id="phone" name="client_phone"
+                                placeholder="Digita número de teléfono" value="{{ old('client_phone') }}" required>
                             @error('client_phone')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -157,8 +207,8 @@
                         </div>
                         <div class="form-group">
                             <label for="email">Correo Electrónico*</label>
-                            <input type="email" id="email" name="driver_email" placeholder="Digita correo electrónico"
-                                value="{{ old('driver_email') }}" required>
+                            <input type="email" id="email" name="driver_email"
+                                placeholder="Digita correo electrónico" value="{{ old('driver_email') }}" required>
                             @error('driver_email')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -537,6 +587,9 @@
 @section('script')
     <script src="{{ asset('js/witness.js') }}"></script>
     <script src="{{ asset('js/damage-points.js') }}"></script>
+    <script src="{{ asset('js/order-service-modal.js') }}"></script>
+    <script src="{{ asset('js/plate-validator.js') }}"></script>
+    <script src="{{ asset('js/previous-record-modal.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('slider');
@@ -586,6 +639,191 @@
                 });
                 syncWitnessStates();
             }
+
+            class DamageSectionManager {
+                constructor(sectionElement) {
+                    this.sectionElement = sectionElement;
+                    this.sectionKey = sectionElement.dataset.damageSection;
+                    this.input = sectionElement.querySelector(`input[name="damage_points_${this.sectionKey}"]`);
+                    this.canvas = sectionElement.querySelector('.damage-canvas');
+                    this.pinLayer = sectionElement.querySelector('.damage-pins');
+                    this.points = [];
+
+                    if (!this.canvas || !this.pinLayer || !this.input) {
+                        return;
+                    }
+
+                    this.loadInitialPoints();
+                    this.canvas.addEventListener('click', (event) => this.handleCanvasClick(event));
+                }
+
+                handleCanvasClick(event) {
+                    if (event.target.closest('.damage-pin')) {
+                        return;
+                    }
+
+                    const rect = this.canvas.getBoundingClientRect();
+                    const x = ((event.clientX - rect.left) / rect.width) * 100;
+                    const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+                    const note = prompt('Describe el daño identificado en esta zona:');
+                    if (!note || !note.trim()) {
+                        return;
+                    }
+
+                    const point = {
+                        id: this.generateId(),
+                        x: Number(x.toFixed(2)),
+                        y: Number(y.toFixed(2)),
+                        note: note.trim(),
+                    };
+
+                    this.points.push(point);
+                    this.renderPoint(point);
+                    this.persist();
+                }
+
+                renderPoint(point) {
+                    const pin = document.createElement('button');
+                    pin.type = 'button';
+                    pin.className = 'damage-pin';
+                    pin.style.left = `${point.x}%`;
+                    pin.style.top = `${point.y}%`;
+                    pin.title = point.note;
+                    pin.setAttribute('aria-label', point.note);
+                    pin.dataset.pointId = point.id;
+
+                    pin.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        if (confirm('¿Eliminar este punto de daño?')) {
+                            this.removePoint(point.id);
+                        }
+                    });
+
+                    this.pinLayer.appendChild(pin);
+                }
+
+                removePoint(id) {
+                    this.points = this.points.filter((point) => point.id !== id);
+                    const pin = this.pinLayer.querySelector(`[data-point-id="${id}"]`);
+                    if (pin) {
+                        pin.remove();
+                    }
+                    this.persist();
+                }
+
+                loadInitialPoints() {
+                    let initial = [];
+                    try {
+                        initial = JSON.parse(this.input.value || '[]');
+                        if (!Array.isArray(initial)) {
+                            initial = [];
+                        }
+                    } catch (error) {
+                        initial = [];
+                    }
+
+                    this.points = initial;
+                    this.points.forEach((point) => this.renderPoint(point));
+                }
+
+                persist() {
+                    this.input.value = JSON.stringify(this.points);
+                }
+
+                generateId() {
+                    return `damage-${Math.random().toString(36).slice(2, 10)}-${Date.now()}`;
+                }
+            }
+
+            document.querySelectorAll('.damage-section').forEach((section) => {
+                new DamageSectionManager(section);
+            });
+
+            const isEdit = @json($isEdit ?? false);
+            const welcomeModal = new OrderServiceModal('welcome-modal', 'welcome-modal-close', isEdit, true);
+            const previousRecordModal = new PreviousRecordModal('previous-record-modal', 'load-previous-record-btn',
+                'create-new-order-btn');
+
+            const validatePlateWithService = async (plate) => {
+                try {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute(
+                        'content');
+                    const response = await fetch('{{ route('dashboard.orderService.validatePlate') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken || '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            plate: plate
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+
+                    const data = await response.json();
+
+                    if (data.found && data.data) {
+                        previousRecordModal.show();
+                        welcomeModal.hide();
+                    } else {
+                        const vehiclePlateInput = document.getElementById('plate');
+                        if (vehiclePlateInput) {
+                            vehiclePlateInput.value = plate.toUpperCase();
+                            vehiclePlateInput.dispatchEvent(new Event('input', {
+                                bubbles: true
+                            }));
+                            vehiclePlateInput.dispatchEvent(new Event('change', {
+                                bubbles: true
+                            }));
+                            vehiclePlateInput.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center'
+                            });
+                        } else {
+                            console.error('No se encontró el input con id "plate"');
+                        }
+                        welcomeModal.hide();
+                    }
+                } catch (error) {
+                    const vehiclePlateInput = document.getElementById('plate');
+                    if (vehiclePlateInput) {
+                        vehiclePlateInput.value = plate.toUpperCase();
+                        vehiclePlateInput.dispatchEvent(new Event('input', {
+                            bubbles: true
+                        }));
+                        vehiclePlateInput.dispatchEvent(new Event('change', {
+                            bubbles: true
+                        }));
+                        vehiclePlateInput.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    } else {
+                        console.error('No se encontró el input con id "plate"');
+                    }
+                    welcomeModal.hide();
+                }
+            };
+
+            const plateValidator = new PlateValidator('modal-plate-search', 'modal-plate-feedback',
+                'welcome-modal-close', validatePlateWithService);
+
+            window.addEventListener('modalClosed', () => {
+                if (plateValidator) {
+                    plateValidator.reset();
+                }
+            });
+
+            window.addEventListener('beforeunload', () => {
+                if (plateValidator) {
+                    plateValidator.reset();
+                }
+            });
         });
     </script>
 @endsection
