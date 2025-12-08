@@ -51,6 +51,72 @@
             font-size: 0.9rem;
             color: #555;
         }
+
+        /* Damage Modal Styles */
+        #damage-register-modal,
+        #damage-detail-modal {
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .damage-modal-close,
+        .damage-detail-close {
+            transition: color 0.2s;
+        }
+
+        .damage-modal-close:hover,
+        .damage-detail-close:hover {
+            color: #1f2937;
+        }
+
+        .btn {
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #372C97;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2a1f7a;
+        }
+
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        #damage-detail-note {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
     <div class="dashboard-fondo">
 
@@ -638,106 +704,6 @@
                 });
                 syncWitnessStates();
             }
-
-            class DamageSectionManager {
-                constructor(sectionElement) {
-                    this.sectionElement = sectionElement;
-                    this.sectionKey = sectionElement.dataset.damageSection;
-                    this.input = sectionElement.querySelector(`input[name="damage_points_${this.sectionKey}"]`);
-                    this.canvas = sectionElement.querySelector('.damage-canvas');
-                    this.pinLayer = sectionElement.querySelector('.damage-pins');
-                    this.points = [];
-
-                    if (!this.canvas || !this.pinLayer || !this.input) {
-                        return;
-                    }
-
-                    this.loadInitialPoints();
-                    this.canvas.addEventListener('click', (event) => this.handleCanvasClick(event));
-                }
-
-                handleCanvasClick(event) {
-                    if (event.target.closest('.damage-pin')) {
-                        return;
-                    }
-
-                    const rect = this.canvas.getBoundingClientRect();
-                    const x = ((event.clientX - rect.left) / rect.width) * 100;
-                    const y = ((event.clientY - rect.top) / rect.height) * 100;
-
-                    const note = prompt('Describe el daño identificado en esta zona:');
-                    if (!note || !note.trim()) {
-                        return;
-                    }
-
-                    const point = {
-                        id: this.generateId(),
-                        x: Number(x.toFixed(2)),
-                        y: Number(y.toFixed(2)),
-                        note: note.trim(),
-                    };
-
-                    this.points.push(point);
-                    this.renderPoint(point);
-                    this.persist();
-                }
-
-                renderPoint(point) {
-                    const pin = document.createElement('button');
-                    pin.type = 'button';
-                    pin.className = 'damage-pin';
-                    pin.style.left = `${point.x}%`;
-                    pin.style.top = `${point.y}%`;
-                    pin.title = point.note;
-                    pin.setAttribute('aria-label', point.note);
-                    pin.dataset.pointId = point.id;
-
-                    pin.addEventListener('click', (event) => {
-                        event.stopPropagation();
-                        if (confirm('¿Eliminar este punto de daño?')) {
-                            this.removePoint(point.id);
-                        }
-                    });
-
-                    this.pinLayer.appendChild(pin);
-                }
-
-                removePoint(id) {
-                    this.points = this.points.filter((point) => point.id !== id);
-                    const pin = this.pinLayer.querySelector(`[data-point-id="${id}"]`);
-                    if (pin) {
-                        pin.remove();
-                    }
-                    this.persist();
-                }
-
-                loadInitialPoints() {
-                    let initial = [];
-                    try {
-                        initial = JSON.parse(this.input.value || '[]');
-                        if (!Array.isArray(initial)) {
-                            initial = [];
-                        }
-                    } catch (error) {
-                        initial = [];
-                    }
-
-                    this.points = initial;
-                    this.points.forEach((point) => this.renderPoint(point));
-                }
-
-                persist() {
-                    this.input.value = JSON.stringify(this.points);
-                }
-
-                generateId() {
-                    return `damage-${Math.random().toString(36).slice(2, 10)}-${Date.now()}`;
-                }
-            }
-
-            document.querySelectorAll('.damage-section').forEach((section) => {
-                new DamageSectionManager(section);
-            });
 
             const isEdit = @json($isEdit ?? false);
             const welcomeModal = new OrderServiceModal('welcome-modal', 'welcome-modal-close', isEdit, true);

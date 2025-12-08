@@ -51,6 +51,72 @@
             font-size: 0.9rem;
             color: #555;
         }
+
+        /* Damage Modal Styles */
+        #damage-register-modal,
+        #damage-detail-modal {
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .damage-modal-close,
+        .damage-detail-close {
+            transition: color 0.2s;
+        }
+
+        .damage-modal-close:hover,
+        .damage-detail-close:hover {
+            color: #1f2937;
+        }
+
+        .btn {
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #372C97;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2a1f7a;
+        }
+
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        #damage-detail-note {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
     <div class="dashboard-fondo">
 
