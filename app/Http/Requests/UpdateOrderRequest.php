@@ -54,6 +54,18 @@ class UpdateOrderRequest extends FormRequest
             'damage_points_behind' => ['nullable', 'json'],
             'damage_points_left_side' => ['nullable', 'json'],
             'damage_points_right_side' => ['nullable', 'json'],
+
+            'quotation' => ['nullable', 'array'],
+            'quotation.notes' => ['nullable', 'string'],
+            'quotation.segments' => ['nullable', 'array'],
+            'quotation.segments.*.id' => ['nullable', 'integer', 'exists:quotation_segments,id'],
+            'quotation.segments.*.name' => ['nullable', 'string', 'max:120'],
+            'quotation.segments.*.items' => ['nullable', 'array'],
+            'quotation.segments.*.items.*.id' => ['nullable', 'integer', 'exists:quotation_items,id'],
+            'quotation.segments.*.items.*.name' => ['nullable', 'string', 'max:150'],
+            'quotation.segments.*.items.*.quantity' => ['nullable', 'integer', 'min:1'],
+            'quotation.segments.*.items.*.unit_value' => ['nullable', 'numeric', 'min:0'],
+            'quotation.segments.*.items.*.is_authorized' => ['nullable', 'boolean'],
         ];
     }
 

@@ -7,6 +7,9 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Client;
 use App\Models\Order;
 use App\Models\OrderStatus;
+use App\Models\Quotation;
+use App\Models\QuotationSegment;
+use App\Models\QuotationItem;
 use App\Models\Vehicle;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -33,7 +36,11 @@ class OrderServiceController extends Controller
      */
     public function show(Order $order): View
     {
-        $order->load(['vehicle.client', 'status']);
+        $order->load([
+            'vehicle.client', 
+            'status',
+            'quotation.segments.items'
+        ]);
         
         $damageData = $this->parseDamageNotes($order->danos_preexistentes);
         
@@ -177,7 +184,10 @@ class OrderServiceController extends Controller
                 'danos_preexistentes' => $damageNotes,
             ]);
 
-            return $order->fresh(['vehicle.client', 'status']);
+            // Guardar o actualizar la cotización
+            $this->saveQuotation($order, $validated['quotation'] ?? []);
+
+            return $order->fresh(['vehicle.client', 'status', 'quotation.segments.items']);
         });
 
         return redirect()
@@ -269,5 +279,122 @@ class OrderServiceController extends Controller
         }
 
         return $result;
+    }
+
+    /**
+     * Guarda o actualiza la cotización con sus segmentos e items.
+     */
+    protected function saveQuotation(Order $order, array $quotationData): void
+    {
+        // Crear o actualizar la cotización (siempre, incluso si está vacía)
+        $quotation = Quotation::updateOrCreate(
+            ['order_id' => $order->id],
+            ['notes' => $quotationData['notes'] ?? null]
+        );
+
+        // Obtener IDs de segmentos existentes
+        $existingSegmentIds = $quotation->segments()->pluck('id')->toArray();
+        $receivedSegmentIds = [];
+
+        // Procesar segmentos
+        if (isset($quotationData['segments']) && is_array($quotationData['segments']) && !empty($quotationData['segments'])) {
+            foreach ($quotationData['segments'] as $index => $segmentData) {
+                // Validar que el segmento tenga nombre
+                if (empty($segmentData['name']) || trim($segmentData['name']) === '') {
+                    continue;
+                }
+
+                // Si tiene ID, actualizar; si no, crear nuevo
+                if (!empty($segmentData['id'])) {
+                    $segment = QuotationSegment::where('id', $segmentData['id'])
+                        ->where('quotation_id', $quotation->id)
+                        ->first();
+                    
+                    if ($segment) {
+                        $segment->update([
+                            'name' => trim($segmentData['name']),
+                            'position' => $index,
+                        ]);
+                    } else {
+                        $segment = QuotationSegment::create([
+                            'quotation_id' => $quotation->id,
+                            'name' => trim($segmentData['name']),
+                            'position' => $index,
+                        ]);
+                    }
+                } else {
+                    $segment = QuotationSegment::create([
+                        'quotation_id' => $quotation->id,
+                        'name' => trim($segmentData['name']),
+                        'position' => $index,
+                    ]);
+                }
+
+                $receivedSegmentIds[] = $segment->id;
+
+                // Obtener IDs de items existentes del segmento
+                $existingItemIds = $segment->items()->pluck('id')->toArray();
+                $receivedItemIds = [];
+
+                // Procesar items del segmento
+                if (isset($segmentData['items']) && is_array($segmentData['items']) && !empty($segmentData['items'])) {
+                    foreach ($segmentData['items'] as $itemData) {
+                        // Validar que el item tenga nombre
+                        if (empty($itemData['name']) || trim($itemData['name']) === '') {
+                            continue;
+                        }
+
+                        // Determinar si está autorizado (checkbox marcado = '1', no marcado = no existe en el array)
+                        $isAuthorized = isset($itemData['is_authorized']) && $itemData['is_authorized'] == '1';
+
+                        // Si tiene ID, actualizar; si no, crear nuevo
+                        if (!empty($itemData['id'])) {
+                            $item = QuotationItem::where('id', $itemData['id'])
+                                ->where('segment_id', $segment->id)
+                                ->first();
+                            
+                            if ($item) {
+                                $item->update([
+                                    'name' => trim($itemData['name']),
+                                    'quantity' => (int) ($itemData['quantity'] ?? 1),
+                                    'unit_value' => (float) ($itemData['unit_value'] ?? 0),
+                                    'is_authorized' => $isAuthorized,
+                                ]);
+                            } else {
+                                $item = QuotationItem::create([
+                                    'segment_id' => $segment->id,
+                                    'name' => trim($itemData['name']),
+                                    'quantity' => (int) ($itemData['quantity'] ?? 1),
+                                    'unit_value' => (float) ($itemData['unit_value'] ?? 0),
+                                    'is_authorized' => $isAuthorized,
+                                ]);
+                            }
+                        } else {
+                            $item = QuotationItem::create([
+                                'segment_id' => $segment->id,
+                                'name' => trim($itemData['name']),
+                                'quantity' => (int) ($itemData['quantity'] ?? 1),
+                                'unit_value' => (float) ($itemData['unit_value'] ?? 0),
+                                'is_authorized' => $isAuthorized,
+                            ]);
+                        }
+
+                        $receivedItemIds[] = $item->id;
+                    }
+                }
+
+                // Eliminar items que no están en los datos recibidos
+                $itemsToDelete = array_diff($existingItemIds, $receivedItemIds);
+                if (!empty($itemsToDelete)) {
+                    QuotationItem::whereIn('id', $itemsToDelete)->delete();
+                }
+            }
+        }
+
+        // Eliminar segmentos que no están en los datos recibidos
+        $segmentsToDelete = array_diff($existingSegmentIds, $receivedSegmentIds);
+        if (!empty($segmentsToDelete)) {
+            QuotationSegment::whereIn('id', $segmentsToDelete)->delete();
+        }
     }
 }

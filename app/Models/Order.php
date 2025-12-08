@@ -43,6 +43,11 @@ class Order extends Model
         return $this->belongsTo(OrderStatus::class);
     }
 
+    public function quotation()
+    {
+        return $this->hasOne(Quotation::class);
+    }
+
     /**
      * Accessor para obtener la placa del vehículo.
      */

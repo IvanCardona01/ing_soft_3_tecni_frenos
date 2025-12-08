@@ -117,6 +117,135 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
+
+        /* Quotation Styles */
+        .quotation-container {
+            padding: 1rem;
+        }
+
+        .quotation-segment {
+            background-color: #f9fafb;
+        }
+
+        .quotation-item {
+            transition: background-color 0.2s;
+        }
+
+        .quotation-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .segment-total,
+        .quotation-grand-total {
+            font-size: 1.1rem;
+        }
+
+        .btn-add-segment,
+        .btn-add-item {
+            margin-top: 0.5rem;
+        }
+
+        /* Custom Checkbox Styles */
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        .custom-checkbox .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            background-color: #fff;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .custom-checkbox:hover .checkmark {
+            border-color: #372C97;
+            background-color: #f3f4f6;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked ~ .checkmark {
+            background-color: #372C97;
+            border-color: #372C97;
+        }
+
+        .custom-checkbox .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 7px;
+            top: 3px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Responsive Quotation Items */
+        @media (max-width: 768px) {
+            .quotation-item-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .quotation-item-field {
+                width: 100%;
+            }
+
+            .quotation-item-actions {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .custom-checkbox {
+                width: 28px;
+                height: 28px;
+            }
+
+            .custom-checkbox .checkmark {
+                width: 28px;
+                height: 28px;
+            }
+
+            .custom-checkbox .checkmark:after {
+                left: 9px;
+                top: 4px;
+                width: 7px;
+                height: 14px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .quotation-item-grid {
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                gap: 0.5rem;
+            }
+        }
     </style>
     <div class="dashboard-fondo">
 
@@ -585,6 +714,199 @@
 
                 </div>
 
+                <div class="data-client" id="quotation-section">
+                    <span>Cotización</span>
+                    <div class="quotation-container">
+                        <div class="quotation-notes mb-4">
+                            <label for="quotation_notes" class="form-label">Notas de la cotización</label>
+                            <textarea id="quotation_notes" name="quotation[notes]" rows="2" 
+                                class="w-full border border-[#ccc] rounded px-3 py-2 text-base"
+                                placeholder="Notas adicionales sobre la cotización">{{ old('quotation.notes', $order->quotation->notes ?? '') }}</textarea>
+                        </div>
+
+                        <div id="quotation-segments-container">
+                            @php
+                                $quotation = $order->quotation ?? null;
+                                $segments = $quotation ? $quotation->segments : collect();
+                            @endphp
+                            
+                            @if($segments->count() > 0)
+                                @foreach($segments as $segmentIndex => $segment)
+                                    <div class="quotation-segment mb-4 p-4 border border-[#ccc] rounded" data-segment-index="{{ $segmentIndex }}">
+                                        <div class="segment-header flex items-center justify-between mb-3">
+                                            <input type="hidden" name="quotation[segments][{{ $segmentIndex }}][id]" value="{{ $segment->id }}">
+                                            <input type="text" 
+                                                name="quotation[segments][{{ $segmentIndex }}][name]" 
+                                                value="{{ old("quotation.segments.{$segmentIndex}.name", $segment->name) }}"
+                                                placeholder="Nombre del segmento"
+                                                class="segment-name flex-1 border border-[#ccc] rounded px-3 py-2 text-base font-semibold mr-2"
+                                                required>
+                                            <button type="button" class="btn-remove-segment btn-danger px-3 py-1 rounded text-white text-sm">
+                                                Eliminar Segmento
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="segment-items">
+                                            @foreach($segment->items as $itemIndex => $item)
+                                                <div class="quotation-item mb-3 p-4 bg-gray-50 rounded-lg border border-gray-200" data-item-index="{{ $itemIndex }}">
+                                                    <input type="hidden" name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][id]" value="{{ $item->id }}">
+                                                    
+                                                    <!-- Desktop/Tablet Layout -->
+                                                    <div class="hidden md:grid md:grid-cols-12 md:gap-3 md:items-center quotation-item-grid">
+                                                        <div class="md:col-span-4 quotation-item-field">
+                                                            <label class="block text-xs text-gray-600 mb-1">Servicio/Producto</label>
+                                                            <input type="text" 
+                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][name]" 
+                                                                value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.name", $item->name) }}"
+                                                                placeholder="Nombre del servicio/producto"
+                                                                class="item-name-desktop w-full border border-[#ccc] rounded-lg px-3 py-2 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
+                                                                data-required="true">
+                                                        </div>
+                                                        <div class="md:col-span-1 quotation-item-field">
+                                                            <label class="block text-xs text-gray-600 mb-1">Cantidad</label>
+                                                            <input type="number" 
+                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][quantity]" 
+                                                                value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.quantity", $item->quantity) }}"
+                                                                placeholder="Cant."
+                                                                min="1"
+                                                                class="item-quantity-desktop w-full border border-[#ccc] rounded-lg px-3 py-2 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
+                                                                data-required="true">
+                                                        </div>
+                                                        <div class="md:col-span-2 quotation-item-field">
+                                                            <label class="block text-xs text-gray-600 mb-1">Precio Unitario</label>
+                                                            <input type="number" 
+                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][unit_value]" 
+                                                                value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.unit_value", $item->unit_value) }}"
+                                                                placeholder="Precio"
+                                                                min="0"
+                                                                step="0.01"
+                                                                class="item-unit-value-desktop w-full border border-[#ccc] rounded-lg px-3 py-2 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
+                                                                data-required="true">
+                                                        </div>
+                                                        <div class="md:col-span-2 quotation-item-field">
+                                                            <label class="block text-xs text-gray-600 mb-1">Total</label>
+                                                            <div class="item-total font-semibold text-[#372C97] text-lg py-2">
+                                                                ${{ number_format($item->quantity * $item->unit_value, 2, ',', '.') }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="md:col-span-2 quotation-item-field">
+                                                            <label class="block text-xs text-gray-600 mb-2 text-center">Autorizar</label>
+                                                            <div class="flex items-center justify-center">
+                                                                <label class="custom-checkbox">
+                                                                    <input type="checkbox" 
+                                                                        name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][is_authorized]" 
+                                                                        value="1"
+                                                                        {{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.is_authorized", $item->is_authorized) ? 'checked' : '' }}
+                                                                        class="item-authorized">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="md:col-span-1 quotation-item-field">
+                                                            <label class="block text-xs text-gray-600 mb-1 text-center">Acción</label>
+                                                            <button type="button" class="btn-remove-item btn-danger px-3 py-2 rounded-lg text-white text-sm w-full hover:bg-red-600 transition">
+                                                                Eliminar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Mobile Layout -->
+                                                    <div class="md:hidden quotation-item-field">
+                                                        <div class="mb-3">
+                                                            <label class="block text-xs text-gray-600 mb-1 font-medium">Servicio/Producto</label>
+                                                            <input type="text" 
+                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][name]" 
+                                                                value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.name", $item->name) }}"
+                                                                placeholder="Nombre del servicio/producto"
+                                                                class="item-name-mobile w-full border border-[#ccc] rounded-lg px-3 py-2.5 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
+                                                                data-required="true">
+                                                        </div>
+                                                        
+                                                        <div class="grid grid-cols-2 gap-3 mb-3">
+                                                            <div>
+                                                                <label class="block text-xs text-gray-600 mb-1 font-medium">Cantidad</label>
+                                                                <input type="number" 
+                                                                    name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][quantity]" 
+                                                                    value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.quantity", $item->quantity) }}"
+                                                                    placeholder="Cant."
+                                                                    min="1"
+                                                                    class="item-quantity-mobile w-full border border-[#ccc] rounded-lg px-3 py-2.5 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
+                                                                    data-required="true">
+                                                            </div>
+                                                            <div>
+                                                                <label class="block text-xs text-gray-600 mb-1 font-medium">Precio Unitario</label>
+                                                                <input type="number" 
+                                                                    name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][unit_value]" 
+                                                                    value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.unit_value", $item->unit_value) }}"
+                                                                    placeholder="Precio"
+                                                                    min="0"
+                                                                    step="0.01"
+                                                                    class="item-unit-value-mobile w-full border border-[#ccc] rounded-lg px-3 py-2.5 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
+                                                                    data-required="true">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="flex items-center justify-between mb-3 p-3 bg-white rounded-lg border border-gray-200">
+                                                            <div>
+                                                                <label class="block text-xs text-gray-600 mb-2 font-medium">Total</label>
+                                                                <span class="item-total font-bold text-lg text-[#372C97]">
+                                                                    ${{ number_format($item->quantity * $item->unit_value, 2, ',', '.') }}
+                                                                </span>
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <label class="block text-xs text-gray-600 mb-2 font-medium">Autorizar</label>
+                                                                <label class="custom-checkbox">
+                                                                    <input type="checkbox" 
+                                                                        name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][is_authorized]" 
+                                                                        value="1"
+                                                                        {{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.is_authorized", $item->is_authorized) ? 'checked' : '' }}
+                                                                        class="item-authorized">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="quotation-item-actions">
+                                                            <button type="button" class="btn-remove-item btn-danger px-4 py-2.5 rounded-lg text-white text-sm font-medium w-full hover:bg-red-600 transition">
+                                                                Eliminar Servicio
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        
+                                        <button type="button" class="btn-add-item mt-2 btn-secondary px-3 py-1 rounded text-sm">
+                                            + Agregar Servicio/Producto
+                                        </button>
+                                        
+                                        <div class="segment-total mt-3 pt-3 border-t border-[#ccc]">
+                                            <strong>Total del segmento (autorizados): <span class="segment-total-value text-[#372C97]">${{ number_format($segment->items->where('is_authorized', true)->sum(function($item) { return $item->quantity * $item->unit_value; }), 2, ',', '.') }}</span></strong>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+
+                        <button type="button" id="btn-add-segment" class="btn-primary px-4 py-2 rounded text-white font-semibold">
+                            + Agregar Segmento
+                        </button>
+
+                        <div class="quotation-grand-total mt-4 pt-4 border-t-2 border-[#372C97]">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold">Total General (autorizados):</span>
+                                <span id="quotation-grand-total-value" class="text-2xl font-bold text-[#372C97]">
+                                    ${{ number_format($quotation ? $quotation->segments->sum(function($segment) { 
+                                        return $segment->items->where('is_authorized', true)->sum(function($item) { 
+                                            return $item->quantity * $item->unit_value; 
+                                        }); 
+                                    }) : 0, 2, ',', '.') }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="data-client container-buttons">
                     <select name="assigned_technician" id="asigned" class="select-asigned">
                         <option value="">Seleccione un técnico</option>
@@ -603,6 +925,7 @@
 @section('script')
     <script src="{{ asset('js/witness.js') }}"></script>
     <script src="{{ asset('js/damage-points.js') }}"></script>
+    <script src="{{ asset('js/quotation.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('slider');
