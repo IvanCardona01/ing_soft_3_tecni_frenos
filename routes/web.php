@@ -26,5 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/dashboard/order-service', [OrderServiceController::class, 'store'])->name('dashboard.orderService.store');
     Route::get('/dashboard/order-service/{order}', [OrderServiceController::class, 'show'])->name('dashboard.orderService.show');
     Route::post('/dashboard/order-service/validate-plate', [OrderServiceController::class, 'validatePlate'])->name('dashboard.orderService.validatePlate');
+    Route::put('/dashboard/order-service/{order}', [OrderServiceController::class, 'update'])->name('dashboard.orderService.update');
+
+
+    // Orders
     Route::get('/dashboard/orders', [OrdersController::class, 'index'])->name('dashboard.orders');
 });

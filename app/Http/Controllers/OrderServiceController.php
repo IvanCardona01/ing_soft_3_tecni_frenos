@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Client;
 use App\Models\Order;
 use App\Models\OrderStatus;
@@ -30,40 +31,13 @@ class OrderServiceController extends Controller
     /**
      * Muestra el detalle de una orden existente.
      */
-    public function show(Order $order)
+    public function show(Order $order): View
     {
-
-        return $order;
-
         $order->load(['vehicle.client', 'status']);
-
-        // Preparar datos para la vista
-        $orderData = [
-            'folio_number' => $order->folio_number,
-            'client_full_name' => $order->vehicle->client->full_name ?? '',
-            'client_document_type' => $order->vehicle->client->document_type ?? '',
-            'client_document_number' => $order->vehicle->client->document_number ?? '',
-            'client_phone' => $order->vehicle->client->phone ?? '',
-            'client_address' => $order->vehicle->client->address ?? '',
-            'driver_name' => $order->driver_name ?? '',
-            'driver_phone' => $order->driver_phone ?? '',
-            'driver_email' => $order->driver_email ?? '',
-            'vehicle_brand' => $order->vehicle->brand ?? '',
-            'vehicle_model' => $order->vehicle->model ?? '',
-            'vehicle_year' => $order->vehicle->year ?? '',
-            'vehicle_plate' => $order->vehicle->plate ?? '',
-            'vehicle_cilindraje' => $order->vehicle->cilindraje ?? '',
-            'vehicle_vin' => $order->vehicle->vin ?? '',
-            'vehicle_motor' => $order->vehicle->motor ?? '',
-            'vehicle_kilometraje' => $order->vehicle->kilometraje ?? '',
-            'vehicle_observaciones' => $order->vehicle->observaciones ?? '',
-            'ingreso_en_grua' => $order->ingreso_en_grua ? '1' : '0',
-            'testigos' => $order->testigos ?? [],
-            'gasolina' => $order->gasolina ?? 50,
-            'danos_preexistentes' => $this->parseDamageNotes($order->danos_preexistentes),
-        ];
-
-        return view('dashboard.orderService', compact('order', 'orderData', 'isViewMode'));
+        
+        $damageData = $this->parseDamageNotes($order->danos_preexistentes);
+        
+        return view('dashboard.orderServiceDetail', compact('order', 'damageData'));
     }
 
     /**
@@ -152,6 +126,63 @@ class OrderServiceController extends Controller
             'data' => null,
             'lastOrder' => null,
         ]);
+    }
+
+    /**
+     * Actualiza una orden de servicio existente.
+     */
+    public function update(UpdateOrderRequest $request, Order $order): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        $order = DB::transaction(function () use ($validated, $request, $order) {
+            // Actualizar datos del cliente
+            $client = Client::updateOrCreate(
+                ['document_number' => $validated['client_document_number']],
+                [
+                    'full_name' => $validated['client_full_name'],
+                    'document_type' => $validated['client_document_type'],
+                    'phone' => $validated['client_phone'],
+                    'address' => $validated['client_address'],
+                ]
+            );
+
+            // Actualizar datos del vehículo
+            $vehicle = $client->vehicles()->updateOrCreate(
+                ['plate' => strtoupper($validated['vehicle_plate'])],
+                [
+                    'brand' => $validated['vehicle_brand'],
+                    'model' => $validated['vehicle_model'],
+                    'year' => $validated['vehicle_year'],
+                    'cilindraje' => $validated['vehicle_cilindraje'],
+                    'vin' => strtoupper($validated['vehicle_vin']),
+                    'motor' => $validated['vehicle_motor'],
+                    'kilometraje' => $validated['vehicle_kilometraje'],
+                    'observaciones' => $validated['vehicle_observaciones'] ?? null,
+                ]
+            );
+
+            $testigos = $this->decodeJson($validated['testigos'] ?? null);
+            $damageNotes = $this->formatDamageNotes($validated);
+
+            // Actualizar la orden
+            $order->update([
+                'vehicle_id' => $vehicle->id,
+                'driver_name' => $validated['driver_name'],
+                'driver_phone' => $validated['driver_phone'],
+                'driver_email' => $validated['driver_email'],
+                'ingreso_en_grua' => (bool) $validated['ingreso_en_grua'],
+                'testigos' => $testigos,
+                'gasolina' => $validated['gasolina'],
+                'danos_preexistentes' => $damageNotes,
+            ]);
+
+            return $order->fresh(['vehicle.client', 'status']);
+        });
+
+        return redirect()
+            ->route('dashboard.orderService.show', $order)
+            ->with('status', "Orden actualizada correctamente. Folio Nª-{$order->folio_number}");
     }
 
     /**
