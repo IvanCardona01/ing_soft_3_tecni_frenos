@@ -17,6 +17,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderServiceController extends Controller
 {
@@ -396,5 +397,80 @@ class OrderServiceController extends Controller
         if (!empty($segmentsToDelete)) {
             QuotationSegment::whereIn('id', $segmentsToDelete)->delete();
         }
+    }
+
+    /**
+     * Genera un PDF de la cotización para enviar al cliente.
+     */
+    public function generateQuotationPdf(Order $order)
+    {
+        $order->load([
+            'vehicle.client',
+            'status',
+            'quotation.segments.items'
+        ]);
+
+        $quotation = $order->quotation;
+        
+        if (!$quotation) {
+            return redirect()
+                ->route('dashboard.orderService.show', $order)
+                ->with('error', 'No hay cotización disponible para generar el PDF.');
+        }
+
+        // Calcular totales
+        $grandTotal = 0;
+        $segmentsData = [];
+        
+        foreach ($quotation->segments as $segment) {
+            $segmentTotal = 0;
+            $itemsData = [];
+            
+            foreach ($segment->items as $item) {
+                $itemTotal = $item->quantity * $item->unit_value;
+                $itemsData[] = [
+                    'name' => $item->name,
+                    'quantity' => $item->quantity,
+                    'unit_value' => $item->unit_value,
+                    'total' => $itemTotal,
+                    'is_authorized' => $item->is_authorized,
+                ];
+                
+                // Solo sumar al total si está autorizado
+                if ($item->is_authorized) {
+                    $segmentTotal += $itemTotal;
+                }
+            }
+            
+            $segmentsData[] = [
+                'name' => $segment->name,
+                'items' => $itemsData,
+                'total' => $segmentTotal,
+            ];
+            
+            $grandTotal += $segmentTotal;
+        }
+
+        // Convertir logo a base64 para el PDF
+        $logoPath = public_path('images/logo1.png');
+        $logoBase64 = null;
+        if (file_exists($logoPath)) {
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+        }
+
+        $data = [
+            'order' => $order,
+            'quotation' => $quotation,
+            'segments' => $segmentsData,
+            'grandTotal' => $grandTotal,
+            'logoBase64' => $logoBase64,
+        ];
+
+        $pdf = Pdf::loadView('dashboard.quotation-pdf', $data);
+        
+        $fileName = 'Cotizacion_Orden_' . $order->folio_number . '_' . date('Y-m-d') . '.pdf';
+        
+        return $pdf->download($fileName);
     }
 }

@@ -27,3 +27,4 @@ class Quotation extends Model
     }
 }
 
+
