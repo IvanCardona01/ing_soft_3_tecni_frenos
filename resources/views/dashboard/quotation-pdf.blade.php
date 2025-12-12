@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cotización - Orden {{ $order->folio_number }}</title>
     <style>
         @page {
-            margin: 20mm;
+            margin: 0;
         }
 
         * {
@@ -20,6 +21,7 @@
             font-size: 12px;
             color: #333;
             line-height: 1.6;
+            padding: 50px;
         }
 
         .header {
@@ -80,14 +82,16 @@
             min-width: 120px;
         }
 
-        .client-section, .vehicle-section {
+        .client-section,
+        .vehicle-section {
             margin-bottom: 25px;
             padding: 15px;
             background-color: #f9fafb;
             border-radius: 8px;
         }
 
-        .client-section h3, .vehicle-section h3 {
+        .client-section h3,
+        .vehicle-section h3 {
             color: #372C97;
             font-size: 16px;
             margin-bottom: 15px;
@@ -242,11 +246,12 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <div class="header">
         <div>
-            @if($logoBase64)
+            @if ($logoBase64)
                 <img src="{{ $logoBase64 }}" alt="TecniFrenos Logo" class="logo">
             @else
                 <div style="font-size: 24px; font-weight: bold; color: #372C97;">TecniFrenos</div>
@@ -285,7 +290,8 @@
                 <strong>Nombre Completo:</strong> {{ $order->vehicle->client->full_name ?? 'N/A' }}
             </div>
             <div class="info-item">
-                <strong>Documento:</strong> {{ strtoupper($order->vehicle->client->document_type ?? '') }} {{ $order->vehicle->client->document_number ?? 'N/A' }}
+                <strong>Documento:</strong> {{ strtoupper($order->vehicle->client->document_type ?? '') }}
+                {{ $order->vehicle->client->document_number ?? 'N/A' }}
             </div>
             <div class="info-item">
                 <strong>Teléfono:</strong> {{ $order->vehicle->client->phone ?? 'N/A' }}
@@ -336,7 +342,7 @@
                 <strong>Kilometraje:</strong> {{ number_format($order->vehicle->kilometraje ?? 0, 0, ',', '.') }} km
             </div>
         </div>
-        @if($order->vehicle->observaciones)
+        @if ($order->vehicle->observaciones)
             <div style="margin-top: 15px;">
                 <strong>Observaciones del Vehículo:</strong>
                 <p style="margin-top: 5px; padding: 10px; background-color: white; border-radius: 4px;">
@@ -350,15 +356,15 @@
     <div class="quotation-section">
         <h2>DETALLE DE LA COTIZACIÓN</h2>
 
-        @if($quotation->notes)
+        @if ($quotation->notes)
             <div class="quotation-notes">
                 <h3>Notas de la Cotización:</h3>
                 <p>{{ $quotation->notes }}</p>
             </div>
         @endif
 
-        @if(count($segments) > 0)
-            @foreach($segments as $segment)
+        @if (count($segments) > 0)
+            @foreach ($segments as $segment)
                 <div class="segment">
                     <div class="segment-header">
                         {{ $segment['name'] }}
@@ -374,13 +380,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($segment['items'] as $item)
+                            @foreach ($segment['items'] as $item)
                                 <tr>
                                     <td>{{ $item['name'] }}</td>
                                     <td class="text-center">{{ $item['quantity'] }}</td>
                                     <td class="text-right">${{ number_format($item['unit_value'], 2, ',', '.') }}</td>
                                     <td class="text-center">
-                                        <span class="authorized-badge {{ $item['is_authorized'] ? 'authorized-yes' : 'authorized-no' }}">
+                                        <span
+                                            class="authorized-badge {{ $item['is_authorized'] ? 'authorized-yes' : 'authorized-no' }}">
                                             {{ $item['is_authorized'] ? 'SÍ' : 'NO' }}
                                         </span>
                                     </td>
@@ -392,7 +399,8 @@
                         </tbody>
                     </table>
                     <div class="segment-total">
-                        Total del Segmento (Autorizados): <strong style="color: #372C97; font-size: 16px;">${{ number_format($segment['total'], 2, ',', '.') }}</strong>
+                        Total del Segmento (Autorizados): <strong
+                            style="color: #372C97; font-size: 16px;">${{ number_format($segment['total'], 2, ',', '.') }}</strong>
                     </div>
                 </div>
             @endforeach
@@ -416,5 +424,5 @@
         <p>Generado el {{ now()->format('d/m/Y H:i:s') }}</p>
     </div>
 </body>
-</html>
 
+</html>
