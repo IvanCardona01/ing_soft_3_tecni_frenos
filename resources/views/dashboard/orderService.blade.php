@@ -63,6 +63,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -789,6 +790,47 @@
                     plateValidator.reset();
                 }
             });
+
+            const form = document.querySelector('form[action="{{ route('dashboard.orderService.store') }}"]');
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    const originalText = submitButton.textContent;
+
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Guardando...';
+
+                    try {
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute('content') ||
+                            document.querySelector('input[name="_token"]')?.value;
+
+                        const formData = new FormData(form);
+
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                            },
+                            body: formData
+                        });
+
+                        if (response.ok) {
+                            window.location.replace('{{ route('dashboard') }}');
+                        } else {
+                            window.location.reload();
+                        }
+                    } catch (error) {
+                        window.location.reload();
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalText;
+                    }
+                });
+            }
         });
     </script>
 @endsection

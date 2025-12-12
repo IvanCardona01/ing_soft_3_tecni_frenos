@@ -63,6 +63,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -180,7 +181,7 @@
             background-color: #f3f4f6;
         }
 
-        .custom-checkbox input[type="checkbox"]:checked ~ .checkmark {
+        .custom-checkbox input[type="checkbox"]:checked~.checkmark {
             background-color: #372C97;
             border-color: #372C97;
         }
@@ -198,7 +199,7 @@
             transform: rotate(45deg);
         }
 
-        .custom-checkbox input[type="checkbox"]:checked ~ .checkmark:after {
+        .custom-checkbox input[type="checkbox"]:checked~.checkmark:after {
             display: block;
         }
 
@@ -270,7 +271,8 @@
             <form method="POST" action="{{ route('dashboard.orderService.update', $order) }}" class="space-y-8 mt-[100px]">
                 @csrf
                 @method('PUT')
-                <input type="hidden" name="testigos" id="witness_states" value='{{ old('testigos', json_encode($order->testigos ?? [])) }}'>
+                <input type="hidden" name="testigos" id="witness_states"
+                    value='{{ old('testigos', json_encode($order->testigos ?? [])) }}'>
 
                 <div class="flex flex-col md:items-end items-center md:mr-[150px] mr-0 md:mt-6">
                     <div
@@ -289,7 +291,8 @@
                         <div class="form-group">
                             <label for="client_full_name">Nombre Completo*</label>
                             <input type="text" id="client_full_name" name="client_full_name"
-                                placeholder="Digita nombre completo" value="{{ old('client_full_name', $order->vehicle->client->full_name ?? '') }}" required>
+                                placeholder="Digita nombre completo"
+                                value="{{ old('client_full_name', $order->vehicle->client->full_name ?? '') }}" required>
                             @error('client_full_name')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -309,7 +312,8 @@
                                 <input type="text" id="client_document_number" name="client_document_number"
                                     placeholder="Digita número de documento"
                                     class="w-full border border-[#ccc] rounded px-3 py-2 text-base sm:flex-1 sm:min-w-[13rem]"
-                                    value="{{ old('client_document_number', $order->vehicle->client->document_number ?? '') }}" required>
+                                    value="{{ old('client_document_number', $order->vehicle->client->document_number ?? '') }}"
+                                    required>
                             </div>
                             @error('client_document_type')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
@@ -337,7 +341,8 @@
                         <div class="form-group">
                             <label for="name_driver">Nombre del conductor*</label>
                             <input type="text" id="name_driver" name="driver_name"
-                                placeholder="Digita nombre del conductor" value="{{ old('driver_name', $order->driver_name ?? '') }}" required>
+                                placeholder="Digita nombre del conductor"
+                                value="{{ old('driver_name', $order->driver_name ?? '') }}" required>
                             @error('driver_name')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -345,7 +350,8 @@
                         <div class="form-group">
                             <label for="phone_driver">Teléfono del conductor*</label>
                             <input type="text" id="phone_driver" name="driver_phone"
-                                placeholder="Digita número del conductor" value="{{ old('driver_phone', $order->driver_phone ?? '') }}" required>
+                                placeholder="Digita número del conductor"
+                                value="{{ old('driver_phone', $order->driver_phone ?? '') }}" required>
                             @error('driver_phone')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -366,7 +372,8 @@
                         <div class="form-group">
                             <label for="brand">Marca*</label>
                             <input type="text" id="brand" name="vehicle_brand"
-                                placeholder="Digita marca del vehículo" value="{{ old('vehicle_brand', $order->vehicle->brand ?? '') }}" required>
+                                placeholder="Digita marca del vehículo"
+                                value="{{ old('vehicle_brand', $order->vehicle->brand ?? '') }}" required>
                             @error('vehicle_brand')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -374,7 +381,8 @@
                         <div class="form-group">
                             <label for="year">Año*</label>
                             <input type="number" id="year" name="vehicle_year"
-                                placeholder="Digita año del vehículo" value="{{ old('vehicle_year', $order->vehicle->year ?? '') }}" required>
+                                placeholder="Digita año del vehículo"
+                                value="{{ old('vehicle_year', $order->vehicle->year ?? '') }}" required>
                             @error('vehicle_year')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -382,7 +390,8 @@
                         <div class="form-group">
                             <label for="plate">Placa*</label>
                             <input type="text" id="plate" name="vehicle_plate"
-                                placeholder="Digita placa del vehículo" value="{{ old('vehicle_plate', $order->vehicle->plate ?? '') }}" required>
+                                placeholder="Digita placa del vehículo"
+                                value="{{ old('vehicle_plate', $order->vehicle->plate ?? '') }}" required>
                             @error('vehicle_plate')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -390,8 +399,8 @@
                         <div class="form-group">
                             <label for="cilindraje">Cilindraje*</label>
                             <input type="text" id="cilindraje" name="vehicle_cilindraje"
-                                placeholder="Digita cilindraje del vehículo" value="{{ old('vehicle_cilindraje', $order->vehicle->cilindraje ?? '') }}"
-                                required>
+                                placeholder="Digita cilindraje del vehículo"
+                                value="{{ old('vehicle_cilindraje', $order->vehicle->cilindraje ?? '') }}" required>
                             @error('vehicle_cilindraje')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -399,7 +408,8 @@
                         <div class="form-group">
                             <label for="model">Modelo*</label>
                             <input type="text" id="model" name="vehicle_model"
-                                placeholder="Digita modelo del vehículo" value="{{ old('vehicle_model', $order->vehicle->model ?? '') }}" required>
+                                placeholder="Digita modelo del vehículo"
+                                value="{{ old('vehicle_model', $order->vehicle->model ?? '') }}" required>
                             @error('vehicle_model')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -407,7 +417,8 @@
                         <div class="form-group">
                             <label for="vin">VIN*</label>
                             <input type="text" id="vin" name="vehicle_vin"
-                                placeholder="Digita VIN del vehículo" value="{{ old('vehicle_vin', $order->vehicle->vin ?? '') }}" required>
+                                placeholder="Digita VIN del vehículo"
+                                value="{{ old('vehicle_vin', $order->vehicle->vin ?? '') }}" required>
                             @error('vehicle_vin')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -415,7 +426,8 @@
                         <div class="form-group">
                             <label for="engine">Motor*</label>
                             <input type="text" id="engine" name="vehicle_motor"
-                                placeholder="Digita motor del vehículo" value="{{ old('vehicle_motor', $order->vehicle->motor ?? '') }}" required>
+                                placeholder="Digita motor del vehículo"
+                                value="{{ old('vehicle_motor', $order->vehicle->motor ?? '') }}" required>
                             @error('vehicle_motor')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -423,8 +435,8 @@
                         <div class="form-group">
                             <label for="Mileage">Kilometraje*</label>
                             <input type="number" id="Mileage" name="vehicle_kilometraje"
-                                placeholder="Digita kilometraje del vehículo" value="{{ old('vehicle_kilometraje', $order->vehicle->kilometraje ?? '') }}"
-                                required>
+                                placeholder="Digita kilometraje del vehículo"
+                                value="{{ old('vehicle_kilometraje', $order->vehicle->kilometraje ?? '') }}" required>
                             @error('vehicle_kilometraje')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -531,7 +543,8 @@
 
                             <div class="flex items-center gap-3 mt-3">
                                 <input class="slider flex-1" type="range" min="0" max="100"
-                                    value="{{ old('gasolina', $order->gasolina ?? 50) }}" id="slider" name="gasolina">
+                                    value="{{ old('gasolina', $order->gasolina ?? 50) }}" id="slider"
+                                    name="gasolina">
                                 <span id="gasolina-value" class="font-semibold text-[#372C97]">
                                     {{ old('gasolina', $order->gasolina ?? 50) }}%
                                 </span>
@@ -719,7 +732,7 @@
                     <div class="quotation-container">
                         <div class="quotation-notes mb-4">
                             <label for="quotation_notes" class="form-label">Notas de la cotización</label>
-                            <textarea id="quotation_notes" name="quotation[notes]" rows="2" 
+                            <textarea id="quotation_notes" name="quotation[notes]" rows="2"
                                 class="w-full border border-[#ccc] rounded px-3 py-2 text-base"
                                 placeholder="Notas adicionales sobre la cotización">{{ old('quotation.notes', $order->quotation->notes ?? '') }}</textarea>
                         </div>
@@ -729,72 +742,80 @@
                                 $quotation = $order->quotation ?? null;
                                 $segments = $quotation ? $quotation->segments : collect();
                             @endphp
-                            
-                            @if($segments->count() > 0)
-                                @foreach($segments as $segmentIndex => $segment)
-                                    <div class="quotation-segment mb-4 p-4 border border-[#ccc] rounded" data-segment-index="{{ $segmentIndex }}">
+
+                            @if ($segments->count() > 0)
+                                @foreach ($segments as $segmentIndex => $segment)
+                                    <div class="quotation-segment mb-4 p-4 border border-[#ccc] rounded"
+                                        data-segment-index="{{ $segmentIndex }}">
                                         <div class="segment-header flex items-center justify-between mb-3">
-                                            <input type="hidden" name="quotation[segments][{{ $segmentIndex }}][id]" value="{{ $segment->id }}">
-                                            <input type="text" 
-                                                name="quotation[segments][{{ $segmentIndex }}][name]" 
+                                            <input type="hidden" name="quotation[segments][{{ $segmentIndex }}][id]"
+                                                value="{{ $segment->id }}">
+                                            <input type="text" name="quotation[segments][{{ $segmentIndex }}][name]"
                                                 value="{{ old("quotation.segments.{$segmentIndex}.name", $segment->name) }}"
                                                 placeholder="Nombre del segmento"
                                                 class="segment-name flex-1 border border-[#ccc] rounded px-3 py-2 text-base font-semibold mr-2"
                                                 required>
-                                            <button type="button" class="btn-remove-segment btn-danger px-3 py-1 rounded text-white text-sm">
+                                            <button type="button"
+                                                class="btn-remove-segment btn-danger px-3 py-1 rounded text-white text-sm">
                                                 Eliminar Segmento
                                             </button>
                                         </div>
-                                        
+
                                         <div class="segment-items">
-                                            @foreach($segment->items as $itemIndex => $item)
-                                                <div class="quotation-item mb-3 p-4 bg-gray-50 rounded-lg border border-gray-200" data-item-index="{{ $itemIndex }}">
-                                                    <input type="hidden" name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][id]" value="{{ $item->id }}">
-                                                    
+                                            @foreach ($segment->items as $itemIndex => $item)
+                                                <div class="quotation-item mb-3 p-4 bg-gray-50 rounded-lg border border-gray-200"
+                                                    data-item-index="{{ $itemIndex }}">
+                                                    <input type="hidden"
+                                                        name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][id]"
+                                                        value="{{ $item->id }}">
+
                                                     <!-- Desktop/Tablet Layout -->
-                                                    <div class="hidden md:grid md:grid-cols-12 md:gap-3 md:items-center quotation-item-grid">
+                                                    <div
+                                                        class="hidden md:grid md:grid-cols-12 md:gap-3 md:items-center quotation-item-grid">
                                                         <div class="md:col-span-4 quotation-item-field">
-                                                            <label class="block text-xs text-gray-600 mb-1">Servicio/Producto</label>
-                                                            <input type="text" 
-                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][name]" 
+                                                            <label
+                                                                class="block text-xs text-gray-600 mb-1">Servicio/Producto</label>
+                                                            <input type="text"
+                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][name]"
                                                                 value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.name", $item->name) }}"
                                                                 placeholder="Nombre del servicio/producto"
                                                                 class="item-name-desktop w-full border border-[#ccc] rounded-lg px-3 py-2 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
                                                                 data-required="true">
                                                         </div>
                                                         <div class="md:col-span-1 quotation-item-field">
-                                                            <label class="block text-xs text-gray-600 mb-1">Cantidad</label>
-                                                            <input type="number" 
-                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][quantity]" 
+                                                            <label
+                                                                class="block text-xs text-gray-600 mb-1">Cantidad</label>
+                                                            <input type="number"
+                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][quantity]"
                                                                 value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.quantity", $item->quantity) }}"
-                                                                placeholder="Cant."
-                                                                min="1"
+                                                                placeholder="Cant." min="1"
                                                                 class="item-quantity-desktop w-full border border-[#ccc] rounded-lg px-3 py-2 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
                                                                 data-required="true">
                                                         </div>
                                                         <div class="md:col-span-2 quotation-item-field">
-                                                            <label class="block text-xs text-gray-600 mb-1">Precio Unitario</label>
-                                                            <input type="number" 
-                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][unit_value]" 
+                                                            <label class="block text-xs text-gray-600 mb-1">Precio
+                                                                Unitario</label>
+                                                            <input type="number"
+                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][unit_value]"
                                                                 value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.unit_value", $item->unit_value) }}"
-                                                                placeholder="Precio"
-                                                                min="0"
-                                                                step="0.01"
+                                                                placeholder="Precio" min="0" step="0.01"
                                                                 class="item-unit-value-desktop w-full border border-[#ccc] rounded-lg px-3 py-2 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
                                                                 data-required="true">
                                                         </div>
                                                         <div class="md:col-span-2 quotation-item-field">
                                                             <label class="block text-xs text-gray-600 mb-1">Total</label>
-                                                            <div class="item-total font-semibold text-[#372C97] text-lg py-2">
+                                                            <div
+                                                                class="item-total font-semibold text-[#372C97] text-lg py-2">
                                                                 ${{ number_format($item->quantity * $item->unit_value, 2, ',', '.') }}
                                                             </div>
                                                         </div>
                                                         <div class="md:col-span-2 quotation-item-field">
-                                                            <label class="block text-xs text-gray-600 mb-2 text-center">Autorizar</label>
+                                                            <label
+                                                                class="block text-xs text-gray-600 mb-2 text-center">Autorizar</label>
                                                             <div class="flex items-center justify-center">
                                                                 <label class="custom-checkbox">
-                                                                    <input type="checkbox" 
-                                                                        name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][is_authorized]" 
+                                                                    <input type="checkbox"
+                                                                        name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][is_authorized]"
                                                                         value="1"
                                                                         {{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.is_authorized", $item->is_authorized) ? 'checked' : '' }}
                                                                         class="item-authorized">
@@ -803,8 +824,10 @@
                                                             </div>
                                                         </div>
                                                         <div class="md:col-span-1 quotation-item-field">
-                                                            <label class="block text-xs text-gray-600 mb-1 text-center">Acción</label>
-                                                            <button type="button" class="btn-remove-item btn-danger px-3 py-2 rounded-lg text-white text-sm w-full hover:bg-red-600 transition">
+                                                            <label
+                                                                class="block text-xs text-gray-600 mb-1 text-center">Acción</label>
+                                                            <button type="button"
+                                                                class="btn-remove-item btn-danger px-3 py-2 rounded-lg text-white text-sm w-full hover:bg-red-600 transition">
                                                                 Eliminar
                                                             </button>
                                                         </div>
@@ -813,51 +836,55 @@
                                                     <!-- Mobile Layout -->
                                                     <div class="md:hidden quotation-item-field">
                                                         <div class="mb-3">
-                                                            <label class="block text-xs text-gray-600 mb-1 font-medium">Servicio/Producto</label>
-                                                            <input type="text" 
-                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][name]" 
+                                                            <label
+                                                                class="block text-xs text-gray-600 mb-1 font-medium">Servicio/Producto</label>
+                                                            <input type="text"
+                                                                name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][name]"
                                                                 value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.name", $item->name) }}"
                                                                 placeholder="Nombre del servicio/producto"
                                                                 class="item-name-mobile w-full border border-[#ccc] rounded-lg px-3 py-2.5 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
                                                                 data-required="true">
                                                         </div>
-                                                        
+
                                                         <div class="grid grid-cols-2 gap-3 mb-3">
                                                             <div>
-                                                                <label class="block text-xs text-gray-600 mb-1 font-medium">Cantidad</label>
-                                                                <input type="number" 
-                                                                    name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][quantity]" 
+                                                                <label
+                                                                    class="block text-xs text-gray-600 mb-1 font-medium">Cantidad</label>
+                                                                <input type="number"
+                                                                    name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][quantity]"
                                                                     value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.quantity", $item->quantity) }}"
-                                                                    placeholder="Cant."
-                                                                    min="1"
+                                                                    placeholder="Cant." min="1"
                                                                     class="item-quantity-mobile w-full border border-[#ccc] rounded-lg px-3 py-2.5 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
                                                                     data-required="true">
                                                             </div>
                                                             <div>
-                                                                <label class="block text-xs text-gray-600 mb-1 font-medium">Precio Unitario</label>
-                                                                <input type="number" 
-                                                                    name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][unit_value]" 
+                                                                <label
+                                                                    class="block text-xs text-gray-600 mb-1 font-medium">Precio
+                                                                    Unitario</label>
+                                                                <input type="number"
+                                                                    name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][unit_value]"
                                                                     value="{{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.unit_value", $item->unit_value) }}"
-                                                                    placeholder="Precio"
-                                                                    min="0"
-                                                                    step="0.01"
+                                                                    placeholder="Precio" min="0" step="0.01"
                                                                     class="item-unit-value-mobile w-full border border-[#ccc] rounded-lg px-3 py-2.5 text-base focus:ring-2 focus:ring-[#372C97] focus:border-[#372C97]"
                                                                     data-required="true">
                                                             </div>
                                                         </div>
 
-                                                        <div class="flex items-center justify-between mb-3 p-3 bg-white rounded-lg border border-gray-200">
+                                                        <div
+                                                            class="flex items-center justify-between mb-3 p-3 bg-white rounded-lg border border-gray-200">
                                                             <div>
-                                                                <label class="block text-xs text-gray-600 mb-2 font-medium">Total</label>
+                                                                <label
+                                                                    class="block text-xs text-gray-600 mb-2 font-medium">Total</label>
                                                                 <span class="item-total font-bold text-lg text-[#372C97]">
                                                                     ${{ number_format($item->quantity * $item->unit_value, 2, ',', '.') }}
                                                                 </span>
                                                             </div>
                                                             <div class="text-center">
-                                                                <label class="block text-xs text-gray-600 mb-2 font-medium">Autorizar</label>
+                                                                <label
+                                                                    class="block text-xs text-gray-600 mb-2 font-medium">Autorizar</label>
                                                                 <label class="custom-checkbox">
-                                                                    <input type="checkbox" 
-                                                                        name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][is_authorized]" 
+                                                                    <input type="checkbox"
+                                                                        name="quotation[segments][{{ $segmentIndex }}][items][{{ $itemIndex }}][is_authorized]"
                                                                         value="1"
                                                                         {{ old("quotation.segments.{$segmentIndex}.items.{$itemIndex}.is_authorized", $item->is_authorized) ? 'checked' : '' }}
                                                                         class="item-authorized">
@@ -867,7 +894,8 @@
                                                         </div>
 
                                                         <div class="quotation-item-actions">
-                                                            <button type="button" class="btn-remove-item btn-danger px-4 py-2.5 rounded-lg text-white text-sm font-medium w-full hover:bg-red-600 transition">
+                                                            <button type="button"
+                                                                class="btn-remove-item btn-danger px-4 py-2.5 rounded-lg text-white text-sm font-medium w-full hover:bg-red-600 transition">
                                                                 Eliminar Servicio
                                                             </button>
                                                         </div>
@@ -875,20 +903,23 @@
                                                 </div>
                                             @endforeach
                                         </div>
-                                        
-                                        <button type="button" class="btn-add-item mt-2 btn-secondary px-3 py-1 rounded text-sm">
+
+                                        <button type="button"
+                                            class="btn-add-item mt-2 btn-secondary px-3 py-1 rounded text-sm">
                                             + Agregar Servicio/Producto
                                         </button>
-                                        
+
                                         <div class="segment-total mt-3 pt-3 border-t border-[#ccc]">
-                                            <strong>Total del segmento (autorizados): <span class="segment-total-value text-[#372C97]">${{ number_format($segment->items->where('is_authorized', true)->sum(function($item) { return $item->quantity * $item->unit_value; }), 2, ',', '.') }}</span></strong>
+                                            <strong>Total del segmento (autorizados): <span
+                                                    class="segment-total-value text-[#372C97]">${{ number_format($segment->items->where('is_authorized', true)->sum(function ($item) {return $item->quantity * $item->unit_value;}),2,',','.') }}</span></strong>
                                         </div>
                                     </div>
                                 @endforeach
                             @endif
                         </div>
 
-                        <button type="button" id="btn-add-segment" class="btn-primary px-4 py-2 rounded text-white font-semibold">
+                        <button type="button" id="btn-add-segment"
+                            class="btn-primary px-4 py-2 rounded text-white font-semibold">
                             + Agregar Segmento
                         </button>
 
@@ -896,11 +927,18 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-xl font-bold">Total General (autorizados):</span>
                                 <span id="quotation-grand-total-value" class="text-2xl font-bold text-[#372C97]">
-                                    ${{ number_format($quotation ? $quotation->segments->sum(function($segment) { 
-                                        return $segment->items->where('is_authorized', true)->sum(function($item) { 
-                                            return $item->quantity * $item->unit_value; 
-                                        }); 
-                                    }) : 0, 2, ',', '.') }}
+                                    ${{ number_format(
+                                        $quotation
+                                            ? $quotation->segments->sum(function ($segment) {
+                                                return $segment->items->where('is_authorized', true)->sum(function ($item) {
+                                                    return $item->quantity * $item->unit_value;
+                                                });
+                                            })
+                                            : 0,
+                                        2,
+                                        ',',
+                                        '.',
+                                    ) }}
                                 </span>
                             </div>
                         </div>
@@ -916,12 +954,13 @@
                             <option value="matias" @selected(old('assigned_technician') === 'matias')>Matias Quiroga</option>
                         </select>
                         <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
-                            @if($order->quotation && $order->quotation->segments->count() > 0)
-                                <a href="{{ route('dashboard.orderService.quotationPdf', $order) }}" 
-                                   target="_blank"
-                                   class="btn px-5 py-2.5 fw-bold flex items-center justify-center gap-2 rounded-lg transition shadow-md hover:opacity-90"
-                                   style="background-color: #dc2626; color: white;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            @if ($order->quotation && $order->quotation->segments->count() > 0)
+                                <a href="{{ route('dashboard.orderService.quotationPdf', $order) }}" target="_blank"
+                                    class="btn px-5 py-2.5 fw-bold flex items-center justify-center gap-2 rounded-lg transition shadow-md hover:opacity-90"
+                                    style="background-color: #dc2626; color: white;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                         <polyline points="7 10 12 15 17 10"></polyline>
                                         <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -1010,6 +1049,49 @@
                     });
                 }
                 syncWitnessStates();
+            }
+
+            // Interceptar el submit del formulario para hacer back después de guardar
+            const form = document.querySelector(
+                'form[action="{{ route('dashboard.orderService.update', $order) }}"]');
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    const originalText = submitButton.textContent;
+
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Guardando...';
+
+                    try {
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute('content') ||
+                            document.querySelector('input[name="_token"]')?.value;
+
+                        const formData = new FormData(form);
+
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                            },
+                            body: formData
+                        });
+
+                        if (response.ok) {
+                            window.history.back();
+                        } else {
+                            window.location.reload();
+                        }
+                    } catch (error) {
+                        window.location.reload();
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalText;
+                    }
+                });
             }
         });
     </script>

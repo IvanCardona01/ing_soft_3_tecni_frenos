@@ -7,14 +7,14 @@
 @endsection
 @section('content')
 
-    <div class="container d-flex flex-column align-items-center justify-content-start">
-        <div class="logo-container mt-[165px]">
+    <div class="container d-flex flex-column align-items-center justify-content-center">
+        <div class="logo-container sm:mt-[165px]">
             <img src="{{ asset('images/logo1.png') }}" alt="Logo">
         </div>
 
-        <div class="container2 d-flex flex-column align-items-center w-100">
+        <div class="container2 d-flex flex-column align-items-center w-100 pb-5">
 
-            <h2 class="text-center mt-3 fw-bold">Iniciar Sesión</h2>
+            <h2 class="text-center mt-5 fw-bold">Iniciar Sesión</h2>
 
             <form id="forms" action="{{ route('login.submit') }}" method="POST"
                 class="d-flex flex-column align-items-center needs-validation mt-3" novalidate style="width: 100%;">
@@ -51,14 +51,6 @@
                     <i class="bi bi-eye position-absolute top-70" id="togglePassword"
                         style="right: 30px; top: 60px; transform: translateY(-50%); font-size: 1.2rem; cursor: pointer; opacity: 0.7;">
                     </i>
-                </div>
-
-                <!-- Recordarme -->
-                <div class="form-check mt-2">
-                    <input class="form-check-input" type="checkbox" value="1" id="remember" name="remember">
-                    <label class="form-check-label" for="remember">
-                        Mantener sesión iniciada
-                    </label>
                 </div>
 
                 <!-- Botón -->
