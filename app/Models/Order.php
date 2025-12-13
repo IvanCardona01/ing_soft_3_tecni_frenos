@@ -14,6 +14,7 @@ class Order extends Model
         'user_id',
         'vehicle_id',
         'status_id',
+        'assigned_technician',
         'driver_name',
         'driver_phone',
         'driver_email',
@@ -46,6 +47,11 @@ class Order extends Model
     public function quotation()
     {
         return $this->hasOne(Quotation::class);
+    }
+
+    public function assignedTechnician()
+    {
+        return $this->belongsTo(User::class, 'assigned_technician');
     }
 
     /**
@@ -98,4 +104,3 @@ class Order extends Model
         return $this->status->name ?? 'Sin estado';
     }
 }
-

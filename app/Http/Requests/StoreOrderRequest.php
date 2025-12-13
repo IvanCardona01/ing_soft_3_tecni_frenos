@@ -48,6 +48,7 @@ class StoreOrderRequest extends FormRequest
             'ingreso_en_grua' => ['required', 'boolean'],
             'gasolina' => ['required', 'integer', 'between:0,100'],
             'testigos' => ['nullable', 'json'],
+            'assigned_technician' => ['nullable', 'integer', 'exists:users,id'],
 
             'observation_damage_front' => ['nullable', 'string'],
             'observation_damage_behind' => ['nullable', 'string'],
@@ -68,4 +69,3 @@ class StoreOrderRequest extends FormRequest
         ];
     }
 }
-

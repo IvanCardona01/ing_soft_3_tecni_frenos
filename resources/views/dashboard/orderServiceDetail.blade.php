@@ -934,9 +934,11 @@
                     <div class="flex flex-col md:flex-row gap-3 items-center justify-between w-full">
                         <select name="assigned_technician" id="asigned" class="select-asigned">
                             <option value="">Seleccione un técnico</option>
-                            <option value="ian" @selected(old('assigned_technician') === 'ian')>Ian Salazar</option>
-                            <option value="enzo" @selected(old('assigned_technician') === 'enzo')>Enzo Morales</option>
-                            <option value="matias" @selected(old('assigned_technician') === 'matias')>Matias Quiroga</option>
+                            @foreach ($mechanics ?? [] as $mechanic)
+                                <option value="{{ $mechanic->id }}" @selected(old('assigned_technician', $order->assigned_technician) == $mechanic->id)>
+                                    {{ $mechanic->name }}
+                                </option>
+                            @endforeach
                         </select>
                         <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto">
                             @if ($order->quotation && $order->quotation->segments->count() > 0)

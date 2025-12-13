@@ -10,6 +10,7 @@ use App\Models\OrderStatus;
 use App\Models\Quotation;
 use App\Models\QuotationSegment;
 use App\Models\QuotationItem;
+use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -29,7 +30,12 @@ class OrderServiceController extends Controller
         $folioNumber = $this->generateUniqueFolio();
         $isEdit = $request->query('isEdit', 'false') === 'true';
 
-        return view('dashboard.orderService', compact('folioNumber', 'isEdit'));
+        // Obtener usuarios con rol mechanic
+        $mechanics = User::whereHas('roles', function ($query) {
+            $query->where('name', 'mechanic');
+        })->get();
+
+        return view('dashboard.orderService', compact('folioNumber', 'isEdit', 'mechanics'));
     }
 
     /**
@@ -38,14 +44,19 @@ class OrderServiceController extends Controller
     public function show(Order $order): View
     {
         $order->load([
-            'vehicle.client', 
+            'vehicle.client',
             'status',
             'quotation.segments.items'
         ]);
-        
+
         $damageData = $this->parseDamageNotes($order->danos_preexistentes);
-        
-        return view('dashboard.orderServiceDetail', compact('order', 'damageData'));
+
+        // Obtener usuarios con rol mechanic
+        $mechanics = User::whereHas('roles', function ($query) {
+            $query->where('name', 'mechanic');
+        })->get();
+
+        return view('dashboard.orderServiceDetail', compact('order', 'damageData', 'mechanics'));
     }
 
     /**
@@ -93,6 +104,7 @@ class OrderServiceController extends Controller
                 'user_id' => $request->user()->id,
                 'vehicle_id' => $vehicle->id,
                 'status_id' => $statusAbierto->id,
+                'assigned_technician' => $validated['assigned_technician'] ?? null,
                 'driver_name' => $validated['driver_name'],
                 'driver_phone' => $validated['driver_phone'],
                 'driver_email' => $validated['driver_email'],
@@ -176,6 +188,7 @@ class OrderServiceController extends Controller
             // Actualizar la orden
             $order->update([
                 'vehicle_id' => $vehicle->id,
+                'assigned_technician' => $validated['assigned_technician'] ?? null,
                 'driver_name' => $validated['driver_name'],
                 'driver_phone' => $validated['driver_phone'],
                 'driver_email' => $validated['driver_email'],
@@ -310,7 +323,7 @@ class OrderServiceController extends Controller
                     $segment = QuotationSegment::where('id', $segmentData['id'])
                         ->where('quotation_id', $quotation->id)
                         ->first();
-                    
+
                     if ($segment) {
                         $segment->update([
                             'name' => trim($segmentData['name']),
@@ -353,7 +366,7 @@ class OrderServiceController extends Controller
                             $item = QuotationItem::where('id', $itemData['id'])
                                 ->where('segment_id', $segment->id)
                                 ->first();
-                            
+
                             if ($item) {
                                 $item->update([
                                     'name' => trim($itemData['name']),
@@ -411,7 +424,7 @@ class OrderServiceController extends Controller
         ]);
 
         $quotation = $order->quotation;
-        
+
         if (!$quotation) {
             return redirect()
                 ->route('dashboard.orderService.show', $order)
@@ -421,11 +434,11 @@ class OrderServiceController extends Controller
         // Calcular totales
         $grandTotal = 0;
         $segmentsData = [];
-        
+
         foreach ($quotation->segments as $segment) {
             $segmentTotal = 0;
             $itemsData = [];
-            
+
             foreach ($segment->items as $item) {
                 $itemTotal = $item->quantity * $item->unit_value;
                 $itemsData[] = [
@@ -435,19 +448,19 @@ class OrderServiceController extends Controller
                     'total' => $itemTotal,
                     'is_authorized' => $item->is_authorized,
                 ];
-                
+
                 // Solo sumar al total si está autorizado
                 if ($item->is_authorized) {
                     $segmentTotal += $itemTotal;
                 }
             }
-            
+
             $segmentsData[] = [
                 'name' => $segment->name,
                 'items' => $itemsData,
                 'total' => $segmentTotal,
             ];
-            
+
             $grandTotal += $segmentTotal;
         }
 
@@ -468,9 +481,9 @@ class OrderServiceController extends Controller
         ];
 
         $pdf = Pdf::loadView('dashboard.quotation-pdf', $data);
-        
+
         $fileName = 'Cotizacion_Orden_' . $order->folio_number . '_' . date('Y-m-d') . '.pdf';
-        
+
         return $pdf->download($fileName);
     }
 }

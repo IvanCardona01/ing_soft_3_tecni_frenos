@@ -623,9 +623,11 @@
                 <div class="data-client container-buttons">
                     <select name="assigned_technician" id="asigned" class="select-asigned">
                         <option value="">Seleccione un técnico</option>
-                        <option value="ian" @selected(old('assigned_technician') === 'ian')>Ian Salazar</option>
-                        <option value="enzo" @selected(old('assigned_technician') === 'enzo')>Enzo Morales</option>
-                        <option value="matias" @selected(old('assigned_technician') === 'matias')>Matias Quiroga</option>
+                        @foreach ($mechanics ?? [] as $mechanic)
+                            <option value="{{ $mechanic->id }}" @selected(old('assigned_technician') == $mechanic->id)>
+                                {{ $mechanic->name }}
+                            </option>
+                        @endforeach
                     </select>
                     <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">Guardar</button>
                 </div>
