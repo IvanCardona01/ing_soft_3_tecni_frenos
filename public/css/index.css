@@ -199,45 +199,43 @@ footer {
 
 .medidor {
     position: relative;
-    width: 250px;
-    height: 125px;
+    width: 320px;
+    height: 160px;
     margin: 0 auto;
 }
 
 .fondo-medidor {
     width: 100%;
     height: 205%;
-    background: conic-gradient(
-        from 270deg,
-        red 0deg 10deg,
-        gold 10deg 160deg,
-        orange 160deg 180deg,
-        transparent 180deg 360deg
-    );
-    border-top-left-radius: 250px;
-    border-top-right-radius: 250px;
+    background-image: url('../images/fuel_indicator_background.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-top-left-radius: 320px;
+    border-top-right-radius: 320px;
     overflow: hidden;
     position: relative;
 }
 
 .aguja {
     position: absolute;
-    bottom: 0;
+    bottom: -40px;
     left: 50%;
-    width: 4px;
-    height: 100px;
+    width: 5px;
+    height: 110px;
     background: navy;
     transform-origin: bottom center;
-    transform: rotate(-90deg);
+    transform: translateX(-50%) rotate(-90deg);
     transition: transform 0.3s ease;
+    z-index: 5;
 }
 
 .centro {
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 20px;
-    height: 20px;
+    bottom: -40px;
+    left: 51%;
+    width: 24px;
+    height: 24px;
     background: #f3c623;
     border: 4px solid navy;
     border-radius: 50%;
@@ -245,16 +243,8 @@ footer {
     z-index: 10;
 }
 
-.marcas {
-    display: flex;
-    justify-content: space-between;
-    width: 250px;
-    margin: 10px auto 46px;
-    font-weight: bold;
-}
-
 .slider {
-    width: 250px;
+    width: 100%;
 }
 
 .container-content-main h1 {
