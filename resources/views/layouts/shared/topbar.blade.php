@@ -33,12 +33,13 @@
                 <p class="text-lg md:text-xl font-semibold">
                     Bienvenido {{ Auth::user()->name ?? 'Operario' }}
                 </p>
-                <span class="block text-base md:text-lg text-neutral-600">{{ Auth::user()->email ?? 'Sin sesión' }}</span>
+                <span
+                    class="block text-base md:text-lg text-neutral-600">{{ Auth::user()->email ?? 'Sin sesión' }}</span>
             </div>
 
         </div>
         <div class="nav-links">
-            <ul class="space-y-4 md:space-y-6">
+            <ul class="space-y-0">
                 <li class="flex">
                     <a href="{{ url('/dashboard') }}"
                         class="ml-5 inline-flex items-center text-lg md:text-xl font-medium text-neutral-900 rounded-xl hover:bg-[#372C97]/10 hover:text-[#372C97] transition-colors px-1 py-2 w-full">
@@ -49,6 +50,26 @@
                         </div>
                     </a>
                 </li>
+                @if (Auth::user()->hasRole('superadmin'))
+                    <li class="flex">
+                        <a href="{{ url('/dashboard') }}"
+                            class="ml-5 inline-flex items-center text-lg md:text-xl font-medium text-neutral-900 rounded-xl hover:bg-[#372C97]/10 hover:text-[#372C97] transition-colors px-1 py-2 w-full">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 md:w-12 md:h-12 border-[1px] border-[#F7DE0C] rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="#372C97" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" class="w-full h-full object-contain">
+                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    </svg>
+                                </div>
+                                <span>Gestionar usuarios</span>
+                            </div>
+                        </a>
+                    </li>
+                @endif
             </ul>
         </div>
         <div class="container-logout flex">

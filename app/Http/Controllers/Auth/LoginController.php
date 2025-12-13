@@ -32,6 +32,21 @@ class LoginController extends Controller
         $field = filter_var($credentials['credential'], FILTER_VALIDATE_EMAIL) ? 'email' : 'cedula';
 
         if (Auth::attempt([$field => $credentials['credential'], 'password' => $credentials['password']], $request->boolean('remember'))) {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+
+            if (!$user->hasAnyRole(['admin', 'superadmin'])) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()
+                    ->withErrors([
+                        'credential' => 'No tienes permisos para acceder al sistema. Contacta al administrador.',
+                    ])
+                    ->onlyInput('credential');
+            }
+
             $request->session()->regenerate();
 
             return redirect()->intended(route('dashboard'));
@@ -57,4 +72,3 @@ class LoginController extends Controller
         return redirect()->route('login');
     }
 }
-

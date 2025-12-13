@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
             $superadmin->assignRole('superadmin');
         }
 
+        //TODO: Remover los usuarios de prueba
+
         // Usuario Admin
         $admin = User::firstOrCreate(
             ['email' => 'admin@gmail.com'],
