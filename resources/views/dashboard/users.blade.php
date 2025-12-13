@@ -132,24 +132,17 @@
                 });
             }
 
-            // Para la búsqueda por email, usar un debounce para evitar demasiadas peticiones
-            let searchTimeout;
+            // Para la búsqueda por email, buscar solo cuando el usuario termine (blur) o presione Enter
             if (emailInput) {
-                emailInput.addEventListener('input', () => {
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        // Solo buscar si el campo tiene al menos 2 caracteres o está vacío
-                        if (emailInput.value.length >= 2 || emailInput.value.length === 0) {
-                            form.submit();
-                        }
-                    }, 500);
+                // Buscar cuando el input pierde el foco
+                emailInput.addEventListener('blur', () => {
+                    form.submit();
                 });
 
                 // Permitir búsqueda inmediata al presionar Enter
                 emailInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         e.preventDefault();
-                        clearTimeout(searchTimeout);
                         form.submit();
                     }
                 });
