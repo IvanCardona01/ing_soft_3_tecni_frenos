@@ -21,12 +21,31 @@ class DashboardController extends Controller
         return view('dashboard.orders');
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::whereDoesntHave('roles', function ($query) {
-            $query->where('name', 'superadmin');
-        })->with('roles')->get();
+        $query = User::whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'superadmin');
+        })->with('roles');
 
-        return view('dashboard.users', compact('users'));
+        // Filtro por rol
+        if ($request->filled('role') && $request->role !== 'todos') {
+            $query->whereHas('roles', function ($q) use ($request) {
+                $q->where('name', $request->role);
+            });
+        }
+
+        // Búsqueda por correo electrónico
+        if ($request->filled('email')) {
+            $query->where('email', 'like', '%' . $request->email . '%');
+        }
+
+        $users = $query->get();
+
+        $filters = [
+            'role' => $request->role ?? 'todos',
+            'email' => $request->email ?? '',
+        ];
+
+        return view('dashboard.users', compact('users', 'filters'));
     }
 }
