@@ -34,5 +34,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:superadmin')->group(function () {
         Route::get('/dashboard/users', [DashboardController::class, 'users'])->name('dashboard.users');
+        Route::get('/dashboard/users/create', [DashboardController::class, 'createUser'])->name('dashboard.users.create');
+        Route::post('/dashboard/users', [DashboardController::class, 'storeUser'])->name('dashboard.users.store');
     });
 });

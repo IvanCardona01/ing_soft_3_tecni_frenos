@@ -9,15 +9,15 @@
             </div>
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <div class="flex justify-end md:ml-auto">
-                    <button type="button" onclick="alert('Funcionalidad próximamente disponible')"
-                        class="flex items-center justify-center gap-2 bg-[#372C97] text-white px-4 md:px-6 py-3 rounded-xl font-semibold text-base md:text-lg hover:bg-[#2a1f7a] transition-colors shadow-md hover:shadow-lg w-full md:w-auto">
+                    <a href="{{ route('dashboard.users.create') }}"
+                        class="flex items-center justify-center gap-2 bg-[#372C97] text-white px-4 md:px-6 py-3 rounded-xl font-semibold text-base md:text-lg hover:bg-[#2a1f7a] transition-colors shadow-md hover:shadow-lg w-full md:w-auto no-underline">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
                         <span class="hidden sm:inline">Crear nuevo usuario</span>
                         <span class="sm:hidden">Crear usuario</span>
-                    </button>
+                    </a>
                 </div>
             </div>
 
