@@ -30,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/order-service/{order}/quotation-pdf', [OrderServiceController::class, 'generateQuotationPdf'])->name('dashboard.orderService.quotationPdf');
 
 
-    // Orders
     Route::get('/dashboard/orders', [OrdersController::class, 'index'])->name('dashboard.orders');
+
+    Route::middleware('role:superadmin')->group(function () {
+        Route::get('/dashboard/users', [DashboardController::class, 'users'])->name('dashboard.users');
+    });
 });

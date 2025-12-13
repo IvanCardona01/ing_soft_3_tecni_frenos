@@ -52,7 +52,7 @@
                 </li>
                 @if (Auth::user()->hasRole('superadmin'))
                     <li class="flex">
-                        <a href="{{ url('/dashboard') }}"
+                        <a href="{{ route('dashboard.users') }}"
                             class="ml-5 inline-flex items-center text-lg md:text-xl font-medium text-neutral-900 rounded-xl hover:bg-[#372C97]/10 hover:text-[#372C97] transition-colors px-1 py-2 w-full">
                             <div class="flex items-center gap-4">
                                 <div class="w-10 h-10 md:w-12 md:h-12 border-[1px] border-[#F7DE0C] rounded-full">
