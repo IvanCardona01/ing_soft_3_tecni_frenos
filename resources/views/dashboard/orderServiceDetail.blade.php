@@ -575,7 +575,6 @@
                                 eliminarlo.</small>
                             <input type="hidden" name="damage_points_front"
                                 value='{{ old('damage_points_front', json_encode($damageData['front']['points'] ?? [])) }}'>
-                            <textarea name="observation_damage_front" id="observation_damage_front">{{ old('observation_damage_front', $damageData['front']['notes'] ?? '') }}</textarea>
                         </div>
                         <div class="damage-section" data-damage-section="behind">
                             <span>Detrás</span>
@@ -608,7 +607,6 @@
                                 eliminarlo.</small>
                             <input type="hidden" name="damage_points_behind"
                                 value='{{ old('damage_points_behind', json_encode($damageData['behind']['points'] ?? [])) }}'>
-                            <textarea name="observation_damage_behind" id="observation_damage_behind">{{ old('observation_damage_behind', $damageData['behind']['notes'] ?? '') }}</textarea>
                         </div>
                         <div class="damage-section" data-damage-section="left_side">
                             <span>Lado Izquierdo</span>
@@ -657,7 +655,6 @@
                                 eliminarlo.</small>
                             <input type="hidden" name="damage_points_left_side"
                                 value='{{ old('damage_points_left_side', json_encode($damageData['left_side']['points'] ?? [])) }}'>
-                            <textarea name="observation_damage_left_side" id="observation_damage_left_side">{{ old('observation_damage_left_side', $damageData['left_side']['notes'] ?? '') }}</textarea>
                         </div>
                         <div class="damage-section" data-damage-section="right_side">
                             <span>Lado Derecho</span>
@@ -706,7 +703,6 @@
                                 eliminarlo.</small>
                             <input type="hidden" name="damage_points_right_side"
                                 value='{{ old('damage_points_right_side', json_encode($damageData['right_side']['points'] ?? [])) }}'>
-                            <textarea name="observation_damage_right_side" id="observation_damage_right_side">{{ old('observation_damage_right_side', $damageData['right_side']['notes'] ?? '') }}</textarea>
                         </div>
                     </div>
 

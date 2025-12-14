@@ -483,7 +483,6 @@
                                 eliminarlo.</small>
                             <input type="hidden" name="damage_points_front"
                                 value='{{ old('damage_points_front', '[]') }}'>
-                            <textarea name="observation_damage_front" id="observation_damage_front">{{ old('observation_damage_front') }}</textarea>
                         </div>
                         <div class="damage-section" data-damage-section="behind">
                             <span>Detrás</span>
@@ -516,7 +515,6 @@
                                 eliminarlo.</small>
                             <input type="hidden" name="damage_points_behind"
                                 value='{{ old('damage_points_behind', '[]') }}'>
-                            <textarea name="observation_damage_behind" id="observation_damage_behind">{{ old('observation_damage_behind') }}</textarea>
                         </div>
                         <div class="damage-section" data-damage-section="left_side">
                             <span>Lado Izquierdo</span>
@@ -565,7 +563,6 @@
                                 eliminarlo.</small>
                             <input type="hidden" name="damage_points_left_side"
                                 value='{{ old('damage_points_left_side', '[]') }}'>
-                            <textarea name="observation_damage_left_side" id="observation_damage_left_side">{{ old('observation_damage_left_side') }}</textarea>
                         </div>
                         <div class="damage-section" data-damage-section="right_side">
                             <span>Lado Derecho</span>
@@ -614,7 +611,6 @@
                                 eliminarlo.</small>
                             <input type="hidden" name="damage_points_right_side"
                                 value='{{ old('damage_points_right_side', '[]') }}'>
-                            <textarea name="observation_damage_right_side" id="observation_damage_right_side">{{ old('observation_damage_right_side') }}</textarea>
                         </div>
                     </div>
 
