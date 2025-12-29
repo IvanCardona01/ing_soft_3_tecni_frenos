@@ -342,7 +342,7 @@
                             <label for="name_driver">Nombre del conductor*</label>
                             <input type="text" id="name_driver" name="driver_name"
                                 placeholder="Digita nombre del conductor"
-                                value="{{ old('driver_name', $order->driver_name ?? '') }}" required>
+                                value="{{ old('driver_name', $order->driver_name ?? '') }}">
                             @error('driver_name')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -351,7 +351,7 @@
                             <label for="phone_driver">Teléfono del conductor*</label>
                             <input type="text" id="phone_driver" name="driver_phone"
                                 placeholder="Digita número del conductor"
-                                value="{{ old('driver_phone', $order->driver_phone ?? '') }}" required>
+                                value="{{ old('driver_phone', $order->driver_phone ?? '') }}">
                             @error('driver_phone')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -359,7 +359,7 @@
                         <div class="form-group">
                             <label for="email">Correo Electrónico*</label>
                             <input type="email" id="email" name="driver_email" placeholder="Digita correo electrónico"
-                                value="{{ old('driver_email', $order->driver_email ?? '') }}" required>
+                                value="{{ old('driver_email', $order->driver_email ?? '') }}">
                             @error('driver_email')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
