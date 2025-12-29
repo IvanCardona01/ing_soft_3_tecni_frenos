@@ -31,9 +31,9 @@ class StoreOrderRequest extends FormRequest
             'client_phone' => ['required', 'string', 'max:30'],
             'client_address' => ['required', 'string', 'max:180'],
 
-            'driver_name' => ['required', 'string', 'max:150'],
-            'driver_phone' => ['required', 'string', 'max:30'],
-            'driver_email' => ['required', 'email', 'max:120'],
+            'driver_name' => ['nullable', 'string', 'max:150'],
+            'driver_phone' => ['nullable', 'string', 'max:30'],
+            'driver_email' => ['nullable', 'email', 'max:120'],
 
             'vehicle_brand' => ['required', 'string', 'max:80'],
             'vehicle_year' => ['required', 'integer', 'digits:4'],
