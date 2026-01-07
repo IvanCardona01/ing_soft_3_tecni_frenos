@@ -418,7 +418,7 @@
                             <label for="vin">VIN*</label>
                             <input type="text" id="vin" name="vehicle_vin"
                                 placeholder="Digita VIN del vehículo"
-                                value="{{ old('vehicle_vin', $order->vehicle->vin ?? '') }}" required>
+                                value="{{ old('vehicle_vin', $order->vehicle->vin ?? '') }}">
                             @error('vehicle_vin')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -427,7 +427,7 @@
                             <label for="engine">Motor*</label>
                             <input type="text" id="engine" name="vehicle_motor"
                                 placeholder="Digita motor del vehículo"
-                                value="{{ old('vehicle_motor', $order->vehicle->motor ?? '') }}" required>
+                                value="{{ old('vehicle_motor', $order->vehicle->motor ?? '') }}">
                             @error('vehicle_motor')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror

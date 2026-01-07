@@ -37,12 +37,12 @@ class UpdateOrderRequest extends FormRequest
             'vehicle_plate' => ['required', 'string', 'max:15'],
             'vehicle_cilindraje' => ['required', 'string', 'max:20'],
             'vehicle_model' => ['required', 'string', 'max:80'],
-            'vehicle_vin' => ['required', 'string', 'max:30'],
-            'vehicle_motor' => ['required', 'string', 'max:30'],
+            'vehicle_vin' => ['nullable', 'string', 'max:30'],
+            'vehicle_motor' => ['nullable', 'string', 'max:30'],
             'vehicle_kilometraje' => ['required', 'integer', 'min:0'],
             'vehicle_observaciones' => ['nullable', 'string'],
 
-            'ingreso_en_grua' => ['required', 'boolean'],
+            'ingreso_en_grua' => ['required', 'in:0,1'],
             'gasolina' => ['required', 'integer', 'between:0,100'],
             'testigos' => ['nullable', 'json'],
 

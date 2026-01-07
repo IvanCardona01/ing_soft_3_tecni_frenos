@@ -328,7 +328,7 @@
                         <div class="form-group">
                             <label for="vin">VIN*</label>
                             <input type="text" id="vin" name="vehicle_vin"
-                                placeholder="Digita VIN del vehículo" value="{{ old('vehicle_vin') }}" required>
+                                placeholder="Digita VIN del vehículo" value="{{ old('vehicle_vin') }}">
                             @error('vehicle_vin')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
@@ -336,7 +336,7 @@
                         <div class="form-group">
                             <label for="engine">Motor*</label>
                             <input type="text" id="engine" name="vehicle_motor"
-                                placeholder="Digita motor del vehículo" value="{{ old('vehicle_motor') }}" required>
+                                placeholder="Digita motor del vehículo" value="{{ old('vehicle_motor') }}">
                             @error('vehicle_motor')
                                 <p class="text-danger small mt-1">{{ $message }}</p>
                             @enderror
