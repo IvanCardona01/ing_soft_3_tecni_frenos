@@ -85,10 +85,10 @@ class OrderServiceController extends Controller
                     'model' => $validated['vehicle_model'],
                     'year' => $validated['vehicle_year'],
                     'cilindraje' => $validated['vehicle_cilindraje'],
-                    'vin' => strtoupper($validated['vehicle_vin']),
-                    'motor' => $validated['vehicle_motor'],
+                    'vin' => !empty($validated['vehicle_vin']) ? strtoupper($validated['vehicle_vin']) : null,
+                    'motor' => !empty($validated['vehicle_motor']) ? $validated['vehicle_motor'] : null,
                     'kilometraje' => $validated['vehicle_kilometraje'],
-                    'observaciones' => $validated['vehicle_observaciones'] ?? null,
+                    'observaciones' => !empty($validated['vehicle_observaciones']) ? $validated['vehicle_observaciones'] : null,
                 ]
             );
 
@@ -175,10 +175,10 @@ class OrderServiceController extends Controller
                     'model' => $validated['vehicle_model'],
                     'year' => $validated['vehicle_year'],
                     'cilindraje' => $validated['vehicle_cilindraje'],
-                    'vin' => strtoupper($validated['vehicle_vin']),
-                    'motor' => $validated['vehicle_motor'],
+                    'vin' => !empty($validated['vehicle_vin']) ? strtoupper($validated['vehicle_vin']) : null,
+                    'motor' => !empty($validated['vehicle_motor']) ? $validated['vehicle_motor'] : null,
                     'kilometraje' => $validated['vehicle_kilometraje'],
-                    'observaciones' => $validated['vehicle_observaciones'] ?? null,
+                    'observaciones' => !empty($validated['vehicle_observaciones']) ? $validated['vehicle_observaciones'] : null,
                 ]
             );
 
