@@ -29,3 +29,5 @@ class QuotationSegment extends Model
 }
 
 
+
+
