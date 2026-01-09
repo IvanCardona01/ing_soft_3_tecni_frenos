@@ -6,410 +6,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cotización - Orden {{ $order->folio_number }}</title>
     <style>
-        @page {
-            margin: 0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 12px;
-            color: #333;
-            line-height: 1.6;
-            padding: 50px;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #372C97;
-        }
-
-        .logo {
-            max-width: 200px;
-            height: auto;
-        }
-
-        .header-info {
-            text-align: right;
-        }
-
-        .header-info h1 {
-            color: #372C97;
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        .header-info p {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .document-info {
-            background-color: #f9fafb;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-        }
-
-        .document-info h2 {
-            color: #372C97;
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .info-item {
-            margin-bottom: 10px;
-        }
-
-        .info-item strong {
-            color: #372C97;
-            display: inline-block;
-            min-width: 120px;
-        }
-
-        .client-section,
-        .vehicle-section {
-            margin-bottom: 25px;
-            padding: 15px;
-            background-color: #f9fafb;
-            border-radius: 8px;
-        }
-
-        .client-section h3,
-        .vehicle-section h3 {
-            color: #372C97;
-            font-size: 16px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #372C97;
-            padding-bottom: 5px;
-        }
-
-        .quotation-section {
-            margin-top: 30px;
-        }
-
-        .quotation-section h2 {
-            color: #372C97;
-            font-size: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            border-bottom: 3px solid #372C97;
-            padding-bottom: 10px;
-        }
-
-        .quotation-notes {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin-bottom: 25px;
-            border-radius: 4px;
-        }
-
-        .quotation-notes h3 {
-            color: #856404;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .segment {
-            margin-bottom: 30px;
-            page-break-inside: avoid;
-        }
-
-        .segment-header {
-            background-color: #372C97;
-            color: white;
-            padding: 12px 15px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 4px 4px 0 0;
-        }
-
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-            background-color: white;
-        }
-
-        .items-table thead {
-            background-color: #f3f4f6;
-        }
-
-        .items-table th {
-            padding: 12px;
-            text-align: left;
-            font-weight: bold;
-            color: #372C97;
-            border-bottom: 2px solid #372C97;
-        }
-
-        .items-table td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .items-table tbody tr:hover {
-            background-color: #f9fafb;
-        }
-
-        .items-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .authorized-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: bold;
-        }
-
-        .authorized-yes {
-            background-color: #10b981;
-            color: white;
-        }
-
-        .authorized-no {
-            background-color: #ef4444;
-            color: white;
-        }
-
-        .segment-total {
-            background-color: #f3f4f6;
-            padding: 12px 15px;
-            text-align: right;
-            font-weight: bold;
-            font-size: 14px;
-            border-top: 2px solid #372C97;
-        }
-
-        .grand-total {
-            margin-top: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, #372C97 0%, #2a1f7a 100%);
-            color: white;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .grand-total h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .grand-total .amount {
-            font-size: 32px;
-            font-weight: bold;
-        }
-
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px solid #e5e7eb;
-            text-align: center;
-            color: #666;
-            font-size: 10px;
-        }
-
-        .footer p {
-            margin: 5px 0;
-        }
-
-        @media print {
-            .segment {
-                page-break-inside: avoid;
-            }
-        }
+        @page { margin: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 12px; color: #333; padding: 50px; }
+        .segment { page-break-inside: avoid; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: #f3f4f6; padding: 12px; text-align: left; font-weight: bold; color: #372C97; border-bottom: 2px solid #372C97; }
+        td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+        .segment table tbody tr:last-child td { border-bottom: none; }
     </style>
 </head>
 
 <body>
     <!-- Header -->
-    <div class="header">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #372C97;">
         <div>
             @if ($logoBase64)
-                <img src="{{ $logoBase64 }}" alt="TecniFrenos Logo" class="logo">
+                <img src="{{ $logoBase64 }}" alt="TecniFrenos Logo" style="max-width: 150px; height: auto;">
             @else
                 <div style="font-size: 24px; font-weight: bold; color: #372C97;">TecniFrenos</div>
             @endif
         </div>
-        <div class="header-info">
-            <h1>COTIZACIÓN</h1>
-            <p>Mecánica Rápida T.F.Q</p>
+        <div style="text-align: right;">
+            <h1 style="color: #372C97; font-size: 20px; margin-bottom: 3px;">COTIZACIÓN</h1>
+            <p style="font-size: 11px; color: #666;">Mecánica Rápida T.F.Q</p>
         </div>
     </div>
 
-    <!-- Document Info -->
-    <div class="document-info">
-        <h2>Información del Documento</h2>
-        <div class="info-grid">
-            <div class="info-item">
-                <strong>Número de Folio:</strong> Nª-{{ $order->folio_number }}
+    <!-- Information Card -->
+    <div style="background-color: #f9fafb; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px;">
+        <!-- Header con Folio y Fecha -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #372C97;">
+            <div style="font-size: 10px;">
+                <strong style="color: #372C97; margin-right: 5px;">Folio:</strong> Nª-{{ $order->folio_number }}
             </div>
-            <div class="info-item">
-                <strong>Fecha:</strong> {{ $order->created_at->format('d/m/Y') }}
-            </div>
-            <div class="info-item">
-                <strong>Estado:</strong> {{ $order->status->name ?? 'Sin estado' }}
-            </div>
-            <div class="info-item">
-                <strong>Ingreso en Grúa:</strong> {{ $order->ingreso_en_grua ? 'Sí' : 'No' }}
+            <div style="font-size: 10px;">
+                <strong style="color: #372C97; margin-right: 5px;">Fecha:</strong> {{ $order->created_at->format('d/m/Y') }}
             </div>
         </div>
-    </div>
+        
+        <!-- Contenido: Cliente y Vehículo en dos columnas -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+            <!-- Cliente -->
+            <div style="font-size: 11px;">
+                <h3 style="color: #372C97; font-size: 12px; margin-bottom: 8px; font-weight: bold;">Datos del Cliente</h3>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 5px;">
+                    <div style="margin-bottom: 5px;">
+                        <strong style="color: #372C97; display: inline-block; min-width: 90px; font-size: 11px;">Nombre Completo:</strong> {{ $clientData['full_name'] }}
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <strong style="color: #372C97; display: inline-block; min-width: 90px; font-size: 11px;">Teléfono:</strong> {{ $clientData['phone'] }}
+                    </div>
+                </div>
+            </div>
 
-    <!-- Client Information -->
-    <div class="client-section">
-        <h3>Datos del Cliente</h3>
-        <div class="info-grid">
-            <div class="info-item">
-                <strong>Nombre Completo:</strong> {{ $order->vehicle->client->full_name ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Documento:</strong> {{ strtoupper($order->vehicle->client->document_type ?? '') }}
-                {{ $order->vehicle->client->document_number ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Teléfono:</strong> {{ $order->vehicle->client->phone ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Dirección:</strong> {{ $order->vehicle->client->address ?? 'N/A' }}
-            </div>
-        </div>
-        <div style="margin-top: 15px;">
-            <div class="info-item">
-                <strong>Conductor:</strong> {{ $order->driver_name ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Teléfono Conductor:</strong> {{ $order->driver_phone ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Email Conductor:</strong> {{ $order->driver_email ?? 'N/A' }}
+            <!-- Vehículo -->
+            <div style="font-size: 11px;">
+                <h3 style="color: #372C97; font-size: 12px; margin-bottom: 8px; font-weight: bold;">Datos del Vehículo</h3>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 5px;">
+                    <div style="margin-bottom: 5px;">
+                        <strong style="color: #372C97; display: inline-block; min-width: 90px; font-size: 11px;">Marca:</strong> {{ $vehicleData['brand'] }}
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <strong style="color: #372C97; display: inline-block; min-width: 90px; font-size: 11px;">Modelo:</strong> {{ $vehicleData['model'] }}
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <strong style="color: #372C97; display: inline-block; min-width: 90px; font-size: 11px;">Año:</strong> {{ $vehicleData['year'] }}
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <strong style="color: #372C97; display: inline-block; min-width: 90px; font-size: 11px;">Placa:</strong> {{ $vehicleData['plate'] }}
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Vehicle Information -->
-    <div class="vehicle-section">
-        <h3>Datos del Vehículo</h3>
-        <div class="info-grid">
-            <div class="info-item">
-                <strong>Marca:</strong> {{ $order->vehicle->brand ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Modelo:</strong> {{ $order->vehicle->model ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Año:</strong> {{ $order->vehicle->year ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Placa:</strong> {{ $order->vehicle->plate ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Cilindraje:</strong> {{ $order->vehicle->cilindraje ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>VIN:</strong> {{ $order->vehicle->vin ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Motor:</strong> {{ $order->vehicle->motor ?? 'N/A' }}
-            </div>
-            <div class="info-item">
-                <strong>Kilometraje:</strong> {{ number_format($order->vehicle->kilometraje ?? 0, 0, ',', '.') }} km
-            </div>
-        </div>
-        @if ($order->vehicle->observaciones)
-            <div style="margin-top: 15px;">
-                <strong>Observaciones del Vehículo:</strong>
-                <p style="margin-top: 5px; padding: 10px; background-color: white; border-radius: 4px;">
-                    {{ $order->vehicle->observaciones }}
-                </p>
-            </div>
-        @endif
     </div>
 
     <!-- Quotation Section -->
-    <div class="quotation-section">
-        <h2>DETALLE DE LA COTIZACIÓN</h2>
-
-        @if ($quotation->notes)
-            <div class="quotation-notes">
-                <h3>Notas de la Cotización:</h3>
-                <p>{{ $quotation->notes }}</p>
-            </div>
-        @endif
+    <div style="margin-top: 25px;">
+        <h2 style="color: #372C97; font-size: 24px; margin-bottom: 25px; text-align: center; border-bottom: 4px solid #372C97; padding-bottom: 15px; font-weight: bold;">DETALLE DE LA COTIZACIÓN</h2>
 
         @if (count($segments) > 0)
             @foreach ($segments as $segment)
                 <div class="segment">
-                    <div class="segment-header">
+                    <!-- Segment Header -->
+                    <div style="background-color: #372C97; color: white; padding: 12px 15px; font-size: 16px; font-weight: bold; border-radius: 4px 4px 0 0;">
                         {{ $segment['name'] }}
                     </div>
-                    <table class="items-table">
+                    
+                    <!-- Items Table -->
+                    <table>
                         <thead>
                             <tr>
                                 <th style="width: 40%;">Servicio/Producto</th>
-                                <th class="text-center" style="width: 10%;">Cantidad</th>
-                                <th class="text-right" style="width: 20%;">Precio Unitario</th>
-                                <th class="text-center" style="width: 15%;">Autorizado</th>
-                                <th class="text-right" style="width: 15%;">Total</th>
+                                <th style="width: 10%; text-align: center;">Cantidad</th>
+                                <th style="width: 20%; text-align: right;">Precio Unitario</th>
+                                <th style="width: 15%; text-align: center;">Autorizado</th>
+                                <th style="width: 15%; text-align: right;">Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($segment['items'] as $item)
                                 <tr>
                                     <td>{{ $item['name'] }}</td>
-                                    <td class="text-center">{{ $item['quantity'] }}</td>
-                                    <td class="text-right">${{ number_format($item['unit_value'], 2, ',', '.') }}</td>
-                                    <td class="text-center">
-                                        <span
-                                            class="authorized-badge {{ $item['is_authorized'] ? 'authorized-yes' : 'authorized-no' }}">
+                                    <td style="text-align: center;">{{ $item['quantity'] }}</td>
+                                    <td style="text-align: right;">${{ number_format($item['unit_value'], 2, ',', '.') }}</td>
+                                    <td style="text-align: center;">
+                                        <span style="display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; background-color: {{ $item['is_authorized'] ? '#10b981' : '#ef4444' }}; color: white;">
                                             {{ $item['is_authorized'] ? 'SÍ' : 'NO' }}
                                         </span>
                                     </td>
-                                    <td class="text-right">
+                                    <td style="text-align: right;">
                                         <strong>${{ number_format($item['total'], 2, ',', '.') }}</strong>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="segment-total">
-                        Total del Segmento (Autorizados): <strong
-                            style="color: #372C97; font-size: 16px;">${{ number_format($segment['total'], 2, ',', '.') }}</strong>
+                    
+                    <!-- Segment Totals -->
+                    <div style="background-color: #f3f4f6; padding: 12px 15px; text-align: right; font-weight: bold; font-size: 14px; border-top: 2px solid #372C97;">
+                        <div style="margin-bottom: 5px;">
+                            Total del Segmento (Autorizados): <strong style="color: #372C97; font-size: 16px;">${{ number_format($segment['total_authorized'], 2, ',', '.') }}</strong>
+                        </div>
+                        <div style="border-top: 1px solid #d1d5db; padding-top: 5px; margin-top: 5px;">
+                            Total del Segmento (No Autorizados): <strong style="color: #ef4444; font-size: 16px;">${{ number_format($segment['total_not_authorized'], 2, ',', '.') }}</strong>
+                        </div>
                     </div>
                 </div>
             @endforeach
 
-            <!-- Grand Total -->
-            <div class="grand-total">
-                <h3>TOTAL GENERAL (AUTORIZADOS)</h3>
-                <div class="amount">${{ number_format($grandTotal, 2, ',', '.') }}</div>
+            <!-- Grand Totals -->
+            <div style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #372C97 0%, #2a1f7a 100%); color: white; border-radius: 8px; text-align: center;">
+                <h3 style="font-size: 18px; margin-bottom: 10px;">TOTAL GENERAL (AUTORIZADOS)</h3>
+                <div style="font-size: 32px; font-weight: bold; margin-bottom: 15px;">${{ number_format($grandTotalAuthorized, 2, ',', '.') }}</div>
+                <div style="border-top: 2px solid rgba(255,255,255,0.3); padding-top: 15px; margin-top: 15px;">
+                    <h3 style="font-size: 18px; margin-bottom: 10px;">TOTAL GENERAL (NO AUTORIZADOS)</h3>
+                    <div style="font-size: 32px; font-weight: bold;">${{ number_format($grandTotalNotAuthorized, 2, ',', '.') }}</div>
+                </div>
             </div>
+
+            @if ($quotation->notes)
+                <div style="margin-top: 30px; background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 4px;">
+                    <h3 style="color: #856404; font-size: 14px; margin-bottom: 8px;">Notas de la Cotización:</h3>
+                    <p>{{ $quotation->notes }}</p>
+                </div>
+            @endif
         @else
             <div style="text-align: center; padding: 40px; color: #666;">
                 <p>No hay items en la cotización.</p>
@@ -418,10 +159,10 @@
     </div>
 
     <!-- Footer -->
-    <div class="footer">
-        <p><strong>Mecánica Rápida T.F.Q - TecniFrenos</strong></p>
-        <p>Este documento es una cotización y requiere autorización del cliente para proceder con los trabajos.</p>
-        <p>Generado el {{ now()->format('d/m/Y H:i:s') }}</p>
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; color: #666; font-size: 10px;">
+        <p style="margin: 5px 0;"><strong>Mecánica Rápida T.F.Q - TecniFrenos</strong></p>
+        <p style="margin: 5px 0;">Este documento es una cotización y requiere autorización del cliente para proceder con los trabajos.</p>
+        <p style="margin: 5px 0;">Generado el {{ now()->format('d/m/Y H:i:s') }}</p>
     </div>
 </body>
 

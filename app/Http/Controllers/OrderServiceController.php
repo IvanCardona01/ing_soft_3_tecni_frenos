@@ -419,7 +419,6 @@ class OrderServiceController extends Controller
     {
         $order->load([
             'vehicle.client',
-            'status',
             'quotation.segments.items'
         ]);
 
@@ -431,12 +430,28 @@ class OrderServiceController extends Controller
                 ->with('error', 'No hay cotización disponible para generar el PDF.');
         }
 
+        // Preparar datos básicos del cliente
+        $clientData = [
+            'full_name' => $order->vehicle->client->full_name ?? 'N/A',
+            'phone' => $order->vehicle->client->phone ?? 'N/A',
+        ];
+
+        // Preparar datos básicos del vehículo
+        $vehicleData = [
+            'brand' => $order->vehicle->brand ?? 'N/A',
+            'model' => $order->vehicle->model ?? 'N/A',
+            'year' => $order->vehicle->year ?? 'N/A',
+            'plate' => $order->vehicle->plate ?? 'N/A',
+        ];
+
         // Calcular totales
-        $grandTotal = 0;
+        $grandTotalAuthorized = 0;
+        $grandTotalNotAuthorized = 0;
         $segmentsData = [];
 
         foreach ($quotation->segments as $segment) {
-            $segmentTotal = 0;
+            $segmentTotalAuthorized = 0;
+            $segmentTotalNotAuthorized = 0;
             $itemsData = [];
 
             foreach ($segment->items as $item) {
@@ -449,19 +464,23 @@ class OrderServiceController extends Controller
                     'is_authorized' => $item->is_authorized,
                 ];
 
-                // Solo sumar al total si está autorizado
+                // Sumar según si está autorizado o no
                 if ($item->is_authorized) {
-                    $segmentTotal += $itemTotal;
+                    $segmentTotalAuthorized += $itemTotal;
+                } else {
+                    $segmentTotalNotAuthorized += $itemTotal;
                 }
             }
 
             $segmentsData[] = [
                 'name' => $segment->name,
                 'items' => $itemsData,
-                'total' => $segmentTotal,
+                'total_authorized' => $segmentTotalAuthorized,
+                'total_not_authorized' => $segmentTotalNotAuthorized,
             ];
 
-            $grandTotal += $segmentTotal;
+            $grandTotalAuthorized += $segmentTotalAuthorized;
+            $grandTotalNotAuthorized += $segmentTotalNotAuthorized;
         }
 
         // Convertir logo a base64 para el PDF
@@ -475,8 +494,11 @@ class OrderServiceController extends Controller
         $data = [
             'order' => $order,
             'quotation' => $quotation,
+            'clientData' => $clientData,
+            'vehicleData' => $vehicleData,
             'segments' => $segmentsData,
-            'grandTotal' => $grandTotal,
+            'grandTotalAuthorized' => $grandTotalAuthorized,
+            'grandTotalNotAuthorized' => $grandTotalNotAuthorized,
             'logoBase64' => $logoBase64,
         ];
 
